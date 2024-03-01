@@ -113,6 +113,7 @@ const Login = ({
         <div className="w-full mt-5">
           <span
             className={`${styles.label} text-[#2190ff] block text-right cursor-pointer`}
+            onClick={() => setActiveState("Forgot-Password")}
           >
             Forgot your password?
           </span>
@@ -120,7 +121,7 @@ const Login = ({
             type="submit"
             value="login"
             disabled={isSubmitting || loading}
-            className={`${styles.button} mt-3 bg-[#37b668]`}
+            className={`${styles.button} mt-3`}
           />
         </div>
         <br />
