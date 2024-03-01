@@ -113,11 +113,6 @@ const Signup = ({
           <span className="text-red-500">{`${errors.password.message}`}</span>
         )}
         <div className="w-full mt-5">
-          <span
-            className={`${styles.label} text-[#2190ff] block text-right cursor-pointer`}
-          >
-            Forgot your password?
-          </span>
           <input
             type="submit"
             value="Signup"
