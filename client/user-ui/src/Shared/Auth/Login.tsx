@@ -9,6 +9,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import Cookies from "js-cookie";
+import {signIn} from "next-auth/react"
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -128,7 +129,7 @@ const Login = ({
         <h5 className="text-center pt-4 font-Poppins text-[16px]">
           Or join with
         </h5>
-        <div className="flex items-center justify-center my-3">
+        <div className="flex items-center justify-center my-3" onClick={() => signIn()}>
           <FcGoogle size={30} className="cursor-pointer ml-2" />
         </div>
         <h5 className="text-center pt-4 font-Poppins text-[14px] my-5">
