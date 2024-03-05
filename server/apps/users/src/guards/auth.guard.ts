@@ -24,21 +24,25 @@ export class AuthGuard implements CanActivate {
     const accessToken = req.headers.accesstoken as string;
     const refreshToken = req.headers.refreshtoken as string;
 
-
+    
     if (!accessToken || !refreshToken) {
       throw new UnauthorizedException('Please login first!');
     }
 
-    if (accessToken) {
-      const decoded = this.jwtService.verify(accessToken, {
-        secret: this.config.get<string>('ACCESS_TOKEN_SECRET'),
-      });
+    try {
+      if (accessToken.split('.').length === 3) {
+        const decoded = this.jwtService.verify(accessToken, {
+          secret: this.config.get<string>('ACCESS_TOKEN_SECRET'),
+        });
 
-      if (!decoded) {
-        throw new UnauthorizedException('Access Tokens are Invalid');
+        if (decoded) {
+          await this.updateAccessToken(req);
+        }
+      } else {
+        throw new UnauthorizedException('Access Token are Invalid');
       }
-
-      await this.updateAccessToken(req);
+    } catch (error) {
+      throw new UnauthorizedException('Access Token are Invalid');
     }
     return true;
   }
@@ -46,40 +50,38 @@ export class AuthGuard implements CanActivate {
   private async updateAccessToken(req: any): Promise<void> {
     try {
       const refreshTokenData = req.headers.refreshtoken as string;
-      
-      const decoded = this.jwtService.verify(refreshTokenData, {
-        secret: this.config.get<string>('REFRESH_TOKEN_SECRET'),
-      });
 
-      if (!decoded) {
-        throw new UnauthorizedException('Refresh tokens are Invalid!');
-      }
-
-      const user = await this.prisma.user.findUnique({
-        where: {
-          id: decoded.id,
-        },
-      });
-
-      const accessToken = this.jwtService.sign(
-        { id: user.id },
-        {
-          secret: this.config.get<string>('ACCESS_TOKEN_SECRET'),
-          expiresIn: '15m',
-        },
-      );
-
-      const refreshToken = this.jwtService.sign(
-        { id: user.id },
-        {
+      if (refreshTokenData.split('.').length === 3) {
+        const decoded = this.jwtService.verify(refreshTokenData, {
           secret: this.config.get<string>('REFRESH_TOKEN_SECRET'),
-          expiresIn: '7d',
-        },
-      );
-      
-      req.accesstoken = accessToken;
-      req.refreshtoken = refreshToken;
-      req.user = user;
+        });
+
+        if (decoded && decoded.id) {
+          const user = await this.prisma.user.findUnique({
+            where: {
+              id: decoded.id,
+            },
+          });
+          const accessToken = this.jwtService.sign(
+            { id: user.id },
+            {
+              secret: this.config.get<string>('ACCESS_TOKEN_SECRET'),
+              expiresIn: '15m',
+            },
+          );
+
+          const refreshToken = this.jwtService.sign(
+            { id: user.id },
+            {
+              secret: this.config.get<string>('REFRESH_TOKEN_SECRET'),
+              expiresIn: '7d',
+            },
+          );
+          req.accesstoken = accessToken;
+          req.refreshtoken = refreshToken;
+          req.user = user;
+        }
+      }
     } catch (error) {
       console.log(error);
     }
