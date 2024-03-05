@@ -1,3 +1,4 @@
+import ForgotPassword from "@/Shared/Auth/ForgotPassword";
 import Login from "@/Shared/Auth/Login";
 import Signup from "@/Shared/Auth/Signup";
 import Verification from "@/Shared/Auth/Verification";
@@ -25,6 +26,9 @@ const AuthScreen = ({ setOpen }: { setOpen: (e: boolean) => void }) => {
         {activeState === "Signup" && <Signup setActiveState={setActiveState} />}
         {activeState === "Verification" && (
           <Verification setActiveState={setActiveState} />
+        )}
+        {activeState === "Forgot-Password" && (
+          <ForgotPassword setActiveState={setActiveState} />
         )}
       </div>
     </div>

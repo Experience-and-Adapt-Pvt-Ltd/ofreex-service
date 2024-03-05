@@ -1,8 +1,15 @@
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { ActivationResponse, LoginResponse, LogoutResponse, RegisterResponse } from './types/user.types';
-import { ActivationDto, RegisterDto } from './dto/user.dto';
+import {
+  ActivationResponse,
+  ForgotPasswordResponse,
+  LoginResponse,
+  LogoutResponse,
+  RegisterResponse,
+  ResetPasswordResponse,
+} from './types/user.types';
+import { ActivationDto, ForgotPasswordDto, RegisterDto, ResetPasswordDto } from './dto/user.dto';
 import { User } from './entites/user.entity';
 import { Response } from 'express';
 import { AuthGuard } from './guards/auth.guard';
@@ -37,24 +44,38 @@ export class UsersResolver {
     return await this.userService.activateUser(activationDto, context.res);
   }
 
-  @Mutation(()=> LoginResponse)
+  @Mutation(() => LoginResponse)
   async Login(
     @Args('email') email: string,
     @Args('password') password: string,
-  ) : Promise<LoginResponse> {
-    return await this.userService.Login({email,password})
+  ): Promise<LoginResponse> {
+    return await this.userService.Login({ email, password });
   }
 
-  @Query(()=> LoginResponse)
+  @Query(() => LoginResponse)
   @UseGuards(AuthGuard)
-  async loginUser(@Context() context: {req: Request}){
-    return await this.userService.loginUser(context.req)
+  async loginUser(@Context() context: { req: Request }) {
+    return await this.userService.loginUser(context.req);
   }
 
-  @Query(()=> LogoutResponse)
+  @Mutation(() => ForgotPasswordResponse)
+  async forgotPassword(
+    @Args('forgotPasswordDto') forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<ForgotPasswordResponse> {
+    return await this.userService.ForgotPassword(forgotPasswordDto);
+  }
+
+  @Mutation(() => ResetPasswordResponse)
+  async resetPassword(
+    @Args('resetPasswordDto') resetPasswordDto: ResetPasswordDto,
+  ): Promise<ResetPasswordResponse> {
+    return await this.userService.resetPassword(resetPasswordDto);
+  }
+
+  @Query(() => LogoutResponse)
   @UseGuards(AuthGuard)
-  async logoutUser(@Context() context: {req: Request}){
-    return await this.userService.logoutUser(context.req)
+  async logoutUser(@Context() context: { req: Request }) {
+    return await this.userService.logoutUser(context.req);
   }
 
   @Query(() => [User])
