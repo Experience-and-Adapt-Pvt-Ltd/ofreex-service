@@ -23,4 +23,4 @@ import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
   controllers: [],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
