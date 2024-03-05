@@ -8,7 +8,7 @@ import {
   RegisterDto,
   ResetPasswordDto,
 } from './dto/user.dto';
-import { PrismaService } from '../../../prisma/Prisma.service';
+import { PrismaService } from '../../prisma/Prisma.service';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from './email/email.service';
@@ -29,7 +29,7 @@ export class UsersService {
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
-  ) {}
+  ) { }
 
   //register user
   async register(registerDto: RegisterDto, response: Response) {
