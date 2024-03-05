@@ -2,6 +2,7 @@ import { REGISTER_USER } from "@/graphql/action/regsiter.action";
 import styles from "@/utils/style";
 import { useMutation } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -124,7 +125,7 @@ const Signup = ({
         <h5 className="text-center pt-4 font-Poppins text-[16px]">
           Or join with
         </h5>
-        <div className="flex items-center justify-center my-3">
+        <div className="flex items-center justify-center my-3" onClick={() => signIn()}>
           <FcGoogle size={30} className="cursor-pointer ml-2" />
         </div>
         <h5 className="text-center pt-4 font-Poppins text-[14px] my-5">
