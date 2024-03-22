@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
 }
 
 enum Role{
@@ -16,15 +16,15 @@ enum Role{
 }
 
 model Avatars{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(uuid())
   public_id String
   url String
+  userId String @unique
   user User @relation(fields: [userId], references: [id])
-  userId String @unique @db.ObjectId
 }
 
 model User{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(uuid())
   name String
   email String @unique
   password String
@@ -34,4 +34,5 @@ model User{
   role Role @default(User)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isPremium Boolean @default(false)
 }
