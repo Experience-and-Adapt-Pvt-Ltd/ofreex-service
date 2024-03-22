@@ -1,19 +1,19 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { JwtService, JwtVerifyOptions } from "@nestjs/jwt";
 import {
   ActivationDto,
   ForgotPasswordDto,
   LoginDto,
   RegisterDto,
   ResetPasswordDto,
-} from './dto/user.dto';
-import { PrismaService } from '../../prisma/Prisma.service';
-import { Response } from 'express';
-import * as bcrypt from 'bcrypt';
-import { EmailService } from './email/email.service';
-import { TokenSender } from './utils/sendToken';
-import { User } from '@prisma/client';
+} from "./dto/user.dto";
+import { PrismaService } from "../../prisma/Prisma.service";
+import { Response } from "express";
+import * as bcrypt from "bcrypt";
+import { EmailService } from "./email/email.service";
+import { TokenSender } from "./utils/sendToken";
+import { User } from "@prisma/client";
 
 interface UserData {
   name: string;
@@ -26,10 +26,10 @@ interface UserData {
 export class UsersService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly prisma: PrismaService,
+    private readonly prisma:  PrismaService,
     private readonly configService: ConfigService,
-    private readonly emailService: EmailService,
-  ) { }
+    private readonly emailService: EmailService
+  ) {}
 
   //register user
   async register(registerDto: RegisterDto, response: Response) {
@@ -43,7 +43,7 @@ export class UsersService {
     });
 
     if (isEmailExist) {
-      throw new BadRequestException('Email already Exist');
+      throw new BadRequestException("Email already Exist");
     }
 
     const phoneNumberExist = await this.prisma.user.findUnique({
@@ -53,7 +53,7 @@ export class UsersService {
     });
 
     if (phoneNumberExist) {
-      throw new BadRequestException('Phone number already Exist');
+      throw new BadRequestException("Phone number already Exist");
     }
 
     //creating Hashed Password
@@ -73,8 +73,8 @@ export class UsersService {
 
     await this.emailService.sendMail({
       email,
-      subject: 'Activate Your Account',
-      template: './activation-mail',
+      subject: "Activate Your Account",
+      template: "./activation-mail",
       name,
       activationCode,
     });
@@ -92,9 +92,9 @@ export class UsersService {
         activationCode,
       },
       {
-        secret: this.configService.get<string>('ACTIVATION_TOKEN'),
-        expiresIn: '48h',
-      },
+        secret: this.configService.get<string>("ACTIVATION_TOKEN"),
+        expiresIn: "48h",
+      }
     );
     return { token, activationCode };
   }
@@ -105,11 +105,11 @@ export class UsersService {
 
     const newUser: { user: UserData; activationCode: string } =
       this.jwtService.verify(activationToken, {
-        secret: this.configService.get<string>('ACTIVATION_TOKEN'),
+        secret: this.configService.get<string>("ACTIVATION_TOKEN"),
       } as JwtVerifyOptions) as { user: UserData; activationCode: string };
 
     if (newUser.activationCode !== activationCode) {
-      throw new BadRequestException('Activation Code is Invalid');
+      throw new BadRequestException("Activation Code is Invalid");
     }
 
     const { name, email, password, phone_number } = newUser.user;
@@ -121,7 +121,7 @@ export class UsersService {
     });
 
     if (existingUser) {
-      throw new BadRequestException('User already Registered with this email');
+      throw new BadRequestException("User already Registered with this email");
     }
 
     const user = await this.prisma.user.create({
@@ -157,7 +157,7 @@ export class UsersService {
         accessToken: null,
         refreshToken: null,
         error: {
-          message: 'Credentials are invalid',
+          message: "Credentials are invalid",
         },
       };
     }
@@ -170,9 +170,9 @@ export class UsersService {
         user,
       },
       {
-        secret: this.configService.get<string>('FORGOT_PASSWORD_SECRET'),
-        expiresIn: '5m',
-      },
+        secret: this.configService.get<string>("FORGOT_PASSWORD_SECRET"),
+        expiresIn: "5m",
+      }
     );
     return forgotPasswordToken;
   }
@@ -187,24 +187,24 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new BadRequestException('User with Email id does not exist');
+      throw new BadRequestException("User with Email id does not exist");
     }
 
     const forgotPasswordToken = await this.generateForgotPasswordLink(user);
 
     const resetPasswordUrl =
-      this.configService.get<string>('CLIENT_SIDE_URI') +
+      this.configService.get<string>("CLIENT_SIDE_URI") +
       `/reset-password?verify=${forgotPasswordToken}`;
 
     await this.emailService.sendMail({
       email,
-      subject: 'Reset your Password',
-      template: './forgot-password',
+      subject: "Reset your Password",
+      template: "./forgot-password",
       name: user.name,
       activationCode: resetPasswordUrl,
     });
 
-    return { message: 'Your Forgot password request successful' };
+    return { message: "Your Forgot password request successful" };
   }
 
   //Reset Password
@@ -214,7 +214,7 @@ export class UsersService {
     const decode = await this.jwtService.decode(activationToken);
 
     if (!decode || decode?.exp * 1000 < Date.now()) {
-      throw new BadRequestException('Invalid Token');
+      throw new BadRequestException("Invalid Token");
     }
 
     const hashedPassword = await bcrypt.hash(password, 15);
@@ -244,7 +244,7 @@ export class UsersService {
     req.refreshtoken = null;
     req.accessToken = null;
 
-    return { message: 'Logged out Successfully!' };
+    return { message: "Logged out Successfully!" };
   }
 
   //get all user Service
