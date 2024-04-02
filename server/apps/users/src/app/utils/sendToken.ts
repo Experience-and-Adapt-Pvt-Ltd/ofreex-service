@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
+import { LoginResponse } from '../types/user.types';
 
 export class TokenSender {
     
@@ -8,7 +9,7 @@ export class TokenSender {
         private readonly config: ConfigService,
         private readonly jwt: JwtService
     ) {}
-  public sendToken(user: User) {
+  public sendToken(user: User) : LoginResponse {
     const accessToken = this.jwt.sign(
       {
         id: user.id,
