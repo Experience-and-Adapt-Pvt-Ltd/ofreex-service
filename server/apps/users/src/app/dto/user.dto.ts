@@ -20,7 +20,11 @@ export class RegisterDto {
 
   @Field()
   @IsNotEmpty({ message: 'Enter Phone Number' })
-  phone_number: number;
+  phoneNumber: number;
+
+  @Field()
+  @IsNotEmpty({ message: 'Enter Premium status pls' })
+  isPremium: boolean;
 }
 
 @InputType()
@@ -63,6 +67,6 @@ export class ResetPasswordDto {
   password: string;
 
   @Field()
-  @IsNotEmpty({message: "Activation Token is Required"})
+  @IsNotEmpty({ message: "Activation Token is Required" })
   activationToken: string
 }
