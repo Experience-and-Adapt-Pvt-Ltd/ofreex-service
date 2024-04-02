@@ -1,5 +1,7 @@
+import { LimitedUserData } from "../types/listings.types";
+
 export interface Listing {
-  id: number;
+  id: string;
   title: string;
   description: string;
   category: string;
@@ -9,7 +11,18 @@ export interface Listing {
   city: string;
   state?: string;
   imageUrls: string[];
-  userId: number;
+  userId: string;
   postedAt: Date;
   rating?: number;
+}
+
+export interface GetPremiumUsersResponse {
+  data: {
+    getPremiumUsers: LimitedUserData[];
+  };
+}
+export interface GetBasicUsersResponse {
+  data: {
+    getBasicUsers: LimitedUserData[];
+  };
 }
