@@ -1,16 +1,22 @@
-import { AppModule } from "./app/listings.module";
-import { NestExpressApplication } from '@nestjs/platform-express';
+/**
+ * This is not a production server yet!
+ * This is only a minimal backend to get started.
+ */
+
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { join } from "path";
+
+import { AppModule } from './app/listings.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-  app.useStaticAssets(join(__dirname, '..', 'public'))
-  app.enableCors({
-    origin: "*",
-  })
-  await app.listen(4001)
+  const app = await NestFactory.create(AppModule);
+  // const globalPrefix = 'listings';
+  //app.setGlobalPrefix(globalPrefix);
+  const port = process.env.PORT || 4002;
+  await app.listen(port);
+  Logger.log(
+    `🚀 Application is running on: http://localhost:${port}/listings`
+  );
 }
 
-bootstrap()
+bootstrap();
