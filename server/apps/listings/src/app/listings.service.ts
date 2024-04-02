@@ -1,13 +1,15 @@
-import { Injectable, NotFoundException, BadRequestException, HttpStatus } from '@nestjs/common';
-import { PrismaClient, Listing as PrismaListing } from '@prisma/client';
-import { Listing } from './interface/listings.interface';
+import { Injectable, NotFoundException, BadRequestException, HttpStatus, Logger } from '@nestjs/common';
+import { PrismaClient, Listing as PrismaListing } from '../../node_modules/.prisma/client';
+import { GetBasicUsersResponse, GetPremiumUsersResponse, Listing } from './interface/listings.interface';
 import { CreateListingDto } from './dto/create_listing.dto';
-import { HttpModule } from '@nestjs/axios';
-
+import { HttpModule, HttpService } from '@nestjs/axios';
+import { LimitedUserData } from './types/listings.types';
+import { catchError, firstValueFrom, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ListingsService {
-  constructor(private readonly prisma: PrismaClient, private readonly http: HttpClient) { }
+  constructor(private readonly prisma: PrismaClient, private readonly httpService: HttpService) { }
 
 
   async findAll(): Promise<Listing[]> {
@@ -19,7 +21,7 @@ export class ListingsService {
     }
   }
 
-  async findOne(id: number): Promise<Listing> {
+  async findOne(id: string): Promise<Listing> {
     try {
       const listing: PrismaListing | null = await this.prisma.listing.findUnique({
         where: { id },
@@ -38,7 +40,20 @@ export class ListingsService {
   async create(createListingDto: CreateListingDto): Promise<Listing> {
     try {
       const createdListing: PrismaListing = await this.prisma.listing.create({
-        data: createListingDto,
+        data: {
+          title: createListingDto.title,
+          description: createListingDto.description,
+          category: createListingDto.category,
+          subCategory: createListingDto.subCategory,
+          condition: createListingDto.condition,
+          price: createListingDto.price,
+          city: createListingDto.city,
+          state: createListingDto.state,
+          imageUrls: createListingDto.imageUrls,
+          userId: createListingDto.userId,
+          postedAt: new Date(),
+          rating: createListingDto.rating,
+        },
       });
       return this.convertToDto(createdListing);
     } catch (error) {
@@ -46,7 +61,7 @@ export class ListingsService {
     }
   }
 
-  async update(id: number, updateListingDto: Partial<CreateListingDto>): Promise<Listing> {
+  async update(id: string, updateListingDto: Partial<CreateListingDto>): Promise<Listing> {
     try {
       const listingToUpdate: PrismaListing | null = await this.prisma.listing.findUnique({ where: { id } });
 
@@ -62,7 +77,7 @@ export class ListingsService {
     }
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     try {
       const listingToDelete: PrismaListing | null = await this.prisma.listing.findUnique({ where: { id } });
 
@@ -103,45 +118,117 @@ export class ListingsService {
       throw new BadRequestException(`Could not fetch listings: ${error.message}`);
     }
   }
-  async getPremiumListings(limit: number = 5, category?: string, subCategory?: string): Promise<Listing[]> {
+  async getPremiumUsers(): Promise<LimitedUserData[]> {
     try {
-      const premiumUsers = await this.http.get<User[]>(`Api Endpoint`);
-
-      const premiumListings: Listing[] = [];
-      for (const user of premiumUsers) {
-        const userListings = await this.prisma.listing.findMany({
-          where: { userId: user.id },
-        });
-
-        const filteredListings = category && subCategory
-          ? userListings.filter(
-            (listing) => listing.category === category && listing.subCategory === subCategory
-          )
-          : userListings;
-
-        premiumListings.push(...filteredListings);
-      }
-
-      premiumListings.sort((a, b) => b.rating - a.rating);
-
-      return premiumListings.slice(0, limit);
+      Logger.log('fetching premium users in service:');
+      const { data } = await this.httpService
+        .post<GetPremiumUsersResponse>("http://localhost:4001/graphql", {
+          query: `query GetPremiumUsers {
+          getPremiumUsers {
+            id
+            isPremium
+          }
+        }
+        `,
+        })
+        .toPromise();
+      Logger.log('fetching premium users in service22:', data.data.getPremiumUsers);
+      const getPremiumUsers = data.data.getPremiumUsers;
+      return getPremiumUsers;
     } catch (error) {
       throw new BadRequestException(`Could not fetch premium listings: ${error.message}`);
     }
   }
-
-
-  async getUserData(userId: string): Promise<UserPartial> {
+  async getBasicUsers(): Promise<LimitedUserData[]> {
     try {
-      const response = await this.http.get<User>(
-        `http://localhost:3000/api/v1/users/${userId}`
-      );
-      return { id: response.data.id, name: response.data.name };
+      Logger.log('fetching basic users in service:');
+      const { data } = await this.httpService
+        .post<GetBasicUsersResponse>("http://localhost:4001/graphql", {
+          query: `query GetBasicUsers {
+          getBasicUsers {
+            id
+            isPremium
+          }
+        }
+        `,
+        })
+        .toPromise();
+      Logger.log('fetching basic users in service22:', data.data.getBasicUsers);
+      const getBasicUsers = data.data.getBasicUsers;
+      return getBasicUsers;
     } catch (error) {
-      if (error.response.status === HttpStatus.NOT_FOUND) {
-        return null;
-      }
-      throw error;
+      throw new BadRequestException(`Could not fetch premium listings: ${error.message}`);
+    }
+  }
+  async getPremiumListings(limit: number = 5, category?: string, subCategory?: string): Promise<Listing[]> {
+    try {
+      const premiumUsers = await this.getPremiumUsers();
+      const premiumUserIds = premiumUsers.map((user) => user.id);
+
+      const userListings = await this.prisma.listing.findMany({
+        where: { userId: { in: premiumUserIds } },
+      });
+      Logger.log(`Listing ${userListings.length} found`);
+      Logger.log(`Listings are: ${userListings}`);
+      const filteredListings = category && subCategory
+        ? userListings.filter(
+          (listing) => listing.category === category && listing.subCategory === subCategory
+        )
+        : userListings;
+      // const filteredListings = userListings;
+      // Logger.log(`${limit}`)
+      filteredListings.sort((a, b) => b.rating - a.rating);
+      const limitedListings = filteredListings.slice(0, limit);
+      Logger.log(`${filteredListings.length}`)
+      return limitedListings;
+    } catch (error) {
+      throw new BadRequestException(`Could not fetch premium listings: ${error.message}`);
+    }
+  }
+  async getListings(limit: number = 5, category?: string, subCategory?: string): Promise<Listing[]> {
+    try {
+      const basicUsers = await this.getBasicUsers();
+      const basicUsersIds = basicUsers.map((user) => user.id);
+
+      const userListings = await this.prisma.listing.findMany({
+        where: { userId: { in: basicUsersIds } },
+      });
+      Logger.log(`Listing ${userListings.length} found`);
+      Logger.log(`Listings are: ${userListings}`);
+      const filteredListings = category && subCategory
+        ? userListings.filter(
+          (listing) => listing.category === category && listing.subCategory === subCategory
+        )
+        : userListings;
+      // const filteredListings = userListings;
+      Logger.log(`userListings = ${userListings.length}`);
+      if (limit != 1 && filteredListings.length != 1)
+        filteredListings.sort((a, b) => b.rating - a.rating);
+      const limitedListings = filteredListings.slice(0, limit);
+      Logger.log(`filtered listings = ${filteredListings.length}`)
+      return limitedListings;
+    } catch (error) {
+      throw new BadRequestException(`Could not fetch basic listings: ${error.message}`);
+    }
+  }
+  async getListingsByUserId(userId: string): Promise<Listing[]> {
+    try {
+      //const basicUsers = await this.getBasicUsers();
+      //const basicUsersIds = basicUsers.map((user) => user.id);
+
+      const userListings = await this.prisma.listing.findMany({
+        where: { userId },
+      });
+      Logger.log(`Listing ${userListings.length} found`);
+      Logger.log(`Listings are: ${userListings}`);
+      const filteredListings = userListings;
+      // const filteredListings = userListings;
+      Logger.log(`userListings = ${userListings.length}`);
+      const limitedListings = filteredListings;
+      Logger.log(`filtered listings = ${filteredListings.length}`)
+      return limitedListings;
+    } catch (error) {
+      throw new BadRequestException(`Could not fetch listings By User ID: ${error.message}`);
     }
   }
 
@@ -162,4 +249,14 @@ export class ListingsService {
       rating: listing.rating,
     };
   }
+}
+
+interface UserPartial {
+  id: string;
+  name: string;
+}
+
+interface User {
+  id: string;
+  isPremium: boolean;
 }
