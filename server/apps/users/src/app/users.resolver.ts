@@ -1,6 +1,8 @@
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UsersService } from './users.service';
+import { LimitedUserData } from './types/user.types';
+import { Logger } from '@nestjs/common';
 import {
   ActivationResponse,
   ForgotPasswordResponse,
@@ -17,8 +19,11 @@ import { AuthGuard } from './guards/auth.guard';
 @Resolver('User')
 // @UseFilters()
 export class UsersResolver {
-  constructor(private readonly userService: UsersService) {}
-
+  constructor(private readonly userService: UsersService) { }
+  @Query(() => String) // Return type is now String
+  async hello(): Promise<string> {
+    return 'Hello from Users Resolver!';
+  }
   @Mutation(() => RegisterResponse)
   async register(
     @Args('registerDto') registerDto: RegisterDto,
@@ -81,5 +86,42 @@ export class UsersResolver {
   @Query(() => [User])
   async getUser() {
     return this.userService.getUsers();
+  }
+
+  @Query(() => User, { nullable: true }) // Allow null for non-existent users
+  async getUserById(
+    @Args('id') id: string,
+  ): Promise<User | null> {
+    return await this.userService.findOne(id);
+  }
+  @Query(() => User, { nullable: true }) // Allow null for non-existent users
+  async getUserByEmail(
+    @Args('email') email: string,
+  ): Promise<User | null> {
+    return await this.userService.getUserByEmail(email);
+  }
+  @Query(() => [LimitedUserData])
+  async getPremiumUsers(): Promise<LimitedUserData[]> {
+    try {
+      Logger.log('fetching premium users:');
+      const premiumUsers = await this.userService.getPremiumUsers();
+      return premiumUsers;
+    } catch (error) {
+      // Handle errors appropriately, e.g., log the error and throw a specific exception
+      console.error('Error fetching premium users:', error);
+      throw new Error('An error occurred while retrieving premium users');
+    }
+  }
+  @Query(() => [LimitedUserData])
+  async getBasicUsers(): Promise<LimitedUserData[]> {
+    try {
+      Logger.log('fetching BasicUsers users:');
+      const BasicUsers = await this.userService.getBasicUsers();
+      return BasicUsers;
+    } catch (error) {
+      // Handle errors appropriately, e.g., log the error and throw a specific exception
+      console.error('Error fetching BasicUsers users:', error);
+      throw new Error('An error occurred while retrieving BasicUsers users');
+    }
   }
 }
