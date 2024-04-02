@@ -37,7 +37,7 @@ export class User {
   address: string;
 
   @Field({ nullable: true })
-  phone_number: number;
+  phoneNumber: number;
 
   @Field()
   role: string;
@@ -47,4 +47,7 @@ export class User {
 
   @Field()
   updatedAt: Date;
+
+  @Field()
+  isPremium: boolean;
 }
