@@ -4,7 +4,7 @@ import axios from "axios";
 import { AiFillGithub } from "react-icons/ai";
 import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
-import { useCallback, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   FieldValues,
@@ -14,18 +14,26 @@ import {
 
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
-import useActivationModal from "@/app/hooks/useActivationModal";
 
 import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
-import ActivationModal from "./ActivationModal";
+import useActivationModal from "@/app/hooks/useActivationModal";
+import { SafeUser } from "@/app/types";
+import { useActivationToken } from "@/app/hooks/useActivationToken";
 
-const RegisterModal = () => {
+interface RegisterModalProps {
+  onUpdate: (data: string) => void
+}
+
+const RegisterModal = ({
+
+}) => {
   const registerModal = useRegisterModal();
-  const loginModal = useLoginModal();
   const activationModal = useActivationModal();
+  const activationTokenHook = useActivationToken();
+  const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -44,10 +52,22 @@ const RegisterModal = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
-
+    console.log("data in Registration = ");
+    console.log(data);
     axios.post('/api/register', data)
-      .then((response) => {
-        // toast.success('Registered!');
+      .then((res) => {
+        //toast.success('Registered!');
+        console.log(res);
+
+        activationTokenHook.activationToken = (res.data);
+        console.log("actii = " + activationTokenHook.activationToken);
+        // Modify the object
+        //setActivationToken((prev) => (res.data.activationToken));
+        // currentUser = {
+        //   ...currentUser,
+        //   id: 'test',
+        //   activationToken: res.data.activationToken
+        // }
         registerModal.onClose();
         activationModal.onOpen();
       })
@@ -57,12 +77,6 @@ const RegisterModal = () => {
       .finally(() => {
         setIsLoading(false);
       })
-  }
-  const handleButton = () => {
-    if (isLoading) {
-      return;
-    }
-
   }
 
   const onToggle = useCallback(() => {
@@ -109,11 +123,6 @@ const RegisterModal = () => {
         register={register}
         errors={errors}
         required
-      />
-      <Button
-        disabled={false}
-        label={'Get Otp'}
-        onClick={handleButton}
       />
     </div>
   )
