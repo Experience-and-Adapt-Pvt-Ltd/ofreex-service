@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 
 import Button from "../Button";
-import ActivationModal from "./ActivationModal";
 
 interface ModalProps {
   isOpen?: boolean;
@@ -187,7 +186,7 @@ const Modal: React.FC<ModalProps> = ({
           </div>
         </div>
       </div>
-      <ActivationModal activationToken={data.activationToken} />
+      {/* <ActivationModal activationToken={data.activationToken} /> */}
     </>
   );
 }
