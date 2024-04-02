@@ -15,14 +15,14 @@ export async function POST(
     phoneNumber,
   } = body;
 
-  const hashedPassword = await bcrypt.hash(password, 15);
+  //const hashedPassword = await bcrypt.hash(password, 15);
   const { data: register } = await axios.post(
     `http://localhost:4001/graphql`, {
     query: `mutation register {
   register(registerDto:{
     name: "${name}",
     email: "${email}",
-    password: "${hashedPassword}",
+    password: "${password}",
     phoneNumber: ${phoneNumber},
     isPremium: false
   }
@@ -33,8 +33,9 @@ export async function POST(
 `
   }
   )
+  console.log(register);
   const { activation_token } = register.data.register;
-  
+
   //  const user = await prisma.user.create({
   //   data: {
   //     email,
