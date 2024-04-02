@@ -41,6 +41,6 @@ export class CreateListingDto {
   imageUrls: string[];
 
   @IsNotEmpty()
-  @IsNumber()
-  userId: number;
+  @IsString()
+  userId: string;
 }
