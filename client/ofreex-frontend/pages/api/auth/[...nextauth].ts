@@ -51,7 +51,8 @@ export const authOptions: AuthOptions = {
         }
         )
         const user = getUserByEmail.data.getUserByEmail;
-
+        console.log("user")
+        console.log(user)
         if (!user || !user?.password) {
           throw new Error('Invalid credentials');
         }
@@ -61,11 +62,12 @@ export const authOptions: AuthOptions = {
           credentials.password,
           user.password
         );
-
+        console.log("isCorrected");
+        console.log(isCorrectPassword);
         if (!isCorrectPassword) {
           throw new Error('Invalid credentials');
         }
-
+        console.log("saiodfjisafjaisfdjisadjfaisfdjaisdf");
         return user;
       }
     })
