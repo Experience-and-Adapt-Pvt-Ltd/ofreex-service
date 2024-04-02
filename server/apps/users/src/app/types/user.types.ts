@@ -66,3 +66,11 @@ export class ResetPasswordResponse {
   @Field(() => ErrorType, { nullable: true })
   error?: ErrorType;
 }
+@ObjectType()
+export class LimitedUserData {
+  @Field()
+  id: string; // Assuming user ID is a string
+
+  @Field()
+  isPremium: boolean;
+}
