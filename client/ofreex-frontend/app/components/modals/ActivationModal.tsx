@@ -21,13 +21,16 @@ import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
+import { useActivationToken } from "@/app/hooks/useActivationToken";
+import axios from "axios";
 
 interface ActivationModalProps {
   activationToken: string;
 }
-const ActivationModal: React.FC<ActivationModalProps> = ({activationToken}) => {
+const ActivationModal = () => {
   const router = useRouter();
   const activationModal = useActivisionModal();
+  const activationTokenHook = useActivationToken();
   const loginModal = useLoginModal();
   const registerModal = useRegisterModal();
   const [isLoading, setIsLoading] = useState(false);
@@ -47,25 +50,27 @@ const ActivationModal: React.FC<ActivationModalProps> = ({activationToken}) => {
 
   const onSubmit: SubmitHandler<FieldValues> =
     (data) => {
-      setIsLoading(true);
+      console.log("activation Token = " + activationTokenHook.activationToken);
+      console.log("data in Activation = ");
 
-      signIn('credentials', {
+      data = {
         ...data,
-        redirect: false,
-      })
-        .then((callback) => {
+        activationToken: activationTokenHook.activationToken
+      }
+      console.log(data);
+      axios.post('/api/activate', data)
+        .then((res) => {
+          toast.success('Registered!');
+          console.log(res);
+          activationModal.onClose();
+          loginModal.onOpen();
+        })
+        .catch((error) => {
+          toast.error(error);
+        })
+        .finally(() => {
           setIsLoading(false);
-
-          if (callback?.ok) {
-            toast.success('Logged in');
-            router.refresh();
-            loginModal.onClose();
-          }
-
-          if (callback?.error) {
-            toast.error(callback.error);
-          }
-        });
+        })
     }
 
   const bodyContent = (
