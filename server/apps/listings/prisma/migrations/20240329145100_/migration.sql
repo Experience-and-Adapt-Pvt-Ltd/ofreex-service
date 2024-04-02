@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Listing" ALTER COLUMN "userId" SET DATA TYPE TEXT;
