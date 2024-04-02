@@ -1,5 +1,6 @@
-import { Nunito } from 'next/font/google'
 
+import { Nunito } from 'next/font/google'
+import { useActivationToken } from './hooks/useActivationToken';
 import Navbar from '@/app/components/navbar/Navbar';
 import LoginModal from '@/app/components/modals/LoginModal';
 import RegisterModal from '@/app/components/modals/RegisterModal';
@@ -11,6 +12,8 @@ import ToasterProvider from '@/app/providers/ToasterProvider';
 import './globals.css'
 import ClientOnly from './components/ClientOnly';
 import getCurrentUser from './actions/getCurrentUser';
+import ActivationModal from './components/modals/ActivationModal';
+
 
 export const metadata = {
   title: 'OfreeX',
@@ -27,7 +30,11 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const currentUser = await getCurrentUser();
-  console.log("In RootLayout " + currentUser);
+  //const { activationToken, onUpdate } = useActivationToken();
+  //const activationToken = "";
+  //const { activationToken, setActivationToken } = getActivationStates();
+  console.log("In RootLayout ");
+  console.log(currentUser);
   return (
     <html lang="en">
       <body>
@@ -35,6 +42,7 @@ export default async function RootLayout({
           <ToasterProvider />
           <LoginModal />
           <RegisterModal />
+          <ActivationModal />
           <SearchModal />
           <RentModal />
           <Navbar currentUser={currentUser} />
