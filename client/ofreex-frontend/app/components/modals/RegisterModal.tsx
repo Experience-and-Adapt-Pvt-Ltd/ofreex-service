@@ -1,16 +1,12 @@
-'use client';
+"use client";
 
 import axios from "axios";
 import { AiFillGithub } from "react-icons/ai";
 import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
-import {
-  FieldValues,
-  SubmitHandler,
-  useForm
-} from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
@@ -20,16 +16,13 @@ import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
 import useActivationModal from "@/app/hooks/useActivationModal";
-import { SafeUser } from "@/app/types";
 import { useActivationToken } from "@/app/hooks/useActivationToken";
 
 interface RegisterModalProps {
-  onUpdate: (data: string) => void
+  onUpdate: (data: string) => void;
 }
 
-const RegisterModal = ({
-
-}) => {
+const RegisterModal = ({}) => {
   const registerModal = useRegisterModal();
   const activationModal = useActivationModal();
   const activationTokenHook = useActivationToken();
@@ -39,14 +32,12 @@ const RegisterModal = ({
   const {
     register,
     handleSubmit,
-    formState: {
-      errors,
-    },
+    formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: '',
-      email: '',
-      password: ''
+      name: "",
+      email: "",
+      password: "",
     },
   });
 
@@ -54,12 +45,13 @@ const RegisterModal = ({
     setIsLoading(true);
     console.log("data in Registration = ");
     console.log(data);
-    axios.post('/api/register', data)
+    axios
+      .post("/api/register", data)
       .then((res) => {
         //toast.success('Registered!');
-        console.log(res);
+        // console.log(res);
 
-        activationTokenHook.activationToken = (res.data);
+        activationTokenHook.activationToken = res.data;
         console.log("actii = " + activationTokenHook.activationToken);
         // Modify the object
         //setActivationToken((prev) => (res.data.activationToken));
@@ -72,24 +64,22 @@ const RegisterModal = ({
         activationModal.onOpen();
       })
       .catch((error) => {
-        toast.error(error);
+        const errorMessage = error.response?.data?.message || 'Unexpected error occurred';
+        toast.error(errorMessage);
       })
       .finally(() => {
         setIsLoading(false);
-      })
-  }
+      });
+  };
 
   const onToggle = useCallback(() => {
     registerModal.onClose();
     loginModal.onOpen();
-  }, [registerModal, loginModal])
+  }, [registerModal, loginModal]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading
-        title="Welcome to OfreeX"
-        subtitle="Create an account!"
-      />
+      <Heading title="Welcome to OfreeX" subtitle="Create an account!" />
       <Input
         id="email"
         label="Email"
@@ -125,7 +115,7 @@ const RegisterModal = ({
         required
       />
     </div>
-  )
+  );
 
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
@@ -134,13 +124,13 @@ const RegisterModal = ({
         outline
         label="Continue with Google"
         icon={FcGoogle}
-        onClick={() => signIn('google')}
+        onClick={() => signIn("google")}
       />
       <Button
         outline
         label="Continue with Github"
         icon={AiFillGithub}
-        onClick={() => signIn('github')}
+        onClick={() => signIn("github")}
       />
       <div
         className="
@@ -150,7 +140,8 @@ const RegisterModal = ({
           font-light
         "
       >
-        <p>Already have an account?
+        <p>
+          Already have an account?
           <span
             onClick={onToggle}
             className="
@@ -158,11 +149,14 @@ const RegisterModal = ({
               cursor-pointer 
               hover:underline
             "
-          > Log in</span>
+          >
+            {" "}
+            Log in
+          </span>
         </p>
       </div>
     </div>
-  )
+  );
 
   return (
     <Modal
@@ -176,6 +170,6 @@ const RegisterModal = ({
       footer={footerContent}
     />
   );
-}
+};
 
 export default RegisterModal;
