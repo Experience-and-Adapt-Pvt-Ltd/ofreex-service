@@ -42,5 +42,9 @@ export class CreateListingDto {
 
   @IsNotEmpty()
   @IsString()
+  gstNumber: string;
+
+  @IsNotEmpty()
+  @IsString()
   userId: string;
 }
