@@ -21,6 +21,7 @@ export async function POST(
     category,
     location,
     price,
+    gstNumber,
   } = body;
 
   Object.keys(body).forEach((value: any) => {
@@ -40,23 +41,9 @@ export async function POST(
     price: parseInt(price, 10),
     userId: currentUser.id,
     postedAt: "2024-04-01T13:12:04.833Z",
-    rating: "0",
+    gstNumber,
   }
   )
-  // const listing = await prisma.listing.create({
-  //   data: {
-  //     title,
-  //     description,
-  //     imageSrc,
-  //     category,
-  //     roomCount,
-  //     bathroomCount,
-  //     guestCount,
-  //     locationValue: location.value,
-  //     price: parseInt(price, 10),
-  //     userId: currentUser.id
-  //   }
-  // });
 
   return NextResponse.json(listing);
 }
