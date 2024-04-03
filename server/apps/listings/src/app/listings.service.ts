@@ -51,6 +51,7 @@ export class ListingsService {
           state: createListingDto.state,
           imageUrls: createListingDto.imageUrls,
           userId: createListingDto.userId,
+          gstNumber: createListingDto.gstNumber,
           postedAt: new Date(),
           rating: createListingDto.rating,
         },
@@ -188,10 +189,10 @@ export class ListingsService {
   async getListings(limit: number = 5, category?: string, subCategory?: string): Promise<Listing[]> {
     try {
       const basicUsers = await this.getBasicUsers();
-      const basicUsersIds = basicUsers.map((user) => user.id);
-
+      const basicUserIds = basicUsers.map((user) => user.id);
+  
       const userListings = await this.prisma.listing.findMany({
-        where: { userId: { in: basicUsersIds } },
+        where: { userId: { in: basicUserIds } },
       });
       Logger.log(`Listing ${userListings.length} found`);
       Logger.log(`Listings are: ${userListings}`);
@@ -200,13 +201,13 @@ export class ListingsService {
           (listing) => listing.category === category && listing.subCategory === subCategory
         )
         : userListings;
-      // const filteredListings = userListings;
-      Logger.log(`userListings = ${userListings.length}`);
+      // Sort and limit the listings as necessary
       if (limit != 1 && filteredListings.length != 1)
         filteredListings.sort((a, b) => b.rating - a.rating);
       const limitedListings = filteredListings.slice(0, limit);
-      Logger.log(`filtered listings = ${filteredListings.length}`)
-      return limitedListings;
+      Logger.log(`filtered listings = ${filteredListings.length}`);
+      // Convert each item to match the Listing type
+      return limitedListings.map(this.convertToDto);
     } catch (error) {
       throw new BadRequestException(`Could not fetch basic listings: ${error.message}`);
     }
@@ -221,11 +222,10 @@ export class ListingsService {
       });
       Logger.log(`Listing ${userListings.length} found`);
       Logger.log(`Listings are: ${userListings}`);
-      const filteredListings = userListings;
-      // const filteredListings = userListings;
+      // Convert each PrismaListing object to Listing object
+      const limitedListings = userListings.map(this.convertToDto);
       Logger.log(`userListings = ${userListings.length}`);
-      const limitedListings = filteredListings;
-      Logger.log(`filtered listings = ${filteredListings.length}`)
+      Logger.log(`filtered listings = ${limitedListings.length}`);
       return limitedListings;
     } catch (error) {
       throw new BadRequestException(`Could not fetch listings By User ID: ${error.message}`);
@@ -244,6 +244,7 @@ export class ListingsService {
       city: listing.city,
       state: listing.state,
       imageUrls: listing.imageUrls,
+      gstNumber: listing.gstNumber,
       userId: listing.userId,
       postedAt: listing.postedAt,
       rating: listing.rating,
