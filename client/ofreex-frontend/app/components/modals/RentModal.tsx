@@ -28,7 +28,8 @@ enum STEPS {
   // INFO = 2,
   IMAGES = 2,
   DESCRIPTION = 3,
-  PRICE = 4,
+  GSTNUMBER = 4,
+  PRICE = 5,
 }
 
 const RentModal = () => {
@@ -58,6 +59,7 @@ const RentModal = () => {
       price: 1,
       title: '',
       description: '',
+      gstNumber: '',
     }
   });
 
@@ -170,6 +172,26 @@ const RentModal = () => {
         <Map center={location?.latlng} />
       </div>
     );
+  }
+
+  if(step === STEPS.GSTNUMBER){
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="GST Number"
+          subtitle="Enter your GST Number"
+        />
+        <Input
+          id="gstNumber"
+          label="gstNumber"
+          type="text"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    )
   }
 
   if (step === STEPS.IMAGES) {
