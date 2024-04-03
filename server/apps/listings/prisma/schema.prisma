@@ -19,6 +19,7 @@ model Listing {
   city        String
   state       String?
   imageUrls   String[]
+  gstNumber   String
   userId      String   @default(uuid())
   postedAt    DateTime
   rating      Float?
