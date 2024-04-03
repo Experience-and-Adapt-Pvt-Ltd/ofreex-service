@@ -11,6 +11,7 @@ export interface Listing {
   city: string;
   state?: string;
   imageUrls: string[];
+  gstNumber: string
   userId: string;
   postedAt: Date;
   rating?: number;
