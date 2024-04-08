@@ -16,16 +16,23 @@ import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
 import useActivationModal from "@/app/hooks/useActivationModal";
+import useSellerModal from "@/app/hooks/useSellerModal";
+import useBankDetailsModal from "@/app/hooks/useBankDetailsModal";
 import { useActivationToken } from "@/app/hooks/useActivationToken";
+import { useData } from "@/app/hooks/useData";
+import useSellerActivationModal from "@/app/hooks/useSellerActivationModal";
 
 interface RegisterModalProps {
   onUpdate: (data: string) => void;
 }
 
-const RegisterModal = ({}) => {
+const BankDetailsModal = ({ }) => {
   const registerModal = useRegisterModal();
-  const activationModal = useActivationModal();
+  const sellerModal = useSellerModal();
+  const bankDetailsModal = useBankDetailsModal();
+  const sellerActivationModal = useSellerActivationModal();
   const activationTokenHook = useActivationToken();
+  const dataHook = useData();
   const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,24 +42,27 @@ const RegisterModal = ({}) => {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
+      bankName: "",
+      accountNumber: "",
+      ifsc: "",
     },
   });
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
-    console.log("data in Registration = ");
+    data = {
+      ...data,
+      ...dataHook.obj
+    }
     console.log(data);
     axios
-      .post("/api/register", data)
+      .post("/api/registerSeller", data)
       .then((res) => {
         //toast.success('Registered!');
         // console.log(res);
 
         activationTokenHook.activationToken = res.data;
-        console.log("actii = " + activationTokenHook.activationToken);
+        //console.log("actii = " + activationTokenHook.activationToken);
         // Modify the object
         //setActivationToken((prev) => (res.data.activationToken));
         // currentUser = {
@@ -60,8 +70,8 @@ const RegisterModal = ({}) => {
         //   id: 'test',
         //   activationToken: res.data.activationToken
         // }
-        registerModal.onClose();
-        activationModal.onOpen();
+        bankDetailsModal.onClose();
+        sellerActivationModal.onOpen();
       })
       .catch((error) => {
         const errorMessage = error.response?.data?.message || 'Email Already Exist Kindly login Please';
@@ -79,41 +89,34 @@ const RegisterModal = ({}) => {
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading title="Welcome to OfreeX" subtitle="Create an account!" />
+      <Heading title="Seller Registration" subtitle="Become a Seller" />
+
       <Input
-        id="email"
-        label="Email"
+        id="bankName"
+        label="Bank Name"
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
       <Input
-        id="name"
-        label="Name"
+        id="accountNumber"
+        label="Account Number"
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
+
       <Input
-        id="password"
-        label="Password"
-        type="password"
+        id="ifsc"
+        label="IFSC Code"
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
-      <Input
-        id="phoneNumber"
-        label="phoneNumber"
-        type="phoneNumber"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-      />
+
     </div>
   );
 
@@ -125,12 +128,6 @@ const RegisterModal = ({}) => {
         label="Continue with Google"
         icon={FcGoogle}
         onClick={() => signIn("google")}
-      />
-      <Button
-        outline
-        label="Continue with Github"
-        icon={AiFillGithub}
-        onClick={() => signIn("github")}
       />
       <div
         className="
@@ -161,10 +158,10 @@ const RegisterModal = ({}) => {
   return (
     <Modal
       disabled={isLoading}
-      isOpen={registerModal.isOpen}
+      isOpen={bankDetailsModal.isOpen}
       title="Register"
       actionLabel="Continue"
-      onClose={registerModal.onClose}
+      onClose={bankDetailsModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
@@ -172,4 +169,4 @@ const RegisterModal = ({}) => {
   );
 };
 
-export default RegisterModal;
+export default BankDetailsModal;

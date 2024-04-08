@@ -22,14 +22,16 @@ import Heading from "../Heading";
 import Button from "../Button";
 import { useActivationToken } from "@/app/hooks/useActivationToken";
 import axios from "axios";
+import useSellerActivationModal from "@/app/hooks/useSellerActivationModal";
 
 interface ActivationModalProps {
   activationToken: string;
 }
-const ActivationModal = () => {
+const SellerActivationModal = () => {
   const router = useRouter();
   const activationModal = useActivisionModal();
   const activationTokenHook = useActivationToken();
+  const sellerActivationModal = useSellerActivationModal();
   const loginModal = useLoginModal();
   const registerModal = useRegisterModal();
   const [isLoading, setIsLoading] = useState(false);
@@ -50,19 +52,18 @@ const ActivationModal = () => {
   const onSubmit: SubmitHandler<FieldValues> =
     (data) => {
       console.log("activation Token = " + activationTokenHook.activationToken);
-      console.log("data in Activation = ");
+      console.log("data in ActivationSeller = ");
 
       data = {
         ...data,
         activationToken: activationTokenHook.activationToken
       }
       console.log(data);
-      axios.post('/api/activate', data)
+      axios.post('/api/activateSeller', data)
         .then((res) => {
-          toast.success('Registered!');
+          toast.success('Seller Registered!');
           console.log(res);
           activationModal.onClose();
-          loginModal.onOpen();
         })
         .catch((error) => {
           toast.error(error);
@@ -132,10 +133,10 @@ const ActivationModal = () => {
   return (
     <Modal
       disabled={isLoading}
-      isOpen={activationModal.isOpen}
+      isOpen={sellerActivationModal.isOpen}
       title="Activate your account"
       actionLabel="Activate"
-      onClose={activationModal.onClose}
+      onClose={sellerActivationModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
@@ -143,4 +144,4 @@ const ActivationModal = () => {
   );
 }
 
-export default ActivationModal;
+export default SellerActivationModal;

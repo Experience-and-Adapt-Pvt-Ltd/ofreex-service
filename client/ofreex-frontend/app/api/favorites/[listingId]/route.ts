@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
+import axios from "axios";
 
 interface IParams {
   listingId?: string;
 }
 
 export async function POST(
-  request: Request, 
+  request: Request,
   { params }: { params: IParams }
 ) {
   const currentUser = await getCurrentUser();
@@ -27,20 +28,31 @@ export async function POST(
 
   favoriteIds.push(listingId);
 
-  const user = await prisma.user.update({
-    where: {
-      id: currentUser.id
-    },
-    data: {
+  const { data } = await axios.post(
+    `http://localhost:4001/graphql`, {
+    query: `mutation UpdateUserEmail {
+  updateUser(id: "${currentUser.id}", updateDto: {
+    favoriteIds: ${favoriteIds}
+  }) {
+    user {
+      id
+      name
+      email
+      phoneNumber
+      isPremium
       favoriteIds
     }
-  });
+  }
+}`
+  }
+  )
+  const user = data.getUserByEmail.data.getUserByEmail;
 
   return NextResponse.json(user);
 }
 
 export async function DELETE(
-  request: Request, 
+  request: Request,
   { params }: { params: IParams }
 ) {
   const currentUser = await getCurrentUser();
@@ -59,14 +71,25 @@ export async function DELETE(
 
   favoriteIds = favoriteIds.filter((id) => id !== listingId);
 
-  const user = await prisma.user.update({
-    where: {
-      id: currentUser.id
-    },
-    data: {
+  const { data } = await axios.post(
+    `http://localhost:4001/graphql`, {
+    query: `mutation UpdateUserEmail {
+  updateUser(id: "${currentUser.id}", updateDto: {
+    favoriteIds: ${favoriteIds}
+  }) {
+    user {
+      id
+      name
+      email
+      phoneNumber
+      isPremium
       favoriteIds
     }
-  });
+  }
+}`
+  }
+  )
+  const user = data.getUserByEmail.data.getUserByEmail;
 
   return NextResponse.json(user);
 }

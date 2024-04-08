@@ -12,14 +12,69 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ListingsService } from './listings.service';
-import { Listing } from './interface/listings.interface';
-import { CreateListingDto } from './dto/create_listing.dto';
+import { Category, Listing } from './interface/listings.interface';
+import { CreateCategoryDto, CreateListingDto } from './dto/create_listing.dto';
 import { LimitedUserData } from './types/listings.types';
 import { Logger } from '@nestjs/common';
 
 @Controller('listings')
 export class ListingsController {
   constructor(private readonly listingService: ListingsService) { }
+
+  /////////////////////////////Catergory //////////////////////////////////////////////////
+
+
+  @Get('getCategories')
+  //get limit parameter from body
+  async getCategories(): Promise<Category[]> {
+    try {
+      return await this.listingService.getCategories();
+    } catch (error) {
+      throw new BadRequestException(`Could not fetch categories: ${error.message}`);
+    }
+  }
+
+
+  @Post('createCategory')
+  async createCategory(@Body() createCategoryDto: CreateCategoryDto): Promise<Category> {
+    try {
+      return this.listingService.createCategory(createCategoryDto);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
+  }
+
+  @Patch('updateCategory/:label')
+  async updateCategory(@Param('label') label: string, @Body() updateCategoryDto: Partial<CreateCategoryDto>): Promise<Category> {
+    try {
+      return this.listingService.updateCategory(label, updateCategoryDto);
+    } catch (error) {
+      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
+  }
+
+  @Delete('deleteCategory/:label')
+  async removeCategory(@Param('label') label: string): Promise<void> {
+    try {
+      await this.listingService.removeCategory(label);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
+  }
+
+  /////////////////////////////Catergory //////////////////////////////////////////////////
   @Post('getListings')
   //get limit parameter from body
   async getListings(@Body() data): Promise<Listing[]> {
@@ -29,7 +84,15 @@ export class ListingsController {
       throw new BadRequestException(`Could not fetch premium listings: ${error.message}`);
     }
   }
-
+  @Post('favListings')
+  //get limit parameter from body
+  async getFavListings(@Body() data): Promise<Listing[]> {
+    try {
+      return await this.listingService.getFavoriteListings(data.userId);
+    } catch (error) {
+      throw new BadRequestException(`Could not fetch premium listings: ${error.message}`);
+    }
+  }
   @Post('getListingsByUserId')
   //get limit parameter from body
   async getListingsByUserId(@Body() data): Promise<Listing[]> {
@@ -132,9 +195,9 @@ export class ListingsController {
   }
 
   @Get('category/:category')
-  async findListingsByCategory(@Param('category') category: string, @Query('subCategory') subCategory?: string, @Query('limit') limit: number = 10): Promise<Listing[]> {
+  async findListingsByCategory(@Param('category') category: string, @Query('subCategory') subCategory?: string): Promise<Listing[]> {
     try {
-      return this.listingService.findListingsByCategory(category, subCategory, limit);
+      return this.listingService.findListingsByCategory(category, subCategory,);
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;

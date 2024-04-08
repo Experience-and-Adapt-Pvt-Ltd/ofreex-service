@@ -41,6 +41,7 @@ export async function POST(
     price: parseInt(price, 10),
     userId: currentUser.id,
     postedAt: "2024-04-01T13:12:04.833Z",
+    rating: 0.0,
     gstNumber,
   }
   )

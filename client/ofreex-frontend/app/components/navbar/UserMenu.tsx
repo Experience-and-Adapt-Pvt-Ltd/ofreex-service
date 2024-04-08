@@ -8,31 +8,42 @@ import { useRouter } from "next/navigation";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useRentModal from "@/app/hooks/useRentModal";
-import { SafeUser } from "@/app/types";
+import { SafeSeller, SafeUser } from "@/app/types";
 
 import MenuItem from "./MenuItem";
 import Avatar from "../Avatar";
+import useSellerModal from "@/app/hooks/useSellerModal";
+import getCurrentSeller from "@/app/actions/getCurrentSeller";
 
 interface UserMenuProps {
   currentUser?: SafeUser | null
+  currentSeller?: SafeSeller | null
 }
 
 const UserMenu: React.FC<UserMenuProps> = ({
-  currentUser
+  currentUser,
+  currentSeller
 }) => {
   const router = useRouter();
 
   const loginModal = useLoginModal();
   const registerModal = useRegisterModal();
+  const sellerModal = useSellerModal();
   const rentModal = useRentModal();
 
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value);
-    console.log("In UserMenu " + currentUser);
   }, [currentUser]);
 
+  const onSeller = useCallback(() => {
+    if (!currentUser) {
+      return loginModal.onOpen();
+    }
+
+    sellerModal.onOpen();
+  }, [loginModal, sellerModal, currentUser]);
   const onRent = useCallback(() => {
     if (!currentUser) {
       return loginModal.onOpen();
@@ -44,7 +55,23 @@ const UserMenu: React.FC<UserMenuProps> = ({
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
-        <div
+        {!currentSeller ? <div
+          onClick={onSeller}
+          className="
+          hidden
+          md:block
+          text-sm 
+          font-semibold 
+          py-3 
+          px-4 
+          rounded-full 
+          dark:hover:bg-gray-900
+          transition 
+          cursor-pointer
+          "
+        >
+          Become a Seller!!
+        </div> : <div
           onClick={onRent}
           className="
           hidden
@@ -59,8 +86,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
           cursor-pointer
           "
         >
-          Add new Listing
-        </div>
+          Add a Listing!!
+        </div>}
         <div
           onClick={toggleOpen}
           className="
@@ -124,10 +151,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                   label="All my Listings"
                   onClick={() => router.push('/properties')}
                 />
-                <MenuItem
-                  label="Add new Listing"
-                  onClick={rentModal.onOpen}
-                />
+                {currentSeller ? <MenuItem label="Add new Listing" onClick={rentModal.onOpen} /> : ""}
                 <hr />
                 <MenuItem
                   label="Logout"

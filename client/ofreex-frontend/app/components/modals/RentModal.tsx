@@ -104,7 +104,7 @@ const RentModal = () => {
         rentModal.onClose();
       })
       .catch(() => {
-        toast.error('Something went wrong.');
+        toast.error('you can list upto 3 listing only');
       })
       .finally(() => {
         setIsLoading(false);
@@ -143,7 +143,7 @@ const RentModal = () => {
           overflow-y-auto
         "
       >
-        {categories.map((item) => (
+        {categories ? categories.map((item) => (
           <div key={item.label} className="col-span-1">
             <CategoryInput
               onClick={(category) =>
@@ -153,7 +153,7 @@ const RentModal = () => {
               icon={item.icon}
             />
           </div>
-        ))}
+        )) : null}
       </div>
     </div>
   )
@@ -174,7 +174,7 @@ const RentModal = () => {
     );
   }
 
-  if(step === STEPS.GSTNUMBER){
+  if (step === STEPS.GSTNUMBER) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading

@@ -18,6 +18,21 @@ export async function DELETE(
     return NextResponse.error();
   }
 
+  //count the number of existing listings for the current user
+  const listingCount = await prisma.listing.count({
+    where: {
+      userId: currentUser.id,
+    }
+  });
+
+  if(listingCount >= 3){
+    return NextResponse.json({
+      message: 'You cannot create more than 3 listings',
+    }, {
+      status: 400
+    })
+  }
+
   const { listingId } = params;
 
   if (!listingId || typeof listingId !== 'string') {
@@ -26,12 +41,6 @@ export async function DELETE(
   let { data: listing } = await axios.delete(
     `http://localhost:4002/listings/${listingId}`,
   )
-  // const listing = await prisma.listing.deleteMany({
-  //   where: {
-  //     id: listingId,
-  //     userId: currentUser.id
-  //   }
-  // });
 
   return NextResponse.json(listing);
 }

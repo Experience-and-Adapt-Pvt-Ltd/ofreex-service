@@ -10,6 +10,18 @@ export default async function getListings(
   params: IListingsParams
 ) {
   try {
+    if (params.category) {
+      const userId = params.userId;
+      let { data: listings } = await axios.get(
+        `http://localhost:4002/listings/category/${params.category}`
+      )
+      const safeListings = listings.map((listing: any) => ({
+        ...listing,
+        // createdAt: listing.postedAt.toISOString(),
+      }));
+
+      return safeListings;
+    }
     if (params.userId) {
       const userId = params.userId;
       let { data: listings } = await axios.post(
@@ -36,67 +48,10 @@ export default async function getListings(
       }
       )
       //append 2 arrays into one
-      premiumListings.map((listing: { title: string; }) => {
-        console.log(listing.title)
-      })
+      // premiumListings.map((listing: { title: string; }) => {
+      //   console.log(listing.title)
+      // })
       listings = [...premiumListings, ...listings];
-      // let query: any = {};
-
-      // if (userId) {
-      //   query.userId = userId;
-      // }
-
-      // if (category) {
-      //   query.category = category;
-      // }
-
-      // if (roomCount) {
-      //   query.roomCount = {
-      //     gte: +roomCount
-      //   }
-      // }
-
-      // if (guestCount) {
-      //   query.guestCount = {
-      //     gte: +guestCount
-      //   }
-      // }
-
-      // if (bathroomCount) {
-      //   query.bathroomCount = {
-      //     gte: +bathroomCount
-      //   }
-      // }
-
-      // if (locationValue) {
-      //   query.locationValue = locationValue;
-      // }
-
-      // if (startDate && endDate) {
-      //   query.NOT = {
-      //     reservations: {
-      //       some: {
-      //         OR: [
-      //           {
-      //             endDate: { gte: startDate },
-      //             startDate: { lte: startDate }
-      //           },
-      //           {
-      //             startDate: { lte: endDate },
-      //             endDate: { gte: endDate }
-      //           }
-      //         ]
-      //       }
-      //     }
-      //   }
-      // }
-
-      // const listings = await prisma.listing?.findMany({
-      //   where: query,
-      //   orderBy: {
-      //     createdAt: 'desc'
-      //   }
-      // });
 
       const safeListings = listings.map((listing: any) => ({
         ...listing,

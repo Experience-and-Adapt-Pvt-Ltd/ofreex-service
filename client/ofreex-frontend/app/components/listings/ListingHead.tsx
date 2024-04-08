@@ -12,7 +12,7 @@ interface ListingHeadProps {
   title: string;
   locationValue: string;
   imageUrls: string[];
-  id: number;
+  id: string;
   currentUser?: SafeUser | null
 }
 

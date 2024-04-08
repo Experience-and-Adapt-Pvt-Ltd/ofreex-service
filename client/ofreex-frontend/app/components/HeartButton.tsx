@@ -8,7 +8,7 @@ import { SafeUser } from "@/app/types";
 import ClientOnly from "./ClientOnly";
 
 interface HeartButtonProps {
-  listingId: number
+  listingId: string
   currentUser?: SafeUser | null
 }
 

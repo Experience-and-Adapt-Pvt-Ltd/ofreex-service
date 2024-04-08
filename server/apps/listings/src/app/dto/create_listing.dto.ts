@@ -39,12 +39,22 @@ export class CreateListingDto {
 
   @IsArray()
   imageUrls: string[];
-
-  @IsNotEmpty()
-  @IsString()
-  gstNumber: string;
-
+  
   @IsNotEmpty()
   @IsString()
   userId: string;
+}
+export class CreateCategoryDto {
+  @IsNotEmpty()
+  @IsString()
+  label: string;
+
+  @IsNotEmpty()
+  @IsString()
+  description: string;
+
+  @IsOptional()
+  @IsString()
+  icon: string;
+
 }

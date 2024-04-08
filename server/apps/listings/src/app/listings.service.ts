@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException, HttpStatus, Logger } from '@nestjs/common';
-import { PrismaClient, Listing as PrismaListing } from '../../node_modules/.prisma/client';
-import { GetBasicUsersResponse, GetPremiumUsersResponse, Listing } from './interface/listings.interface';
-import { CreateListingDto } from './dto/create_listing.dto';
+import { PrismaClient, Listing as PrismaListing, Category as PrismaCategory } from '../../node_modules/.prisma/client';
+import { Category, GetBasicUsersResponse, GetFavIdsResponse, GetPremiumUsersResponse, Listing } from './interface/listings.interface';
+import { CreateCategoryDto, CreateListingDto } from './dto/create_listing.dto';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { LimitedUserData } from './types/listings.types';
 import { catchError, firstValueFrom, Observable } from 'rxjs';
@@ -10,7 +10,64 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class ListingsService {
   constructor(private readonly prisma: PrismaClient, private readonly httpService: HttpService) { }
+  //////////////////////////////////Category//////////////////////////////////////////////////
+  async getCategories(): Promise<Category[]> {
+    try {
+      const categories: PrismaCategory[] = await this.prisma.category.findMany();
+      return categories.map(this.convertToCategoryDto);
+    } catch (error) {
+      throw new BadRequestException(`Could not fetch Category: ${error.message}`);
+    }
+  }
+  async createCategory(createCategoryDto: CreateCategoryDto): Promise<Category> {
+    try {
+      const createdCategory: PrismaCategory = await this.prisma.category.create({
+        data: {
+          label: createCategoryDto.label,
+          description: createCategoryDto.description,
+          icon: createCategoryDto.icon,
+        },
+      });
+      return this.convertToCategoryDto(createdCategory);
+    } catch (error) {
+      throw new BadRequestException(`Could not create Category: ${error.message}`);
+    }
+  }
 
+  async updateCategory(label: string, updateCategoryDto: Partial<CreateCategoryDto>): Promise<Category> {
+    try {
+      const categoryToUpdate: PrismaCategory | null = await this.prisma.category.findUnique({ where: { label } });
+
+      if (!categoryToUpdate) {
+        throw new NotFoundException(`Category with label ${label} not found`);
+      }
+
+      const updatedCategory: PrismaCategory = await this.prisma.category.update({ where: { label }, data: updateCategoryDto });
+
+      return this.convertToCategoryDto(updatedCategory);
+    } catch (error) {
+      throw new BadRequestException(`Could not update category: ${error.message}`);
+    }
+  }
+
+  async removeCategory(label: string): Promise<void> {
+    try {
+      const categoryToDelete: PrismaCategory | null = await this.prisma.category.findUnique({ where: { label } });
+
+      if (!categoryToDelete) {
+        throw new NotFoundException(`Category with label ${label} not found`);
+      }
+
+      await this.prisma.category.delete({ where: { label } });
+    } catch (error) {
+      throw new BadRequestException(`Could not delete category: ${error.message}`);
+    }
+  }
+
+
+
+
+  //////////////////////////////////Category//////////////////////////////////////////////////
 
   async findAll(): Promise<Listing[]> {
     try {
@@ -39,6 +96,17 @@ export class ListingsService {
 
   async create(createListingDto: CreateListingDto): Promise<Listing> {
     try {
+      const listingCount = await this.prisma.listing.count({
+        where: {
+          userId: createListingDto.userId,
+        }
+      })
+
+      // If the user has 3 or more listings, throw an exception
+      if (listingCount >= 3) {
+        throw new BadRequestException('you are limited to 3 listings.')
+      }
+
       const createdListing: PrismaListing = await this.prisma.listing.create({
         data: {
           title: createListingDto.title,
@@ -51,7 +119,6 @@ export class ListingsService {
           state: createListingDto.state,
           imageUrls: createListingDto.imageUrls,
           userId: createListingDto.userId,
-          gstNumber: createListingDto.gstNumber,
           postedAt: new Date(),
           rating: createListingDto.rating,
         },
@@ -92,21 +159,21 @@ export class ListingsService {
     }
   }
 
-  async findListingsByCategory(category: string, subCategory?: string, limit: number = 10): Promise<Listing[]> {
+  async findListingsByCategory(category: string, subCategory?: string): Promise<Listing[]> {
     try {
       if (!category) {
         throw new BadRequestException('Category is required');
       }
 
-      if (isNaN(limit) || limit <= 0) {
-        throw new BadRequestException('Limit must be a positive number');
-      }
+      // if (isNaN(limit) || limit <= 0) {
+      //   throw new BadRequestException('Limit must be a positive number');
+      // }
 
       let listingsQuery = {
         where: {
           category,
         },
-        take: limit,
+        // take: limit,
       };
 
       if (subCategory) {
@@ -161,6 +228,43 @@ export class ListingsService {
       throw new BadRequestException(`Could not fetch premium listings: ${error.message}`);
     }
   }
+  async getFavoriteIds(id: string): Promise<string[]> {
+    try {
+      Logger.log('fetching favIds in service:');
+      const { data } = await this.httpService
+        .post<GetFavIdsResponse>("http://localhost:4001/graphql", {
+          query: `
+        `,
+        })
+        .toPromise();
+      Logger.log('fetching favIds in service22:', data.data.favoriteIds);
+      const favIds = data.data.favoriteIds;
+      return favIds;
+    } catch (error) {
+      throw new BadRequestException(`Could not fetch premium listings: ${error.message}`);
+    }
+  }
+  async getFavoriteListings(id: string): Promise<Listing[]> {
+    try {
+      const favIdsObjs = await this.getFavoriteIds(id);
+      const favIds = favIdsObjs.map((user) => user);
+
+      const userListings = await this.prisma.listing.findMany({
+        where: { id: { in: favIds } },
+      });
+      Logger.log(`Listing ${userListings.length} found`);
+      Logger.log(`Listings are: ${userListings}`);
+      const filteredListings = userListings;
+      // const filteredListings = userListings;
+      // Logger.log(`${limit}`)
+      filteredListings.sort((a, b) => b.rating - a.rating);
+      const limitedListings = filteredListings;
+      Logger.log(`${filteredListings.length}`)
+      return limitedListings;
+    } catch (error) {
+      throw new BadRequestException(`Could not fetch fav listings: ${error.message}`);
+    }
+  }
   async getPremiumListings(limit: number = 5, category?: string, subCategory?: string): Promise<Listing[]> {
     try {
       const premiumUsers = await this.getPremiumUsers();
@@ -190,7 +294,7 @@ export class ListingsService {
     try {
       const basicUsers = await this.getBasicUsers();
       const basicUserIds = basicUsers.map((user) => user.id);
-  
+
       const userListings = await this.prisma.listing.findMany({
         where: { userId: { in: basicUserIds } },
       });
@@ -244,10 +348,16 @@ export class ListingsService {
       city: listing.city,
       state: listing.state,
       imageUrls: listing.imageUrls,
-      gstNumber: listing.gstNumber,
       userId: listing.userId,
       postedAt: listing.postedAt,
       rating: listing.rating,
+    };
+  }
+  private convertToCategoryDto(category: PrismaCategory): Category {
+    return {
+      label: category.label,
+      description: category.description,
+      icon: category.icon
     };
   }
 }

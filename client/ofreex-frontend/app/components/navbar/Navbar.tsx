@@ -1,4 +1,4 @@
-import { SafeUser } from "@/app/types";
+import { SafeCategory, SafeSeller, SafeUser } from "@/app/types";
 
 import Categories from "./Categories";
 import Container from "../Container";
@@ -8,10 +8,14 @@ import UserMenu from "./UserMenu";
 
 interface NavbarProps {
   currentUser?: SafeUser | null;
+  currentSeller?: SafeSeller | null;
+  categories: SafeCategory[] | null;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
   currentUser,
+  currentSeller,
+  categories
 }) => {
   return (
     <div className="w-full  z-10 shadow-sm">
@@ -35,11 +39,11 @@ const Navbar: React.FC<NavbarProps> = ({
             {/* OFreeX */}
             <Logo />
             {/* <Search /> */}
-            <UserMenu currentUser={currentUser} />
+            <UserMenu currentUser={currentUser} currentSeller={currentSeller} />
           </div>
         </Container>
       </div>
-      <Categories />
+      <Categories categoriesProps={categories} />
     </div>
   );
 }

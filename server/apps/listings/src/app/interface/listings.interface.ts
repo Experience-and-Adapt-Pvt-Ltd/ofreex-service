@@ -11,10 +11,14 @@ export interface Listing {
   city: string;
   state?: string;
   imageUrls: string[];
-  gstNumber: string
   userId: string;
   postedAt: Date;
   rating?: number;
+}
+export interface Category {
+  label: string;
+  description: string;
+  icon: string;
 }
 
 export interface GetPremiumUsersResponse {
@@ -25,5 +29,11 @@ export interface GetPremiumUsersResponse {
 export interface GetBasicUsersResponse {
   data: {
     getBasicUsers: LimitedUserData[];
+  };
+}
+
+export interface GetFavIdsResponse {
+  data: {
+    favoriteIds: string[];
   };
 }

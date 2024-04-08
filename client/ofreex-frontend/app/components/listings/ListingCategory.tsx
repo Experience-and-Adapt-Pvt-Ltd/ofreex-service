@@ -19,7 +19,7 @@ const CategoryView: React.FC<CategoryViewProps> = ({
         {/* <Icon size={40} className="text-neutral-600" /> */}
         <div className="flex flex-col">
           <div
-            className="text-lg font-semibold text-white"
+            className="text-lg font-semibold text-black"
           >
             {label}
           </div>
