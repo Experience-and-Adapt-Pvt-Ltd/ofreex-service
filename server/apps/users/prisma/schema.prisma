@@ -27,6 +27,22 @@ model User {
   updatedAt   DateTime @updatedAt
   isPremium   Boolean  @default(false)
   avatars     Avatars?
+  favoriteIds   String[]
+}
+
+
+model Seller {
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  phoneNumber Float    @unique
+  address     String?
+  isPremium   Boolean  @default(false)
+  GST         String
+  accountNumber String
+  IFSC        String
+  bankName    String
 }
 
 enum Role {

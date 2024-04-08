@@ -7,20 +7,35 @@ import {
   LoginDto,
   RegisterDto,
   ResetPasswordDto,
+  SellerDto,
+  UpdateDto,
 } from './dto/user.dto';
 import { PrismaService } from '../../prisma/Prisma.service';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from './email/email.service';
 import { TokenSender } from './utils/sendToken';
-import { User } from '@prisma/client';
-import { LoginResponse } from './types/user.types';
+import { Seller, User } from '@prisma/client';
+import { FavIDs, LoginResponse, UpdateResponse } from './types/user.types';
 
 interface UserData {
   name: string;
   email: string;
   password: string;
   phoneNumber: number;
+  isPremium: boolean;
+  favoriteIds: string[];
+}
+
+interface SellerData {
+  name: string;
+  email: string;
+  password: string;
+  phoneNumber: number;
+  GST: string;
+  accountNumber: string;
+  bankName: string;
+  IFSC: string;
   isPremium: boolean;
 }
 
@@ -35,7 +50,7 @@ export class UsersService {
 
   //register user
   async register(registerDto: RegisterDto, response: Response) {
-    const { name, email, password, phoneNumber, isPremium } = registerDto;
+    const { name, email, password, phoneNumber, isPremium, favoriteIds } = registerDto;
 
     //checking wether user mail exist or not
     const isEmailExist = await this.prisma.user.findUnique({
@@ -66,7 +81,8 @@ export class UsersService {
       email,
       password: hashedPassword,
       phoneNumber,
-      isPremium
+      isPremium,
+      favoriteIds
     };
 
     const activationToken = await this.createActivationToken(user);
@@ -83,6 +99,139 @@ export class UsersService {
     });
 
     return { activation_token, response };
+  }
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  async sellerRegister(sellerDto: SellerDto, response: Response) {
+    const { name, email, password, phoneNumber, isPremium, GST, accountNumber, bankName, IFSC } = sellerDto;
+
+    //checking wether user mail exist or not
+    const isEmailExist = await this.prisma.seller.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (isEmailExist) {
+      throw new BadRequestException('Email already Exist');
+    }
+
+    const phoneNumberExist = await this.prisma.seller.findUnique({
+      where: {
+        phoneNumber,
+      },
+    });
+
+    if (phoneNumberExist) {
+      throw new BadRequestException('Phone number already Exist');
+    }
+
+    //creating Hashed Password
+    const hashedPassword = await bcrypt.hash(password, 15);
+
+    const user = {
+      name,
+      email,
+      password: hashedPassword,
+      phoneNumber,
+      isPremium,
+      GST,
+      accountNumber,
+      IFSC,
+      bankName
+    };
+
+    const activationToken = await this.createSellerActivationToken(user);
+
+    const activationCode = activationToken.activationCode;
+    const activation_token = activationToken.token;
+
+    await this.emailService.sendMail({
+      email,
+      subject: 'Activate Your Account',
+      template: './activation-mail',
+      name,
+      activationCode,
+    });
+
+    return { activation_token, response };
+  }
+  async createSellerActivationToken(user: SellerData) {
+    //creating 4 digit otp
+    const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
+
+    const token = this.jwtService.sign(
+      {
+        user,
+        activationCode,
+      },
+      {
+        secret: this.configService.get<string>('ACTIVATION_TOKEN'),
+        expiresIn: '48h',
+      },
+    );
+    return { token, activationCode };
+  }
+
+  //activation seller
+  async activateSeller(activationDto: ActivationDto, resposne: Response) {
+    const { activationToken, activationCode } = activationDto;
+
+    const newUser: { user: SellerData; activationCode: string } =
+      this.jwtService.verify(activationToken, {
+        secret: this.configService.get<string>('ACTIVATION_TOKEN'),
+      } as JwtVerifyOptions) as { user: SellerData; activationCode: string };
+
+    if (newUser.activationCode !== activationCode) {
+      throw new BadRequestException('Activation Code is Invalid');
+    }
+
+    const { name, email, password, phoneNumber, isPremium, GST, accountNumber, bankName, IFSC } = newUser.user;
+    //const favoriteIds:string[] = [];
+    const existingUser = await this.prisma.seller.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException('User already Registered with this email');
+    }
+
+    const user = await this.prisma.seller.create({
+      data: {
+        name,
+        email,
+        password,
+        phoneNumber,
+        isPremium,
+        GST,
+        accountNumber,
+        IFSC,
+        bankName
+      },
+    });
+    return { user, resposne };
+  }
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  async update(id: string, updateUserDto: UpdateDto, response: Response) {
+    try {
+      const userToUpdate: User | null = await this.findOne(id);
+
+      if (!userToUpdate) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+
+      const updatedUser: User = await this.prisma.user.update({ where: { id }, data: updateUserDto });
+
+      return { user: updatedUser, response };
+    } catch (error) {
+      throw new BadRequestException(`Could not update User: ${error.message}`);
+    }
   }
 
   async createActivationToken(user: UserData) {
@@ -115,8 +264,8 @@ export class UsersService {
       throw new BadRequestException('Activation Code is Invalid');
     }
 
-    const { name, email, password, phoneNumber, isPremium } = newUser.user;
-
+    const { name, email, password, phoneNumber, isPremium, favoriteIds } = newUser.user;
+    //const favoriteIds:string[] = [];
     const existingUser = await this.prisma.user.findUnique({
       where: {
         email,
@@ -133,7 +282,8 @@ export class UsersService {
         email,
         password,
         phoneNumber,
-        isPremium
+        isPremium,
+        favoriteIds
       },
     });
     return { user, resposne };
@@ -254,7 +404,9 @@ export class UsersService {
   async findOne(id: string): Promise<User> {
     try {
       const user: User | null = await this.prisma.user.findUnique({
-        where: { id },
+        where: {
+          id,
+        },
       });
 
       if (!user) {
@@ -269,6 +421,22 @@ export class UsersService {
   async getUserByEmail(email: string): Promise<User> {
     try {
       const user: User | null = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        throw new NotFoundException(`user with ID ${email} not found`);
+      }
+
+      return user;
+    } catch (error) {
+      throw new BadRequestException(`Could not fetch user: ${error.message}`);
+    }
+  }
+
+  async getSellerByEmail(email: string): Promise<Seller> {
+    try {
+      const user: Seller | null = await this.prisma.seller.findUnique({
         where: { email },
       });
 
@@ -299,6 +467,13 @@ export class UsersService {
       select: { id: true, isPremium: true },
     });
     return BasicUsers;
+  }
+  async getFavoriteIds(id: string): Promise<string[]> {
+    const favIds = await this.prisma.user.findUnique({
+      where: { id: id },
+      select: { favoriteIds: true },
+    });
+    return favIds.favoriteIds;
   }
 }
 export interface LimitedUserData {
