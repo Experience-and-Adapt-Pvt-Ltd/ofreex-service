@@ -13,6 +13,11 @@ import './globals.css'
 import ClientOnly from './components/ClientOnly';
 import getCurrentUser from './actions/getCurrentUser';
 import ActivationModal from './components/modals/ActivationModal';
+import SellerModal from './components/modals/SellerModel';
+import BankDetailsModal from './components/modals/BankDetailsModal';
+import SellerActivationModal from './components/modals/SellerActivationModal';
+import getCurrentSeller from './actions/getCurrentSeller';
+import getCategories from './actions/getCategories';
 
 
 export const metadata = {
@@ -30,11 +35,8 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const currentUser = await getCurrentUser();
-  //const { activationToken, onUpdate } = useActivationToken();
-  //const activationToken = "";
-  //const { activationToken, setActivationToken } = getActivationStates();
-  console.log("In RootLayout ");
-  console.log(currentUser);
+  const currentSeller = await getCurrentSeller();
+  const categories = await getCategories();
   return (
     <html lang="en">
       <body>
@@ -45,7 +47,10 @@ export default async function RootLayout({
           <ActivationModal />
           <SearchModal />
           <RentModal />
-          <Navbar currentUser={currentUser} />
+          <SellerModal />
+          <BankDetailsModal />
+          <SellerActivationModal />
+          <Navbar currentUser={currentUser} currentSeller={currentSeller} categories={categories} />
         </ClientOnly>
         <div className="pb-20">
           {children}
