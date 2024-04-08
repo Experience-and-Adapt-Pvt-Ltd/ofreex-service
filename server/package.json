@@ -7,7 +7,7 @@
   "dependencies": {
     "@apollo/gateway": "^2.7.2",
     "@apollo/server": "^4.10.0",
-    "@apollo/subgraph": "^2.7.1",
+    "@apollo/subgraph": "^2.7.2",
     "@nestjs-modules/mailer": "^1.11.2",
     "@nestjs/apollo": "^12.1.0",
     "@nestjs/axios": "^3.0.2",
