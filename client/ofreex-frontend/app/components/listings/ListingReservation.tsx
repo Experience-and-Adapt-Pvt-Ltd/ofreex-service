@@ -1,81 +1,76 @@
 'use client';
 
-import { Range } from "react-date-range";
-
 import Button from "../Button";
 
 interface ListingReservationProps {
-  //price: number;
-  //dateRange: Range,
   totalPrice: number;
-  //onChangeDate: (value: Range) => void;
-  //onSubmit: () => void;
-  //disabled?: boolean;
-  //disabledDates: Date[];
+  quantity?: number;
+  discount?: number;
 }
 
-const ListingReservation: React.FC<
-  ListingReservationProps
-> = ({
+const ListingReservation: React.FC<ListingReservationProps> = ({
   totalPrice,
-  //onSubmit,
-  //disabled,
-  //disabledDates
+  quantity,
+  discount = 0,
 }) => {
-    return (
-      <div
-        className="
-        rounded-xl 
-        border-[1px]
+
+  let finalDiscount = totalPrice;
+  if(discount !== 0){
+    finalDiscount = totalPrice - (totalPrice * (discount/100));
+  }
+
+  
+  return (
+    <div
+      className="
+      rounded-xl 
+      border-[1px]
       border-neutral-200 
-        overflow-hidden
-      "
-      >
-        {/* <div className="
-      flex flex-row items-center gap-1 p-4">
-        <div className="text-2xl font-semibold">
-          ₹ {price}
-        </div>
-        <div className="font-light text-neutral-600">
-          
-        </div>
-      </div>
-      <hr /> */}
-        {/* <Calendar
-        value={dateRange}
-        disabledDates={disabledDates}
-        onChange={(value) => 
-          onChangeDate(value.selection)}
-      />
-      <hr /> */}
-        <div className="p-4">
-          <Button
-            //disabled={disabled}
-            label="Buy Product"
-            onClick={() => { }}
-          />
-        </div>
-        <hr />
+      overflow-hidden
+    "
+    >
+      <div className="p-4">
         <div
           className="
-          p-4 
-          flex 
-          flex-row 
-          items-center 
-          justify-between
-          font-semibold
-          text-lg
+          mb-4
+          text-sm
+          font-medium
+          text-neutral-600
         "
         >
-          <div>
-            Total
-          </div>
-          <div>
-            $ {totalPrice}
-          </div>
+          Stock available: {quantity}
         </div>
+        
       </div>
-    );
-  }
+      <hr />
+      <div
+        className="
+        p-4 
+        flex 
+        flex-col 
+        space-y-2 
+        font-semibold
+        text-lg
+      "
+      >
+        <div>
+          Price: ₹ {totalPrice}
+        </div>
+        {discount != 0 && (
+          <div>
+            Discount: {discount}%
+          </div>
+        )}
+        <div className="pt-2">
+          Total: ₹ {finalDiscount}
+        </div>
+        <Button
+          label="Buy Product"
+          onClick={() => { }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default ListingReservation;
