@@ -1,35 +1,31 @@
-'use client';
+"use client";
 
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import {
-  FieldValues,
-  SubmitHandler,
-  useForm
-} from 'react-hook-form';
-import dynamic from 'next/dynamic'
-import { useRouter } from 'next/navigation';
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-import useRentModal from '@/app/hooks/useRentModal';
+import useRentModal from "@/app/hooks/useRentModal";
 
 import Modal from "./Modal";
-import Counter from "../inputs/Counter";
-import CategoryInput from '../inputs/CategoryInput';
+import CategoryInput from "../inputs/CategoryInput";
 import CountrySelect from "../inputs/CountrySelect";
-import { categories } from '../navbar/Categories';
-import ImageUpload from '../inputs/ImageUpload';
-import Input from '../inputs/Input';
-import Heading from '../Heading';
+import { categories } from "../navbar/Categories";
+import ImageUpload from "../inputs/ImageUpload";
+import Input from "../inputs/Input";
+import Heading from "../Heading";
 
 enum STEPS {
   CATEGORY = 0,
   LOCATION = 1,
-  // INFO = 2,
   IMAGES = 2,
   DESCRIPTION = 3,
-  GSTNUMBER = 4,
-  PRICE = 5,
+  PRICE = 4,
+  DISCOUNT = 5,
+  QUANTITY = 6,
+  DELIVERY = 7,
 }
 
 const RentModal = () => {
@@ -44,119 +40,149 @@ const RentModal = () => {
     handleSubmit,
     setValue,
     watch,
-    formState: {
-      errors,
-    },
+    formState: { errors },
     reset,
   } = useForm<FieldValues>({
     defaultValues: {
-      category: '',
+      category: "",
       location: null,
-      guestCount: 1,
-      roomCount: 1,
-      bathroomCount: 1,
-      imageSrc: '',
+      imageSrc: "",
       price: 1,
-      title: '',
-      description: '',
-      gstNumber: '',
-    }
+      title: "",
+      description: "",
+      discount: 0,
+      delivery: "",
+      quantity: 1,
+      customCategory: "",
+    },
   });
 
-  const location = watch('location');
-  const category = watch('category');
-  const imageSrc = watch('imageSrc');
+  const [images, setImages] = useState<string[]>([]);
 
-  const Map = useMemo(() => dynamic(() => import('../Map'), {
-    ssr: false
-  }), [location]);
+  const location = watch("location");
+  const category = watch("category");
+  const imageSrc = watch("imageSrc");
 
+  const Map = useMemo(
+    () =>
+      dynamic(() => import("../Map"), {
+        ssr: false,
+      }),
+    [location]
+  );
 
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
       shouldDirty: true,
       shouldTouch: true,
-      shouldValidate: true
-    })
-  }
+      shouldValidate: true,
+    });
+  };
 
   const onBack = () => {
     setStep((value) => value - 1);
-  }
+  };
 
   const onNext = () => {
     setStep((value) => value + 1);
-  }
+  };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    if (step !== STEPS.PRICE) {
+    if (step !== STEPS.DELIVERY) {
       return onNext();
     }
 
     setIsLoading(true);
 
-    axios.post('/api/listings', data)
+    const formattedData = {
+      ...data,
+      discount: parseFloat(data.discount),
+      images: images,
+      category: category === "others" ? "others" : data.category,
+      subCategory: category === "others" ? data.customCategory : undefined,
+    };
+
+    // console.log({ formattedData });
+
+    axios
+      .post("/api/listings", formattedData)
       .then(() => {
-        toast.success('Listing created!');
+        toast.success("Listing created!");
         router.refresh();
         reset();
-        setStep(STEPS.CATEGORY)
+        setStep(STEPS.CATEGORY);
         rentModal.onClose();
       })
-      .catch(() => {
-        toast.error('you can list upto 3 listing only');
+      .catch((error) => {
+        toast.error(error.message);
       })
       .finally(() => {
         setIsLoading(false);
-      })
-  }
+      });
+  };
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.PRICE) {
-      return 'Create'
+    if (step === STEPS.DELIVERY) {
+      return "Create";
     }
 
-    return 'Next'
+    return "Next";
   }, [step]);
 
   const secondaryActionLabel = useMemo(() => {
     if (step === STEPS.CATEGORY) {
-      return undefined
+      return undefined;
     }
 
-    return 'Back'
+    return "Back";
   }, [step]);
 
-  let bodyContent = (
-    <div className="flex flex-col gap-8">
-      <Heading
-        title="Which of these best describes your Product?"
-        subtitle="Pick a category"
-      />
-      <div
-        className="
-          grid 
-          grid-cols-1 
-          md:grid-cols-2 
-          gap-3
-          max-h-[50vh]
-          overflow-y-auto
-        "
-      >
-        {categories ? categories.map((item) => (
-          <div key={item.label} className="col-span-1">
-            <CategoryInput
-              onClick={(category) =>
-                setCustomValue('category', category)}
-              selected={category === item.label}
-              label={item.label}
-              icon={item.icon}
+  let bodyContent;
+
+  if (step == STEPS.CATEGORY) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Which of these best describes your Product?"
+          subtitle="Pick a category"
+        />
+        <div
+          className="
+           grid 
+           grid-cols-1 
+           md:grid-cols-2 
+           gap-3
+           max-h-[50vh]
+           overflow-y-auto
+         "
+        >
+          {categories
+            ? categories.map((item) => (
+                <div key={item.label} className="col-span-1">
+                  <CategoryInput
+                    onClick={() => setCustomValue("category", item.label)}
+                    selected={category === item.label}
+                    label={item.label}
+                    icon={item.icon}
+                  />
+                </div>
+              ))
+            : null}
+          {category === "others" && (
+            <Input
+              id="customCategory"
+              label="Specify Category"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required={category === "others"}
+              maxLength={30}
             />
-          </div>
-        )) : null}
+          )}
+        </div>
       </div>
-    </div>
-  )
+    );
+  }
 
   if (step === STEPS.LOCATION) {
     bodyContent = (
@@ -167,31 +193,11 @@ const RentModal = () => {
         />
         <CountrySelect
           value={location}
-          onChange={(value) => setCustomValue('location', value)}
+          onChange={(value) => setCustomValue("location", value)}
         />
         <Map center={location?.latlng} />
       </div>
     );
-  }
-
-  if (step === STEPS.GSTNUMBER) {
-    bodyContent = (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="GST Number"
-          subtitle="Enter your GST Number"
-        />
-        <Input
-          id="gstNumber"
-          label="gstNumber"
-          type="text"
-          disabled={isLoading}
-          register={register}
-          errors={errors}
-          required
-        />
-      </div>
-    )
   }
 
   if (step === STEPS.IMAGES) {
@@ -201,12 +207,9 @@ const RentModal = () => {
           title="Add a photo of your Product"
           subtitle="Show Customers what your Product looks like!"
         />
-        <ImageUpload
-          onChange={(value) => setCustomValue('imageSrc', value)}
-          value={imageSrc}
-        />
+        <ImageUpload onChange={(value) => setImages(value)} value={images} />
       </div>
-    )
+    );
   }
 
   if (step === STEPS.DESCRIPTION) {
@@ -234,7 +237,7 @@ const RentModal = () => {
           required
         />
       </div>
-    )
+    );
   }
 
   if (step === STEPS.PRICE) {
@@ -255,7 +258,66 @@ const RentModal = () => {
           required
         />
       </div>
-    )
+    );
+  }
+
+  if (step === STEPS.DISCOUNT) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Now, set your Discount"
+          subtitle="How much do you think its discount?"
+        />
+        <Input
+          id="discount"
+          label="Discount"
+          // formatPrice
+          type="number"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+        />
+      </div>
+    );
+  }
+
+  if (step === STEPS.DELIVERY) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Choose a delivery method"
+          subtitle="How will the customer receive your product?"
+        />
+        <select
+          id="delivery"
+          onChange={(e) => setCustomValue("delivery", e.target.value)}
+        >
+          <option>Select Delivery Option</option>
+          <option value="own">Self Delivery</option>
+          <option value="ofreex">Ofreex Delivery</option>
+        </select>
+      </div>
+    );
+  }
+
+  if (step === STEPS.QUANTITY) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Now, set your Quantity of Your Product"
+          subtitle="How much Product do you have?"
+        />
+        <Input
+          id="quantity"
+          label="Quantity"
+          // formatPrice
+          type="number"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+        />
+      </div>
+    );
   }
 
   return (
@@ -271,6 +333,6 @@ const RentModal = () => {
       body={bodyContent}
     />
   );
-}
+};
 
 export default RentModal;
