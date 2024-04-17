@@ -12,11 +12,6 @@ export default async function getCategories(
       `http://localhost:4002/listings/getCategories`
     )
 
-    //append 2 arrays into one
-    // premiumListings.map((listing: { title: string; }) => {
-    //   console.log(listing.title)
-    // })
-
     const safeCategories = categories.map((listing: any) => ({
       ...listing,
       // createdAt: listing.postedAt.toISOString(),
