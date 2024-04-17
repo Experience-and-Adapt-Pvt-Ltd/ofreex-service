@@ -33,7 +33,7 @@ export async function POST(
 `
   }
   )
-  console.log(`Regitering ${register}`);
+  //console.log(`Regitering ${register}`);
   const { activation_token } = register.data.register;
 
     return NextResponse.json(activation_token);
