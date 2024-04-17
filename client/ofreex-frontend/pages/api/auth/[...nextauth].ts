@@ -18,51 +18,88 @@ export const authOptions: AuthOptions = {
       name: 'credentials',
       credentials: {
         email: { label: 'email', type: 'text' },
-        password: { label: 'password', type: 'password' }
+        password: { label: 'password', type: 'password' },
+        role: { label: 'Role', type: 'text' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Invalid credentials');
         }
 
-        // const user = await prisma.user.findUnique({
-        //   where: {
-        //     email: credentials.email
-        //   }
-        // });
-        const { data: getUserByEmail } = await axios.post(
-          `http://localhost:4001/graphql`, {
-          query: `query GetUserByEmail {
-            getUserByEmail(email: "${credentials.email}") {
-            id
-            name
-            email
-            password
-            createdAt
-            updatedAt
-            isPremium
+        let user;
+        if (credentials.role === 'seller') {
+          const { data: getSellerByEmail } = await axios.post(
+            `http://localhost:4003/graphql`, {
+            query: `query GetSellerByEmail {
+              getSellerByEmail(email: "${credentials.email}") {
+              id
+              name
+              email
+              password
+              phoneNumber
+              gstNumber
+              address
+              bankName
+              accountNumber
+              IFSC
+            }
+          }`
           }
-        }`
+          )
+          user = getSellerByEmail.data.getSellerByEmail;
+
+
+          if (!user || !user?.password) {
+            throw new Error('Invalid credentials');
+          }
+          //credentials.password = await bcrypt.hash(credentials.password, 15);
+          console.log(credentials.password + "  " + user.password);
+          const isCorrectPassword = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+          console.log("isCorrected");
+          console.log(isCorrectPassword);
+          if (!isCorrectPassword) {
+            throw new Error('Invalid credentials');
+          }
+          return user;
+        } else {
+          const { data: getUserByEmail } = await axios.post(
+            `http://localhost:4001/graphql`, {
+            query: `query GetUserByEmail {
+              getUserByEmail(email: "${credentials.email}") {
+              id
+              name
+              email
+              password
+              createdAt
+              updatedAt
+              isPremium
+            }
+          }`
+          }
+          )
+          const user = getUserByEmail.data.getUserByEmail;
+          console.log("user")
+          //console.log(user)
+          if (!user || !user?.password) {
+            throw new Error('Invalid credentials');
+          }
+          //credentials.password = await bcrypt.hash(credentials.password, 15);
+          console.log(credentials.password + "  " + user.password);
+          const isCorrectPassword = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+          console.log("isCorrected");
+          console.log(isCorrectPassword);
+          if (!isCorrectPassword) {
+            throw new Error('Invalid credentials');
+          }
+          return user;
         }
-        )
-        const user = getUserByEmail.data.getUserByEmail;
-        console.log("user")
-        console.log(user)
-        if (!user || !user?.password) {
-          throw new Error('Invalid credentials');
-        }
-        //credentials.password = await bcrypt.hash(credentials.password, 15);
-        console.log(credentials.password + "  " + user.password);
-        const isCorrectPassword = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
-        console.log("isCorrected");
-        console.log(isCorrectPassword);
-        if (!isCorrectPassword) {
-          throw new Error('Invalid credentials');
-        }
-        return user;
+
       }
     })
   ],
