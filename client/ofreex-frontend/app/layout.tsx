@@ -18,6 +18,7 @@ import BankDetailsModal from './components/modals/BankDetailsModal';
 import SellerActivationModal from './components/modals/SellerActivationModal';
 import getCurrentSeller from './actions/getCurrentSeller';
 import getCategories from './actions/getCategories';
+import SellerLoginModal from './components/modals/SellerLoginModal';
 
 
 export const metadata = {
@@ -35,8 +36,14 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const currentUser = await getCurrentUser();
+  //const currentSeller = await getCurrentSeller();
   const currentSeller = await getCurrentSeller();
   const categories = await getCategories();
+  //const { activationToken, onUpdate } = useActivationToken();
+  //const activationToken = "";
+  //const { activationToken, setActivationToken } = getActivationStates();
+  // console.log("In RootLayout ");
+  // console.log(currentUser);
   return (
     <html lang="en">
       <body>
@@ -48,6 +55,7 @@ export default async function RootLayout({
           <SearchModal />
           <RentModal />
           <SellerModal />
+          <SellerLoginModal />
           <BankDetailsModal />
           <SellerActivationModal />
           <Navbar currentUser={currentUser} currentSeller={currentSeller} categories={categories} />
