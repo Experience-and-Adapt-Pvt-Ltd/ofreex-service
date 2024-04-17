@@ -5,22 +5,29 @@ import axios from "axios";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { SafeListing, SafeUser } from "@/app/types";
+import { SafeCategory, SafeListing, SafeUser } from "@/app/types";
 
 import Heading from "@/app/components/Heading";
 import Container from "@/app/components/Container";
 import ListingCard from "@/app/components/listings/ListingCard";
+import useEditModal from "../hooks/useEditModal";
+import EditModal from "../components/modals/EditModal";
+import { useEdit } from "../hooks/useEdit";
 
 interface PropertiesClientProps {
   listings: SafeListing[],
   currentUser?: SafeUser | null,
+  categories: SafeCategory[],
 }
 
 const PropertiesClient: React.FC<PropertiesClientProps> = ({
   listings,
-  currentUser
+  currentUser,
+  categories,
 }) => {
   const router = useRouter();
+  const editHook = useEdit();
+  const editModal = useEditModal();
   const [deletingId, setDeletingId] = useState('');
 
   const onDelete = useCallback((id: string) => {
@@ -37,6 +44,11 @@ const PropertiesClient: React.FC<PropertiesClientProps> = ({
       .finally(() => {
         setDeletingId('');
       })
+  }, [router]);
+  const onEdit = useCallback((id: string, listing: SafeListing) => {
+    editHook.obj.id = id;
+    editHook.obj.listing = listing;
+    editModal.onOpen();
   }, [router]);
 
 
@@ -65,12 +77,16 @@ const PropertiesClient: React.FC<PropertiesClientProps> = ({
             data={listing}
             actionId={listing.id}
             onAction={onDelete}
+            onAction2={onEdit}
             disabled={deletingId === listing.id}
             actionLabel="Delete Product"
+            actionLabel2="Edit Product"
             currentUser={currentUser}
+            quantity={listing.quantity}
           />
         ))}
       </div>
+      <EditModal categories={categories}/>
     </Container>
   );
 }
