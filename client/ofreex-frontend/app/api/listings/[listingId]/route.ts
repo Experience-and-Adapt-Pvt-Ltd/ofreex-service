@@ -3,35 +3,22 @@ import { NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 import axios from "axios";
+import getCurrentSeller from "@/app/actions/getCurrentSeller";
 
 interface IParams {
   listingId?: string;
 }
 
 export async function DELETE(
-  request: Request, 
+  request: Request,
   { params }: { params: IParams }
 ) {
-  const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentSeller();
 
   if (!currentUser) {
     return NextResponse.error();
   }
 
-  //count the number of existing listings for the current user
-  const listingCount = await prisma.listing.count({
-    where: {
-      userId: currentUser.id,
-    }
-  });
-
-  if(listingCount >= 3){
-    return NextResponse.json({
-      message: 'You cannot create more than 3 listings',
-    }, {
-      status: 400
-    })
-  }
 
   const { listingId } = params;
 
@@ -44,3 +31,39 @@ export async function DELETE(
 
   return NextResponse.json(listing);
 }
+export async function PATCH(
+  request: Request,
+) {
+  try {
+    console.log("hererer");
+    const body = await request.json();
+    const {
+      id,
+      title,
+      description,
+      price,
+      discount,
+    } = body;
+    //console log id, title, description, price and discount
+    // console.log(id, title, description, price, discount);
+
+    //const hashedPassword = await bcrypt.hash(password, 15);
+    const { data: listing } = await axios.patch(
+      `http://localhost:4002/listings/${id}`, {
+      id,
+      title,
+      description,
+      price: parseInt(price, 10),
+      discount: parseInt(discount, 10),
+    }
+    )
+    //console.log(`Regitering ${register}`);
+
+    return NextResponse.json(listing);
+
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ message: error }, { status: 400 })
+  }
+}
+
