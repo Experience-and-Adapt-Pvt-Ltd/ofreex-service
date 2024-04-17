@@ -15,40 +15,32 @@ export default async function getCurrentSeller() {
     if (!session?.user?.email) {
       return null;
     }
-    console.log("Session");
-    console.log(session.user.email);
     const { data: getSellerByEmail } = await axios.post(
-      `http://localhost:4001/graphql`, {
-      query: `query GetSellerByEmail {
-          getSellerByEmail(email: "${session.user.email}") {
-          id
-          name
-          email
-          password
-          isPremium
-        }
-      }`
+      `http://localhost:4003/graphql`, {
+            query: `query GetSellerByEmail {
+              getSellerByEmail(email: "${session.user.email}") {
+              id
+              name
+              email
+              password
+              phoneNumber
+              address
+              gstNumber
+              accountNumber
+              bankName
+              IFSC
+            }
+          }`
     }
     )
     const currentUser = getSellerByEmail.data.getSellerByEmail;
-    console.log(getSellerByEmail);
-    console.log(currentUser);
-    // const currentUser = await prisma.user.findUnique({
-    //   where: {
-    //     email: session.user.email as string,
-    //   }
-    // });
 
     if (!currentUser) {
       return null;
     }
-    console.log(currentUser);
+    //console.log(currentUser);
     return {
       ...currentUser,
-      // createdAt: currentUser.createdAt.toISOString(),
-      // updatedAt: currentUser.updatedAt.toISOString(),
-      // emailVerified:
-      // currentUser.emailVerified?.toISOString() || null,
     };
   } catch (error: any) {
     return null;
