@@ -1,7 +1,6 @@
 "use client";
 
 import axios from "axios";
-import { AiFillGithub } from "react-icons/ai";
 import { signIn } from "next-auth/react";
 import { FcGoogle } from "react-icons/fc";
 import { useCallback, useState } from "react";
@@ -22,7 +21,7 @@ interface RegisterModalProps {
   onUpdate: (data: string) => void;
 }
 
-const RegisterModal = ({}) => {
+const RegisterModal = ({ }) => {
   const registerModal = useRegisterModal();
   const activationModal = useActivationModal();
   const activationTokenHook = useActivationToken();
@@ -43,28 +42,17 @@ const RegisterModal = ({}) => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
-    console.log("data in Registration = ");
-    console.log(data);
     axios
       .post("/api/register", data)
       .then((res) => {
-        //toast.success('Registered!');
-        // console.log(res);
+        toast.success('Registered!');
 
         activationTokenHook.activationToken = res.data;
-        console.log("actii = " + activationTokenHook.activationToken);
-        // Modify the object
-        //setActivationToken((prev) => (res.data.activationToken));
-        // currentUser = {
-        //   ...currentUser,
-        //   id: 'test',
-        //   activationToken: res.data.activationToken
-        // }
         registerModal.onClose();
         activationModal.onOpen();
       })
       .catch((error) => {
-        const errorMessage = error.response?.data?.message || 'Email Already Exist Kindly login Please';
+        const errorMessage =  'Email Already Exist Please login';
         toast.error(errorMessage);
       })
       .finally(() => {
@@ -125,12 +113,6 @@ const RegisterModal = ({}) => {
         label="Continue with Google"
         icon={FcGoogle}
         onClick={() => signIn("google")}
-      />
-      <Button
-        outline
-        label="Continue with Github"
-        icon={AiFillGithub}
-        onClick={() => signIn("github")}
       />
       <div
         className="
