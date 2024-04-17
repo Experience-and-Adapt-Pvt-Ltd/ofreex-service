@@ -43,6 +43,18 @@ export class CreateListingDto {
   @IsNotEmpty()
   @IsString()
   userId: string;
+
+  @IsOptional()
+  @IsNumber()
+  discount?: number;
+
+  @IsNotEmpty()
+  @IsString()
+  delivery: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  quantity: number;
 }
 export class CreateCategoryDto {
   @IsNotEmpty()

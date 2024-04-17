@@ -20,7 +20,7 @@ interface ListingInfoProps {
     icon: IconType,
     label: string;
     description: string;
-  } | undefined
+  } | null
   locationValue: string;
 }
 
@@ -31,7 +31,7 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
   locationValue,
 }) => {
   const { getByValue } = useCountries();
-  
+
 
   // const coordinates = getByValue(locationValue)?.latlng
 
@@ -67,8 +67,6 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
         <p className="word-wrap">{description}</p>
 
       </div>
-      {/* <hr /> */}
-      {/* <Map center={coordinates} /> */}
     </div>
   );
 }

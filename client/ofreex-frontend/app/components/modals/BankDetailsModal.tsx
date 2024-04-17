@@ -1,9 +1,6 @@
 "use client";
 
 import axios from "axios";
-import { AiFillGithub } from "react-icons/ai";
-import { signIn } from "next-auth/react";
-import { FcGoogle } from "react-icons/fc";
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -44,7 +41,7 @@ const BankDetailsModal = ({ }) => {
     defaultValues: {
       bankName: "",
       accountNumber: "",
-      ifsc: "",
+      IFSC: "",
     },
   });
 
@@ -54,7 +51,7 @@ const BankDetailsModal = ({ }) => {
       ...data,
       ...dataHook.obj
     }
-    console.log(data);
+    // console.log(data);
     axios
       .post("/api/registerSeller", data)
       .then((res) => {
@@ -74,7 +71,7 @@ const BankDetailsModal = ({ }) => {
         sellerActivationModal.onOpen();
       })
       .catch((error) => {
-        const errorMessage = error.response?.data?.message || 'Email Already Exist Kindly login Please';
+        const errorMessage = 'Email Already Exist Please login';
         toast.error(errorMessage);
       })
       .finally(() => {
@@ -109,7 +106,7 @@ const BankDetailsModal = ({ }) => {
       />
 
       <Input
-        id="ifsc"
+        id="IFSC"
         label="IFSC Code"
         disabled={isLoading}
         register={register}
@@ -123,12 +120,6 @@ const BankDetailsModal = ({ }) => {
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
-      <Button
-        outline
-        label="Continue with Google"
-        icon={FcGoogle}
-        onClick={() => signIn("google")}
-      />
       <div
         className="
           text-neutral-500 

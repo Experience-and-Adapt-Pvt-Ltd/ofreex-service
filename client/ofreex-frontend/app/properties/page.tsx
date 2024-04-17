@@ -6,10 +6,12 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import getListings from "@/app/actions/getListings";
 
 import PropertiesClient from "./PropertiesClient";
+import getCurrentSeller from "../actions/getCurrentSeller";
+import getCategories from "../actions/getCategories";
 
 const PropertiesPage = async () => {
-  const currentUser = await getCurrentUser();
-
+  const currentUser = await getCurrentSeller();
+  const categories = await getCategories();
   if (!currentUser) {
     return <EmptyState
       title="Unauthorized"
@@ -35,9 +37,10 @@ const PropertiesPage = async () => {
       <PropertiesClient
         listings={listings}
         currentUser={currentUser}
+        categories={categories}
       />
     </ClientOnly>
   );
 }
- 
+
 export default PropertiesPage;

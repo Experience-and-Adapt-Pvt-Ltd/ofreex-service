@@ -7,8 +7,6 @@ import { Range } from 'react-date-range';
 import { formatISO } from 'date-fns';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import useSearchModal from "@/app/hooks/useSearchModal";
-
 import Modal from "./Modal";
 import Calendar from "../inputs/Calendar";
 import Counter from "../inputs/Counter";
@@ -25,7 +23,6 @@ enum STEPS {
 
 const SearchModal = () => {
   const router = useRouter();
-  const searchModal = useSearchModal();
   const params = useSearchParams();
 
   const [step, setStep] = useState(STEPS.LOCATION);
@@ -85,12 +82,12 @@ const SearchModal = () => {
     }, { skipNull: true });
 
     setStep(STEPS.LOCATION);
-    searchModal.onClose();
+    // searchModal.onClose();
     router.push(url);
   }, 
   [
     step, 
-    searchModal, 
+    // searchModal, 
     location, 
     router, 
     guestCount, 
@@ -183,13 +180,13 @@ const SearchModal = () => {
 
   return (
     <Modal
-      isOpen={searchModal.isOpen}
+      // isOpen={searchModal.isOpen}
       title="Filters"
       actionLabel={actionLabel}
       onSubmit={onSubmit}
       secondaryActionLabel={secondaryActionLabel}
       secondaryAction={step === STEPS.LOCATION ? undefined : onBack}
-      onClose={searchModal.onClose}
+      // onClose={searchModal.onClose}
       body={bodyContent}
     />
   );

@@ -3,11 +3,12 @@ import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import axios from "axios";
+import getCurrentSeller from "@/app/actions/getCurrentSeller";
 
 export async function POST(
   request: Request,
 ) {
-  const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentSeller();
 
   if (!currentUser) {
     return NextResponse.error();
@@ -17,11 +18,14 @@ export async function POST(
   const {
     title,
     description,
-    imageSrc,
+    images,
     category,
     location,
     price,
-    gstNumber,
+    discount,
+    delivery,
+    quantity,
+    subCategory,
   } = body;
 
   Object.keys(body).forEach((value: any) => {
@@ -29,7 +33,14 @@ export async function POST(
       NextResponse.error();
     }
   });
-  const imageUrls = [imageSrc];
+
+  if (!delivery || (delivery !== 'own' && delivery !== 'ofreex')) {
+    return new Response(JSON.stringify({ error: "Invalid delivery option." }), { status: 400 });
+  }
+
+  const parsedDiscount = discount ? parseFloat(discount) : 0;
+  const parsedQuantity = quantity ? parseFloat(quantity) : null;
+  const imageUrls = images as string[];
   let { data: listing } = await axios.post(
     `http://localhost:4002/listings/`, {
     title,
@@ -42,9 +53,13 @@ export async function POST(
     userId: currentUser.id,
     postedAt: "2024-04-01T13:12:04.833Z",
     rating: 0.0,
-    gstNumber,
+    discount: parsedDiscount,
+    delivery,
+    quantity: parsedQuantity,
+    subCategory,
   }
   )
 
   return NextResponse.json(listing);
 }
+

@@ -58,12 +58,13 @@ const SellerActivationModal = () => {
         ...data,
         activationToken: activationTokenHook.activationToken
       }
-      console.log(data);
+      // console.log(data);
       axios.post('/api/activateSeller', data)
         .then((res) => {
           toast.success('Seller Registered!');
-          console.log(res);
-          activationModal.onClose();
+          // console.log(res);
+          sellerActivationModal.onClose();
+          router.refresh();
         })
         .catch((error) => {
           toast.error(error);

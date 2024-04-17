@@ -19,6 +19,10 @@ import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
               name: 'listings',
               url: 'http://localhost:4002/listings',
             },
+            {
+              name: 'seller',
+              url: 'http://localhost:4003/graphql',
+            },
           ],
         }),
       },

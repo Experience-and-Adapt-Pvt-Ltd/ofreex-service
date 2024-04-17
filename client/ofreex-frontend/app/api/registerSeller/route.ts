@@ -12,26 +12,26 @@ export async function POST(
     name,
     password,
     phoneNumber,
+    address,
+    gstNumber,
     accountNumber,
     bankName,
     IFSC,
-    GST,
   } = body;
-
-  //const hashedPassword = await bcrypt.hash(password, 15);
-    const { data: registerSeller } = await axios.post(
-    `http://localhost:4001/graphql`, {
-    query: `mutation registerSeller {
-  registerSeller(sellerDto:{
+  
+    const { data: register } = await axios.post(
+    `http://localhost:4003/graphql`, {
+    query: `mutation register {
+  register(registerDto:{
     name: "${name}",
     email: "${email}",
     password: "${password}",
     phoneNumber: ${phoneNumber},
-    isPremium: false,
+    address: "${address}",
+    gstNumber: "${gstNumber}",
     accountNumber: "${accountNumber}",
     bankName: "${bankName}",
     IFSC: "${IFSC}",
-    GST: "${GST}"
   }
   ) {
     activation_token
@@ -40,8 +40,8 @@ export async function POST(
 `
   }
   )
-    console.log(`Regitering Seller ${registerSeller}`);
-    const { activation_token } = registerSeller.data.registerSeller;
+    // console.log(`Regitering Seller ${register}`);
+    const { activation_token } = register.data.register;
 
     return NextResponse.json(activation_token);
 

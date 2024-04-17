@@ -7,11 +7,11 @@ import {
 } from "react-hook-form";
 import { BiDollar, BiRupee } from "react-icons/bi";
 
-interface InputProps {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
   label: string;
-  type?: string;
   disabled?: boolean;
+  placeholderString?: string;
   formatPrice?: boolean;
   required?: boolean;
   register: UseFormRegister<FieldValues>,
@@ -21,12 +21,13 @@ interface InputProps {
 const Input: React.FC<InputProps> = ({
   id,
   label,
-  type = "text",
   disabled,
   formatPrice,
   register,
+  placeholderString = " ",
   required,
   errors,
+  ...rest
 }) => {
   return (
     <div className="w-full relative">
@@ -45,8 +46,7 @@ const Input: React.FC<InputProps> = ({
         id={id}
         disabled={disabled}
         {...register(id, { required })}
-        placeholder=" "
-        type={type}
+        placeholder={placeholderString}
         className={`
           peer
           w-full
@@ -64,6 +64,7 @@ const Input: React.FC<InputProps> = ({
           ${errors[id] ? 'border-rose-500' : 'border-neutral-300'}
           ${errors[id] ? 'focus:border-rose-500' : 'focus:border-black'}
         `}
+        {...rest}
       />
       <label
         className={`

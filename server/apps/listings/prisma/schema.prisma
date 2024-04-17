@@ -22,11 +22,13 @@ model Listing {
   userId      String   @default(uuid())
   postedAt    DateTime
   rating      Float?
+  discount    Float 
+  delivery    String
+  quantity    Float
 }
 
 model Category{
   label       String  @id
   description String
   icon        String?
-  
 }

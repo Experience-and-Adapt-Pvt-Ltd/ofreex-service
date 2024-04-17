@@ -6,11 +6,11 @@ interface SellerActivationModalStore {
   onClose: () => void;
 }
 
-const useActivationModal = create<SellerActivationModalStore>((set) => ({
+const useSellerActivationModal = create<SellerActivationModalStore>((set) => ({
   isOpen: false,
   onOpen: () => set({ isOpen: true }),
   onClose: () => set({ isOpen: false })
 }));
 
 
-export default useActivationModal;
+export default useSellerActivationModal;

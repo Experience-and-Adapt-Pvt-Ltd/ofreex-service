@@ -30,9 +30,9 @@ export async function POST(
 
   const { data } = await axios.post(
     `http://localhost:4001/graphql`, {
-    query: `mutation UpdateUserEmail {
+    query: `mutation UpdateUser {
   updateUser(id: "${currentUser.id}", updateDto: {
-    favoriteIds: ${favoriteIds}
+    favoriteIds: [${favoriteIds.map(x => `"${x}"`)}]
   }) {
     user {
       id
@@ -46,9 +46,11 @@ export async function POST(
 }`
   }
   )
-  const user = data.getUserByEmail.data.getUserByEmail;
+  //const user = data.getUserByEmail.data.getUserByEmail;
+  currentUser.favoriteIds = favoriteIds;
+  console.log(currentUser);
 
-  return NextResponse.json(user);
+  return NextResponse.json("user");
 }
 
 export async function DELETE(
@@ -73,9 +75,9 @@ export async function DELETE(
 
   const { data } = await axios.post(
     `http://localhost:4001/graphql`, {
-    query: `mutation UpdateUserEmail {
+    query: `mutation UpdateUser {
   updateUser(id: "${currentUser.id}", updateDto: {
-    favoriteIds: ${favoriteIds}
+    favoriteIds: [${favoriteIds.map(x => `"${x}"`)}]
   }) {
     user {
       id
@@ -89,7 +91,8 @@ export async function DELETE(
 }`
   }
   )
-  const user = data.getUserByEmail.data.getUserByEmail;
-
-  return NextResponse.json(user);
+  //const user = data.getUserByEmail.data.getUserByEmail;
+  currentUser.favoriteIds = favoriteIds;
+  console.log(currentUser);
+  return NextResponse.json("user");
 }

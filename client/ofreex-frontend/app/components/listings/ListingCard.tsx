@@ -19,20 +19,28 @@ interface ListingCardProps {
   data: SafeListing;
   reservation?: SafeReservation;
   onAction?: (id: string) => void;
+  onAction2?: (id: string, listing: SafeListing) => void;
   disabled?: boolean;
   actionLabel?: string;
+  actionLabel2?: string;
   actionId?: string;
-  currentUser?: SafeUser | null
+  currentUser?: SafeUser | null;
+  quantity?: number;
+  discount: number;
 };
 
 const ListingCard: React.FC<ListingCardProps> = ({
   data,
   reservation,
   onAction,
+  onAction2,
   disabled,
   actionLabel,
+  actionLabel2,
   actionId = '',
   currentUser,
+  quantity,
+  discount = 0,
 }) => {
   const router = useRouter();
   const { getByValue } = useCountries();
@@ -48,6 +56,16 @@ const ListingCard: React.FC<ListingCardProps> = ({
       }
 
       onAction?.(actionId)
+    }, [disabled, onAction, actionId]);
+  const handleCancel2 = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+
+      if (disabled) {
+        return;
+      }
+
+      onAction2?.(data.id, data)
     }, [disabled, onAction, actionId]);
 
   const price = useMemo(() => {
@@ -69,6 +87,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
     return `${format(start, 'PP')} - ${format(end, 'PP')}`;
   }, [reservation]);
 
+  let finalPrice = data.price - (data.price * (discount/100));
+  
   return (
     <div
       onClick={() => router.push(`/listings/${data.id}`)}
@@ -82,10 +102,12 @@ const ListingCard: React.FC<ListingCardProps> = ({
             relative 
             overflow-hidden 
             rounded-xl
+            border-2
+            border-gray-500
           "
-        >
+        >          
           <Image
-            src={"/images/ofreex-logo.png"}
+            src={data.imageUrls[0]}
             alt="image"
             className="h-full w-full object-cover group-hover:scale-110 transition"
             fill
@@ -107,13 +129,13 @@ const ListingCard: React.FC<ListingCardProps> = ({
         <div className="font-light text-neutral-500 ">
           {reservationDate || data.category}
         </div>
-        <div className="flex flex-row items-center gap-1 ">
+        <div className="flex flex-row items-center justify-between ">
           <div className="font-semibold">
-            ₹ {price}
+            ₹ {finalPrice} 
           </div>
-          {!reservation && (
-            <div className="font-light"></div>
-          )}
+          {quantity !== undefined &&(<div className="text-sm text-neutral-500">
+          Stock Present: {quantity}
+          </div>)}
         </div>
         {onAction && actionLabel && (
           <Button
@@ -123,7 +145,16 @@ const ListingCard: React.FC<ListingCardProps> = ({
             onClick={handleCancel}
           />
         )}
+        {onAction2 && actionLabel2 && (
+          <Button
+            disabled={disabled}
+            small
+            label={actionLabel2}
+            onClick={handleCancel2}
+          />
+        )}
       </div>
+
     </div>
   );
 }

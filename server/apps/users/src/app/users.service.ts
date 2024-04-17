@@ -59,7 +59,24 @@ export class UsersService {
       },
     });
 
-    if (isEmailExist) {
+    const query = JSON.stringify({
+      query: `query {
+        VerifySeller(email: "${email}")
+      }`,
+    });
+
+    const res = await fetch(`http://localhost:4003/graphql`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Optionally, you might need an authorization header or other headers
+      },
+      body: query,
+    });
+
+    const { data } = await res.json();
+
+    if (isEmailExist || data.VerifySeller) {
       throw new BadRequestException('Email already Exist');
     }
 
@@ -103,117 +120,117 @@ export class UsersService {
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  async sellerRegister(sellerDto: SellerDto, response: Response) {
-    const { name, email, password, phoneNumber, isPremium, GST, accountNumber, bankName, IFSC } = sellerDto;
+  // async sellerRegister(sellerDto: SellerDto, response: Response) {
+  //   const { name, email, password, phoneNumber, isPremium, GST, accountNumber, bankName, IFSC } = sellerDto;
 
-    //checking wether user mail exist or not
-    const isEmailExist = await this.prisma.seller.findUnique({
-      where: {
-        email,
-      },
-    });
+  //   //checking wether user mail exist or not
+  //   const isEmailExist = await this.prisma.seller.findUnique({
+  //     where: {
+  //       email,
+  //     },
+  //   });
 
-    if (isEmailExist) {
-      throw new BadRequestException('Email already Exist');
-    }
+  //   if (isEmailExist) {
+  //     throw new BadRequestException('Email already Exist');
+  //   }
 
-    const phoneNumberExist = await this.prisma.seller.findUnique({
-      where: {
-        phoneNumber,
-      },
-    });
+  //   const phoneNumberExist = await this.prisma.seller.findUnique({
+  //     where: {
+  //       phoneNumber,
+  //     },
+  //   });
 
-    if (phoneNumberExist) {
-      throw new BadRequestException('Phone number already Exist');
-    }
+  //   if (phoneNumberExist) {
+  //     throw new BadRequestException('Phone number already Exist');
+  //   }
 
-    //creating Hashed Password
-    const hashedPassword = await bcrypt.hash(password, 15);
+  //   //creating Hashed Password
+  //   const hashedPassword = await bcrypt.hash(password, 15);
 
-    const user = {
-      name,
-      email,
-      password: hashedPassword,
-      phoneNumber,
-      isPremium,
-      GST,
-      accountNumber,
-      IFSC,
-      bankName
-    };
+  //   const user = {
+  //     name,
+  //     email,
+  //     password: hashedPassword,
+  //     phoneNumber,
+  //     isPremium,
+  //     GST,
+  //     accountNumber,
+  //     IFSC,
+  //     bankName
+  //   };
 
-    const activationToken = await this.createSellerActivationToken(user);
+  //   // const activationToken = await this.createSellerActivationToken(user);
 
-    const activationCode = activationToken.activationCode;
-    const activation_token = activationToken.token;
+  //   const activationCode = activationToken.activationCode;
+  //   const activation_token = activationToken.token;
 
-    await this.emailService.sendMail({
-      email,
-      subject: 'Activate Your Account',
-      template: './activation-mail',
-      name,
-      activationCode,
-    });
+  //   await this.emailService.sendMail({
+  //     email,
+  //     subject: 'Activate Your Account',
+  //     template: './activation-mail',
+  //     name,
+  //     activationCode,
+  //   });
 
-    return { activation_token, response };
-  }
-  async createSellerActivationToken(user: SellerData) {
-    //creating 4 digit otp
-    const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
+  //   return { activation_token, response };
+  // }
+  // async createSellerActivationToken(user: SellerData) {
+  //   //creating 4 digit otp
+  //   const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
 
-    const token = this.jwtService.sign(
-      {
-        user,
-        activationCode,
-      },
-      {
-        secret: this.configService.get<string>('ACTIVATION_TOKEN'),
-        expiresIn: '48h',
-      },
-    );
-    return { token, activationCode };
-  }
+  //   const token = this.jwtService.sign(
+  //     {
+  //       user,
+  //       activationCode,
+  //     },
+  //     {
+  //       secret: this.configService.get<string>('ACTIVATION_TOKEN'),
+  //       expiresIn: '48h',
+  //     },
+  //   );
+  //   return { token, activationCode };
+  // }
 
   //activation seller
-  async activateSeller(activationDto: ActivationDto, resposne: Response) {
-    const { activationToken, activationCode } = activationDto;
+  // async activateSeller(activationDto: ActivationDto, resposne: Response) {
+  //   const { activationToken, activationCode } = activationDto;
 
-    const newUser: { user: SellerData; activationCode: string } =
-      this.jwtService.verify(activationToken, {
-        secret: this.configService.get<string>('ACTIVATION_TOKEN'),
-      } as JwtVerifyOptions) as { user: SellerData; activationCode: string };
+  //   const newUser: { user: SellerData; activationCode: string } =
+  //     this.jwtService.verify(activationToken, {
+  //       secret: this.configService.get<string>('ACTIVATION_TOKEN'),
+  //     } as JwtVerifyOptions) as { user: SellerData; activationCode: string };
 
-    if (newUser.activationCode !== activationCode) {
-      throw new BadRequestException('Activation Code is Invalid');
-    }
+  //   if (newUser.activationCode !== activationCode) {
+  //     throw new BadRequestException('Activation Code is Invalid');
+  //   }
 
-    const { name, email, password, phoneNumber, isPremium, GST, accountNumber, bankName, IFSC } = newUser.user;
-    //const favoriteIds:string[] = [];
-    const existingUser = await this.prisma.seller.findUnique({
-      where: {
-        email,
-      },
-    });
+  //   const { name, email, password, phoneNumber, isPremium, GST, accountNumber, bankName, IFSC } = newUser.user;
+  //   //const favoriteIds:string[] = [];
+  //   const existingUser = await this.prisma.seller.findUnique({
+  //     where: {
+  //       email,
+  //     },
+  //   });
 
-    if (existingUser) {
-      throw new BadRequestException('User already Registered with this email');
-    }
+  //   if (existingUser) {
+  //     throw new BadRequestException('User already Registered with this email');
+  //   }
 
-    const user = await this.prisma.seller.create({
-      data: {
-        name,
-        email,
-        password,
-        phoneNumber,
-        isPremium,
-        GST,
-        accountNumber,
-        IFSC,
-        bankName
-      },
-    });
-    return { user, resposne };
-  }
+  //   const user = await this.prisma.seller.create({
+  //     data: {
+  //       name,
+  //       email,
+  //       password,
+  //       phoneNumber,
+  //       isPremium,
+  //       GST,
+  //       accountNumber,
+  //       IFSC,
+  //       bankName
+  //     },
+  //   });
+  //   return { user, resposne };
+  // }
 
 
 
@@ -434,21 +451,21 @@ export class UsersService {
     }
   }
 
-  async getSellerByEmail(email: string): Promise<Seller> {
-    try {
-      const user: Seller | null = await this.prisma.seller.findUnique({
-        where: { email },
-      });
+  // async getSellerByEmail(email: string): Promise<Seller> {
+  //   try {
+  //     const user: Seller | null = await this.prisma.seller.findUnique({
+  //       where: { email },
+  //     });
 
-      if (!user) {
-        throw new NotFoundException(`user with ID ${email} not found`);
-      }
+  //     if (!user) {
+  //       throw new NotFoundException(`user with ID ${email} not found`);
+  //     }
 
-      return user;
-    } catch (error) {
-      throw new BadRequestException(`Could not fetch user: ${error.message}`);
-    }
-  }
+  //     return user;
+  //   } catch (error) {
+  //     throw new BadRequestException(`Could not fetch user: ${error.message}`);
+  //   }
+  // }
 
   //get all user Service
   async getUsers() {
@@ -474,6 +491,12 @@ export class UsersService {
       select: { favoriteIds: true },
     });
     return favIds.favoriteIds;
+  }
+  async userExist(email: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+    return !!user;
   }
 }
 export interface LimitedUserData {

@@ -19,6 +19,8 @@ export class ListingsService {
       throw new BadRequestException(`Could not fetch Category: ${error.message}`);
     }
   }
+
+  // Creates a new category in the database using the provided CreateCategoryDto
   async createCategory(createCategoryDto: CreateCategoryDto): Promise<Category> {
     try {
       const createdCategory: PrismaCategory = await this.prisma.category.create({
@@ -34,6 +36,7 @@ export class ListingsService {
     }
   }
 
+  // Updates an existing category identified by its label with the provided update data.
   async updateCategory(label: string, updateCategoryDto: Partial<CreateCategoryDto>): Promise<Category> {
     try {
       const categoryToUpdate: PrismaCategory | null = await this.prisma.category.findUnique({ where: { label } });
@@ -50,6 +53,7 @@ export class ListingsService {
     }
   }
 
+  //for removing category
   async removeCategory(label: string): Promise<void> {
     try {
       const categoryToDelete: PrismaCategory | null = await this.prisma.category.findUnique({ where: { label } });
@@ -64,11 +68,7 @@ export class ListingsService {
     }
   }
 
-
-
-
-  //////////////////////////////////Category//////////////////////////////////////////////////
-
+  //  Fetches all listings from the database and converts them into Listing DTO
   async findAll(): Promise<Listing[]> {
     try {
       const listings: PrismaListing[] = await this.prisma.listing.findMany();
@@ -78,6 +78,7 @@ export class ListingsService {
     }
   }
 
+  //Fetches a single listing identified by its ID from the database and converts it into a Listing DTO
   async findOne(id: string): Promise<Listing> {
     try {
       const listing: PrismaListing | null = await this.prisma.listing.findUnique({
@@ -96,17 +97,20 @@ export class ListingsService {
 
   async create(createListingDto: CreateListingDto): Promise<Listing> {
     try {
-      const listingCount = await this.prisma.listing.count({
-        where: {
-          userId: createListingDto.userId,
-        }
-      })
+      Logger.log('In create method');
 
-      // If the user has 3 or more listings, throw an exception
-      if (listingCount >= 3) {
-        throw new BadRequestException('you are limited to 3 listings.')
-      }
+      // const listingCount = await this.prisma.listing.count({
+      //   where: {
+      //     userId: createListingDto.userId,
+      //   }
+      // })
 
+      // // If the user has 3 or more listings, throw an exception
+      // if (listingCount >= 3) {
+      //   throw new BadRequestException('you are limited to 3 listings.')
+      // }
+
+      // Creates a new listing in the database using the provided CreateListingDto.
       const createdListing: PrismaListing = await this.prisma.listing.create({
         data: {
           title: createListingDto.title,
@@ -119,8 +123,11 @@ export class ListingsService {
           state: createListingDto.state,
           imageUrls: createListingDto.imageUrls,
           userId: createListingDto.userId,
-          postedAt: new Date(),
+          postedAt: new Date().toISOString(),
           rating: createListingDto.rating,
+          discount: createListingDto.discount,
+          delivery: createListingDto.delivery,
+          quantity: createListingDto.quantity,
         },
       });
       return this.convertToDto(createdListing);
@@ -129,6 +136,7 @@ export class ListingsService {
     }
   }
 
+  //to update category
   async update(id: string, updateListingDto: Partial<CreateListingDto>): Promise<Listing> {
     try {
       const listingToUpdate: PrismaListing | null = await this.prisma.listing.findUnique({ where: { id } });
@@ -145,6 +153,7 @@ export class ListingsService {
     }
   }
 
+  //to remove listing
   async remove(id: string): Promise<void> {
     try {
       const listingToDelete: PrismaListing | null = await this.prisma.listing.findUnique({ where: { id } });
@@ -159,6 +168,7 @@ export class ListingsService {
     }
   }
 
+  //for flitering out category
   async findListingsByCategory(category: string, subCategory?: string): Promise<Listing[]> {
     try {
       if (!category) {
@@ -169,7 +179,7 @@ export class ListingsService {
       //   throw new BadRequestException('Limit must be a positive number');
       // }
 
-      let listingsQuery = {
+      const listingsQuery = {
         where: {
           category,
         },
@@ -186,6 +196,8 @@ export class ListingsService {
       throw new BadRequestException(`Could not fetch listings: ${error.message}`);
     }
   }
+
+  //to fetch premium users when user is logged out
   async getPremiumUsers(): Promise<LimitedUserData[]> {
     try {
       Logger.log('fetching premium users in service:');
@@ -207,43 +219,49 @@ export class ListingsService {
       throw new BadRequestException(`Could not fetch premium listings: ${error.message}`);
     }
   }
+
+  //to get basic users who dont have premium purchase
   async getBasicUsers(): Promise<LimitedUserData[]> {
     try {
       Logger.log('fetching basic users in service:');
       const { data } = await this.httpService
-        .post<GetBasicUsersResponse>("http://localhost:4001/graphql", {
-          query: `query GetBasicUsers {
-          getBasicUsers {
+        .post<GetBasicUsersResponse>("http://localhost:4003/graphql", {
+          query: `query GetSeller {
+          getSeller{
             id
-            isPremium
           }
         }
         `,
         })
         .toPromise();
-      Logger.log('fetching basic users in service22:', data.data.getBasicUsers);
-      const getBasicUsers = data.data.getBasicUsers;
+      Logger.log('fetching basic users in service22:', data.data.getSeller);
+      const getBasicUsers = data.data.getSeller;
       return getBasicUsers;
     } catch (error) {
       throw new BadRequestException(`Could not fetch premium listings: ${error.message}`);
     }
   }
+
+  //to mark it fovourites
   async getFavoriteIds(id: string): Promise<string[]> {
     try {
       Logger.log('fetching favIds in service:');
       const { data } = await this.httpService
         .post<GetFavIdsResponse>("http://localhost:4001/graphql", {
-          query: `
-        `,
+          query: `query getFavoriteIds {
+                    getFavoriteIds(userId: "${id}")
+                  }        `,
         })
         .toPromise();
-      Logger.log('fetching favIds in service22:', data.data.favoriteIds);
-      const favIds = data.data.favoriteIds;
+      Logger.log('fetching favIds in service22:', data.data.getFavoriteIds);
+      const favIds = data.data.getFavoriteIds;
       return favIds;
     } catch (error) {
       throw new BadRequestException(`Could not fetch premium listings: ${error.message}`);
     }
   }
+
+  //to get favouriteListings
   async getFavoriteListings(id: string): Promise<Listing[]> {
     try {
       const favIdsObjs = await this.getFavoriteIds(id);
@@ -265,7 +283,8 @@ export class ListingsService {
       throw new BadRequestException(`Could not fetch fav listings: ${error.message}`);
     }
   }
-  async getPremiumListings(limit: number = 5, category?: string, subCategory?: string): Promise<Listing[]> {
+
+  async getPremiumListings(limit = 5, category?: string, subCategory?: string): Promise<Listing[]> {
     try {
       const premiumUsers = await this.getPremiumUsers();
       const premiumUserIds = premiumUsers.map((user) => user.id);
@@ -290,7 +309,9 @@ export class ListingsService {
       throw new BadRequestException(`Could not fetch premium listings: ${error.message}`);
     }
   }
-  async getListings(limit: number = 5, category?: string, subCategory?: string): Promise<Listing[]> {
+
+  //to fetch all Listing
+  async getListings(limit = 5, category?: string, subCategory?: string): Promise<Listing[]> {
     try {
       const basicUsers = await this.getBasicUsers();
       const basicUserIds = basicUsers.map((user) => user.id);
@@ -351,6 +372,9 @@ export class ListingsService {
       userId: listing.userId,
       postedAt: listing.postedAt,
       rating: listing.rating,
+      discount: listing.discount,
+      delivery: listing.delivery,
+      quantity: listing.quantity,
     };
   }
   private convertToCategoryDto(category: PrismaCategory): Category {

@@ -49,30 +49,30 @@ export class UsersResolver {
     return await this.userService.activateUser(activationDto, context.res);
   }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  @Mutation(() => SellerResponse)
-  async registerSeller(
-    @Args('sellerDto') sellerDto: SellerDto,
-    @Context() context: { res: Response },
-  ): Promise<SellerResponse> {
-    if (!sellerDto.name || !sellerDto.email || !sellerDto.password) {
-      throw new BadRequestException('Please fill the all fields');
-    }
+  // @Mutation(() => SellerResponse)
+  // async registerSeller(
+  //   @Args('sellerDto') sellerDto: SellerDto,
+  //   @Context() context: { res: Response },
+  // ): Promise<SellerResponse> {
+  //   if (!sellerDto.name || !sellerDto.email || !sellerDto.password) {
+  //     throw new BadRequestException('Please fill the all fields');
+  //   }
 
-    const { activation_token } = await this.userService.sellerRegister(
-      sellerDto,
-      context.res,
-    );
+  //   const { activation_token } = await this.userService.sellerRegister(
+  //     sellerDto,
+  //     context.res,
+  //   );
 
-    return { activation_token };
-  }
+  //   return { activation_token };
+  // }
 
-  @Mutation(() => SellerActivationResponse)
-  async activateSeller(
-    @Args('activationDto') activationDto: ActivationDto,
-    @Context() context: { res: Response },
-  ): Promise<SellerActivationResponse> {
-    return await this.userService.activateSeller(activationDto, context.res);
-  }
+  // @Mutation(() => SellerActivationResponse)
+  // async activateSeller(
+  //   @Args('activationDto') activationDto: ActivationDto,
+  //   @Context() context: { res: Response },
+  // ): Promise<SellerActivationResponse> {
+  //   return await this.userService.activateSeller(activationDto, context.res);
+  // }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -129,6 +129,11 @@ export class UsersResolver {
     return this.userService.getUsers();
   }
 
+  @Query(() => Boolean)
+  async userExist(@Args('email') email: string): Promise<boolean> {
+    return await this.userService.userExist(email);
+  }
+
   @Query(() => User, { nullable: true })
   async getUserById(
     @Args('id') id: string,
@@ -142,12 +147,12 @@ export class UsersResolver {
     return await this.userService.getUserByEmail(email);
   }
 
-  @Query(() => Seller, { nullable: true })
-  async getSellerByEmail(
-    @Args('email') email: string,
-  ): Promise<Seller | null> {
-    return await this.userService.getSellerByEmail(email);
-  }
+  // @Query(() => Seller, { nullable: true })
+  // async getSellerByEmail(
+  //   @Args('email') email: string,
+  // ): Promise<Seller | null> {
+  //   return await this.userService.getSellerByEmail(email);
+  // }
 
 
   @Query(() => [LimitedUserData])
