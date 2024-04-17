@@ -14,6 +14,9 @@ export interface Listing {
   userId: string;
   postedAt: Date;
   rating?: number;
+  discount?: number;
+  delivery: string;
+  quantity: number;
 }
 export interface Category {
   label: string;
@@ -28,12 +31,12 @@ export interface GetPremiumUsersResponse {
 }
 export interface GetBasicUsersResponse {
   data: {
-    getBasicUsers: LimitedUserData[];
+    getSeller: LimitedUserData[];
   };
 }
 
 export interface GetFavIdsResponse {
   data: {
-    favoriteIds: string[];
+    getFavoriteIds: string[];
   };
 }
