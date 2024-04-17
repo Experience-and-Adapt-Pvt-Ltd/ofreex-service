@@ -49,8 +49,8 @@ const ActivationModal = () => {
 
   const onSubmit: SubmitHandler<FieldValues> =
     (data) => {
-      console.log("activation Token = " + activationTokenHook.activationToken);
-      console.log("data in Activation = ");
+      //console.log("activation Token = " + activationTokenHook.activationToken);
+      //console.log("data in Activation = ");
 
       data = {
         ...data,
