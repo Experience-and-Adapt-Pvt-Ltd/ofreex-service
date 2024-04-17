@@ -1,9 +1,6 @@
 "use client";
 
-import axios from "axios";
-import { AiFillGithub } from "react-icons/ai";
-import { signIn } from "next-auth/react";
-import { FcGoogle } from "react-icons/fc";
+
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -14,19 +11,18 @@ import useRegisterModal from "@/app/hooks/useRegisterModal";
 import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
-import Button from "../Button";
 import useActivationModal from "@/app/hooks/useActivationModal";
 import useSellerModal from "@/app/hooks/useSellerModal";
 import useBankDetailsModal from "@/app/hooks/useBankDetailsModal";
 import { useActivationToken } from "@/app/hooks/useActivationToken";
 import { useData } from "@/app/hooks/useData";
+import useSellerLoginModal from "@/app/hooks/useSellerLoginModal";
 
 interface RegisterModalProps {
   onUpdate: (data: string) => void;
 }
 
 const SellerModal = ({ }) => {
-  console.log("seller modal");
   const registerModal = useRegisterModal();
   const sellerModal = useSellerModal();
   const bankDetailsModal = useBankDetailsModal();
@@ -35,11 +31,14 @@ const SellerModal = ({ }) => {
   const dataHook = useData();
   const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
+  const sellerLoginModal = useSellerLoginModal();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
+    clearErrors,
   } = useForm<FieldValues>({
     defaultValues: {
       name: "",
@@ -47,12 +46,47 @@ const SellerModal = ({ }) => {
       password: "",
       phoneNumber: "",
       address: "",
-      GST: ""
+      gstNumber: ""
     },
   });
 
+ 
+  function validateGSTNumber(gstNumber: string) {
+    const regex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+    console.log("H");
+    
+    return regex.test(gstNumber);
+  }
+
+  function validatePhoneNumber(phoneNumber: any){
+    var phoneNum = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/; 
+    return phoneNum.test(phoneNumber);
+  }
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
+
+    // if(validateGSTNumber(data.gstNumber)){
+    //   setError('gstNumber',{
+    //     type: 'manual',
+    //     message: "Invalid GST Number",
+    //   });
+    //   setIsLoading(false);
+    //   return ;
+    // }
+
+    //Validate Phone Number
+    // if(validatePhoneNumber(data.phoneNumber)){
+    //   setError('phoneNumber',{
+    //     type: "manual",
+    //     message: "Invalid Phone Number",
+    //   });
+    //   setIsLoading(false);
+    //   return ;
+    // }
+
+
+    // clearErrors(['gstNumber']);
     dataHook.obj = data;
     sellerModal.onClose();
     bankDetailsModal.onOpen();
@@ -60,9 +94,9 @@ const SellerModal = ({ }) => {
   };
 
   const onToggle = useCallback(() => {
-    registerModal.onClose();
-    loginModal.onOpen();
-  }, [registerModal, loginModal]);
+    sellerModal.onClose();
+    sellerLoginModal.onOpen();
+  }, [sellerLoginModal , sellerModal]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -114,12 +148,13 @@ const SellerModal = ({ }) => {
       />
 
       <Input
-        id="GST"
-        label="GST number"
+        id="gstNumber"
+        label="GST Number"
         disabled={isLoading}
         register={register}
         errors={errors}
         required
+        maxLength={15}
       />
 
     </div>
@@ -128,12 +163,6 @@ const SellerModal = ({ }) => {
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
-      <Button
-        outline
-        label="Continue with Google"
-        icon={FcGoogle}
-        onClick={() => signIn("google")}
-      />
       <div
         className="
           text-neutral-500 
