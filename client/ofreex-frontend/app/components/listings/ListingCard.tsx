@@ -26,7 +26,7 @@ interface ListingCardProps {
   actionId?: string;
   currentUser?: SafeUser | null;
   quantity?: number;
-
+  discount: number;
 };
 
 const ListingCard: React.FC<ListingCardProps> = ({
@@ -40,6 +40,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
   actionId = '',
   currentUser,
   quantity,
+  discount = 0,
 }) => {
   const router = useRouter();
   const { getByValue } = useCountries();
@@ -86,7 +87,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
     return `${format(start, 'PP')} - ${format(end, 'PP')}`;
   }, [reservation]);
 
-  //console.log(data);
+  let finalPrice = data.price - (data.price * (discount/100));
   
   return (
     <div
@@ -130,7 +131,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
         </div>
         <div className="flex flex-row items-center justify-between ">
           <div className="font-semibold">
-            ₹ {price} 
+            ₹ {finalPrice} 
           </div>
           {quantity !== undefined &&(<div className="text-sm text-neutral-500">
           Stock Present: {quantity}

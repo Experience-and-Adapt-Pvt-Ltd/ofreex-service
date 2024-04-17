@@ -83,6 +83,7 @@ const PropertiesClient: React.FC<PropertiesClientProps> = ({
             actionLabel2="Edit Product"
             currentUser={currentUser}
             quantity={listing.quantity}
+            discount={listing.discount}
           />
         ))}
       </div>
