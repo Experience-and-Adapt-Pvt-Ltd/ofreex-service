@@ -14,6 +14,7 @@ import MenuItem from "./MenuItem";
 import Avatar from "../Avatar";
 import useSellerModal from "@/app/hooks/useSellerModal";
 import getCurrentSeller from "@/app/actions/getCurrentSeller";
+import useSellerLoginModal from "@/app/hooks/useSellerLoginModal";
 
 interface UserMenuProps {
   currentUser?: SafeUser | null
@@ -30,6 +31,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
   const registerModal = useRegisterModal();
   const sellerModal = useSellerModal();
   const rentModal = useRentModal();
+  const sellerLoginModal = useSellerLoginModal();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -38,12 +40,11 @@ const UserMenu: React.FC<UserMenuProps> = ({
   }, [currentUser]);
 
   const onSeller = useCallback(() => {
-    if (!currentUser) {
-      return loginModal.onOpen();
-    }
-
-    sellerModal.onOpen();
-  }, [loginModal, sellerModal, currentUser]);
+    sellerLoginModal.onOpen();
+  }, [sellerLoginModal]);
+  const onBuyer = useCallback(() => {
+    registerModal.onOpen();
+  }, [registerModal]);
   const onRent = useCallback(() => {
     if (!currentUser) {
       return loginModal.onOpen();
@@ -55,7 +56,40 @@ const UserMenu: React.FC<UserMenuProps> = ({
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
-        {!currentSeller ? <div
+        {!currentUser && !currentSeller ? <div
+          onClick={onBuyer}
+          className="
+          hidden
+          md:block
+          text-sm 
+          font-semibold 
+          py-3 
+          px-4 
+          rounded-full 
+          dark:hover:bg-gray-900
+          transition 
+          cursor-pointer
+          "
+        >
+          Become a Buyer!!
+        </div> : <div
+          onClick={() => { }}
+          className="
+          hidden
+          md:block
+          text-sm 
+          font-semibold 
+          py-3 
+          px-4 
+          rounded-full 
+          dark:hover:bg-gray-900
+          transition 
+          cursor-pointer
+          "
+        >
+
+        </div>}
+        {!currentUser && !currentSeller ? <div
           onClick={onSeller}
           className="
           hidden
@@ -72,7 +106,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
         >
           Become a Seller!!
         </div> : <div
-          onClick={onRent}
+          onClick={() => { }}
           className="
           hidden
           md:block
@@ -86,7 +120,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
           cursor-pointer
           "
         >
-          Add a Listing!!
+
         </div>}
         <div
           onClick={toggleOpen}
@@ -133,29 +167,25 @@ const UserMenu: React.FC<UserMenuProps> = ({
           "
         >
           <div className="flex flex-col cursor-pointer">
-            {currentUser ? (
+            {currentUser || currentSeller ? (
               <>
-                {/* <MenuItem 
-                  label="My trips" 
-                  onClick={() => router.push('/trips')}
-                /> */}
-                <MenuItem
+                {currentUser ? <MenuItem
                   label="My favorites"
                   onClick={() => router.push('/favorites')}
-                />
-                <MenuItem
-                  label="Items Bought"
+                /> : ""}
+                {currentUser ? <MenuItem
+                  label="Your Order"
                   onClick={() => router.push('/reservations')}
-                />
-                <MenuItem
-                  label="All my Listings"
-                  onClick={() => router.push('/properties')}
-                />
+                /> : ""}
+                {currentSeller ? <MenuItem label="All my Listings" onClick={() => router.push('/properties')} /> : ""}
+
                 {currentSeller ? <MenuItem label="Add new Listing" onClick={rentModal.onOpen} /> : ""}
                 <hr />
                 <MenuItem
                   label="Logout"
-                  onClick={() => signOut()}
+                  onClick={async () => {
+                    console.log(await signOut({ callbackUrl: 'http://localhost:3000/' }));
+                  }}
                 />
               </>
             ) : (
