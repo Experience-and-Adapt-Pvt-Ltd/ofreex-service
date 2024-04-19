@@ -43,9 +43,11 @@ export async function PATCH(
       description,
       price,
       discount,
+      category,
+      subCategory
     } = body;
     //console log id, title, description, price and discount
-    // console.log(id, title, description, price, discount);
+    console.log(id, title, description, price, discount);
 
     //const hashedPassword = await bcrypt.hash(password, 15);
     const { data: listing } = await axios.patch(
@@ -55,9 +57,12 @@ export async function PATCH(
       description,
       price: parseInt(price, 10),
       discount: parseInt(discount, 10),
+      category,
+      subCategory
     }
     )
-    //console.log(`Regitering ${register}`);
+    console.log(`Regitering`);
+    console.log(listing);
 
     return NextResponse.json(listing);
 

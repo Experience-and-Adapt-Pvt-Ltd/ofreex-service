@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from "react";
 import {
   FieldErrors,
   FieldValues,
@@ -29,6 +30,10 @@ const Input: React.FC<InputProps> = ({
   errors,
   ...rest
 }) => {
+  const [value, setValue] = useState<string>(placeholderString);
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
   return (
     <div className="w-full relative">
       {formatPrice && (
@@ -46,7 +51,8 @@ const Input: React.FC<InputProps> = ({
         id={id}
         disabled={disabled}
         {...register(id, { required })}
-        placeholder={placeholderString}
+        value={value}
+        onChange={onChange}
         className={`
           peer
           w-full
