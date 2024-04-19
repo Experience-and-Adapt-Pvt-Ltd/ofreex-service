@@ -39,6 +39,7 @@ const EditModal: React.FC<EditModalProps> = ({
   const editModal = useEditModal();
   const registerModal = useRegisterModal();
   const [isLoading, setIsLoading] = useState(false);
+  const [categoryStr, setCategoryStr] = useState<string>(editHook.obj.listing?.category ? editHook.obj.listing?.category : "");
 
   const {
     register,
@@ -48,26 +49,39 @@ const EditModal: React.FC<EditModalProps> = ({
     },
   } = useForm<FieldValues>({
     defaultValues: {
-      email: '',
-      password: ''
     },
   });
 
   const onSubmit: SubmitHandler<FieldValues> =
     (data) => {
+      if (data.category !== "others") {
+        data.subCategory = ""
+      }
+
       console.log("here");
-      console.log(data);
+      data = {
+        ...data,
+        category: categoryStr
+      }
+      console.log({
+        id: editHook.obj.id,
+        ...data
+      });
       setIsLoading(true);
 
       axios.patch(`/api/listings/${editHook.obj.id}`, {
         id: editHook.obj.id,
         ...data
       })
-        .then(() => {
+        .then((res) => {
           setIsLoading(false);
           toast.success('Listing Updated');
           editModal.onClose();
-          router.refresh();
+          // router.push('/properties')
+          console.log("res.data");
+          editHook.obj.listing = res.data;
+          console.log(editHook.obj.listing);
+          router.replace('/properties');
         })
         .catch((error) => {
           setIsLoading(false);
@@ -76,11 +90,7 @@ const EditModal: React.FC<EditModalProps> = ({
         })
     }
   const setCustomValue = (id: string, value: any) => {
-    // setValue(id, value, {
-    //   shouldDirty: true,
-    //   shouldTouch: true,
-    //   shouldValidate: true,
-    // });
+    setCategoryStr(value);
   };
 
   const bodyContent = (
@@ -136,18 +146,33 @@ const EditModal: React.FC<EditModalProps> = ({
         /> */}
       <select
         id="category"
-      //onChange={(e) => setCustomValue("delivery", e.target.value)}
+        onChange={(e) => setCustomValue("delivery", e.target.value)}
       >
         <option value={editHook.obj.listing?.category}>{editHook.obj.listing?.category}</option>
         {/* <option value="Books">Books</option>
         <option value="Cars">Cars</option> */}
         {categories
-          ? categories.map((item) => (
-            <option value={item.label}>{item.label}</option>
+          ? categories.map((item, index) => (
+            item.label !== editHook.obj.listing?.category ?
+              <option key={index} value={item.label}>{item.label}</option> :
+              ""
 
           ))
+
           : null}
+        <option value="others">{"others"}</option>
       </select>
+      {
+        categoryStr === "others" ? <Input
+          id="subCategory"
+          label="subCategory"
+          placeholderString={editHook.obj.listing?.subCategory?.toString()}
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        /> : ""
+      }
       {/* </div> */}
     </div>
   )
