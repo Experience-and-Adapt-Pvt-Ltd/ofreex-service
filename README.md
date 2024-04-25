@@ -3,7 +3,8 @@ OFreeX Backend and Front End code
 
 Frontend:
 
-To run server: npx run dev
+To Install Package: npm install
+To run server: npm run dev
 
 pages: This is for nextauth
 app: It contains all components of website
