@@ -40,8 +40,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
   }, [currentUser]);
 
   const onSeller = useCallback(() => {
-    sellerLoginModal.onOpen();
-  }, [sellerLoginModal]);
+    sellerModal.onOpen();
+  }, [sellerModal]);
   const onBuyer = useCallback(() => {
     registerModal.onOpen();
   }, [registerModal]);
@@ -66,6 +66,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
           py-3 
           px-4 
           rounded-full 
+          border-4
+          border-[#37b668]
           dark:hover:bg-gray-900
           transition 
           cursor-pointer
@@ -102,6 +104,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
           dark:hover:bg-gray-900
           transition 
           cursor-pointer
+          border-4
+          border-[#37b668]
           "
         >
           Become a Seller!!
@@ -190,14 +194,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
               </>
             ) : (
               <>
-                <MenuItem
-                  label="Login"
-                  onClick={loginModal.onOpen}
-                />
-                <MenuItem
-                  label="Sign up"
-                  onClick={registerModal.onOpen}
-                />
+                
               </>
             )}
           </div>
