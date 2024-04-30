@@ -23,6 +23,10 @@ import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
               name: 'seller',
               url: 'http://localhost:4003/graphql',
             },
+            {
+              name: 'cart',
+              url: 'http://localhost:4004/graphql',
+            },
           ],
         }),
       },
@@ -31,4 +35,4 @@ import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
   controllers: [],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
