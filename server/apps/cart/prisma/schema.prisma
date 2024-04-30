@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  user      String     @unique
+  totalAmount Float    @default(0)
+  totalItem Int        @default(0)
+  items     Item[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Wishlist {
+  id        String     @id @default(uuid())
+  user      String     @unique
+  listingId String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Item {
+  id        String     @id @default(uuid())
+  seller    String
+  quantity  Int
+  listingId String
+  price     Float      @default(0)
+  cart      Cart?      @relation(fields: [cartId], references: [id])
+  cartId    String?
+}
+
+model Order {
+  id              String   @id @default(uuid())
+  orderId         String   @unique
+  user            String
+  status          String
+  totalAmount     Float
+  totalItems      Int
+  notes           String?
+  shippingAddress Address? @relation(fields: [id], references: [id]) // Reference the id field of Address model
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Address {
+  id        String   @id @default(uuid())
+  street    String
+  city      String
+  state     String
+  pincode   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+  orders    Order[]
+}
+
+model settings{
+  id        String  @id @default(uuid())
+  key       String
+  value     String
+}
