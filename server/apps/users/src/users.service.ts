@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
 import {
@@ -45,12 +49,13 @@ export class UsersService {
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
-    private readonly emailService: EmailService,
-  ) { }
+    private readonly emailService: EmailService
+  ) {}
 
   //register user
   async register(registerDto: RegisterDto, response: Response) {
-    const { name, email, password, phoneNumber, isPremium, favoriteIds } = registerDto;
+    const { name, email, password, phoneNumber, isPremium, favoriteIds } =
+      registerDto;
 
     //checking wether user mail exist or not
     const isEmailExist = await this.prisma.user.findUnique({
@@ -99,7 +104,7 @@ export class UsersService {
       password: hashedPassword,
       phoneNumber,
       isPremium,
-      favoriteIds
+      favoriteIds,
     };
 
     const activationToken = await this.createActivationToken(user);
@@ -117,7 +122,6 @@ export class UsersService {
 
     return { activation_token, response };
   }
-
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // async sellerRegister(sellerDto: SellerDto, response: Response) {
@@ -232,8 +236,6 @@ export class UsersService {
   //   return { user, resposne };
   // }
 
-
-
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   async update(id: string, updateUserDto: UpdateDto, response: Response) {
     try {
@@ -243,7 +245,10 @@ export class UsersService {
         throw new NotFoundException(`User with ID ${id} not found`);
       }
 
-      const updatedUser: User = await this.prisma.user.update({ where: { id }, data: updateUserDto });
+      const updatedUser: User = await this.prisma.user.update({
+        where: { id },
+        data: updateUserDto,
+      });
 
       return { user: updatedUser, response };
     } catch (error) {
@@ -263,7 +268,7 @@ export class UsersService {
       {
         secret: this.configService.get<string>('ACTIVATION_TOKEN'),
         expiresIn: '48h',
-      },
+      }
     );
     return { token, activationCode };
   }
@@ -281,7 +286,8 @@ export class UsersService {
       throw new BadRequestException('Activation Code is Invalid');
     }
 
-    const { name, email, password, phoneNumber, isPremium, favoriteIds } = newUser.user;
+    const { name, email, password, phoneNumber, isPremium, favoriteIds } =
+      newUser.user;
     //const favoriteIds:string[] = [];
     const existingUser = await this.prisma.user.findUnique({
       where: {
@@ -300,7 +306,7 @@ export class UsersService {
         password,
         phoneNumber,
         isPremium,
-        favoriteIds
+        favoriteIds,
       },
     });
     return { user, resposne };
@@ -343,7 +349,7 @@ export class UsersService {
       {
         secret: this.configService.get<string>('FORGOT_PASSWORD_SECRET'),
         expiresIn: '5m',
-      },
+      }
     );
     return forgotPasswordToken;
   }
