@@ -127,14 +127,12 @@ const UserMenu: React.FC<UserMenuProps> = ({
         >
 
         </div>}
-
         <div
         onClick={() => router.push('/cart')} 
         className="cursor-pointer p-2 border-[1px] border-neutral-200 rounded-full hover:shadow-md transition"
         style={{ fontSize: '24px' }}>
         <FaCartShopping style={{ width: '24px', height: '24px' }}/>
           </div>
-          
         <div
           onClick={toggleOpen}
           className="
