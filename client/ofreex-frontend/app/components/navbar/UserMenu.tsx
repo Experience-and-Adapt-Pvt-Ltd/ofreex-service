@@ -34,6 +34,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
   const rentModal = useRentModal();
   const sellerLoginModal = useSellerLoginModal();
 
+
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOpen = useCallback(() => {
@@ -41,8 +42,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
   }, [currentUser]);
 
   const onSeller = useCallback(() => {
-    sellerLoginModal.onOpen();
-  }, [sellerLoginModal]);
+    sellerModal.onOpen();
+  }, [sellerModal]);
   const onBuyer = useCallback(() => {
     registerModal.onOpen();
   }, [registerModal]);
