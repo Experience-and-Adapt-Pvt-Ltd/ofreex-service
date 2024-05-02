@@ -1,20 +1,13 @@
 "use client";
 import React from "react";
 
-import { updateItemQuantity } from "@/app/actions/cart.operations";
-
 const QunatityDropDown = ({
   defaultValue,
-  cart,
   product,
   productIdx,
   itemMaxCount,
+  updateQuantity,
 }) => {
-  async function updateQuantity(e: any, product: any) {
-    const item = cart.items.find((item: any) => item.listingId == product.id);
-    await updateItemQuantity(item.id, cart.user, e.target.value);
-  }
-  console.log(defaultValue);
   return (
     <select
       id={`quantity-${productIdx}`}
@@ -28,7 +21,11 @@ const QunatityDropDown = ({
           return i;
         })
         .map((e) => {
-          return <option value={e + 1}>{e + 1}</option>;
+          return (
+            <option value={e + 1} key={e}>
+              {e + 1}
+            </option>
+          );
         })}
     </select>
   );

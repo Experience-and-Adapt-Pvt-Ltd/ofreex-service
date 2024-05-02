@@ -9,7 +9,13 @@ const RemoveItem = ({ cart, product }) => {
     await removeItemFromCart(item.id, cart.user);
   }
 
-  return <Button label="Remove item" onClick={removeItem} />;
+  return (
+    <button
+    onClick={removeItem}
+    className="bg-green-500 text-white font-semibold py-2 px-8 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50 w-[50px] sm:w-auto">
+      Remove Item
+    </button>
+  )
 };
 
 export default RemoveItem;
