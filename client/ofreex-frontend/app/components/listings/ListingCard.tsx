@@ -57,6 +57,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
 
       onAction?.(actionId)
     }, [disabled, onAction, actionId]);
+        
   const handleCancel2 = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();

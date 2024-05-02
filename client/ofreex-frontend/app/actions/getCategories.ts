@@ -5,8 +5,7 @@ export interface IListingsParams {
   label?: string;
 }
 
-export default async function getCategories(
-) {
+export default async function getCategories() {
   try {
     let { data: categories } = await axios.get(
       `http://localhost:4002/listings/getCategories`

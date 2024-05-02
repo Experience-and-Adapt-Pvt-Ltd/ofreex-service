@@ -15,6 +15,7 @@ import Avatar from "../Avatar";
 import useSellerModal from "@/app/hooks/useSellerModal";
 import getCurrentSeller from "@/app/actions/getCurrentSeller";
 import useSellerLoginModal from "@/app/hooks/useSellerLoginModal";
+import { FaCartShopping } from "react-icons/fa6";
 
 interface UserMenuProps {
   currentUser?: SafeUser | null
@@ -40,8 +41,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
   }, [currentUser]);
 
   const onSeller = useCallback(() => {
-    sellerModal.onOpen();
-  }, [sellerModal]);
+    sellerLoginModal.onOpen();
+  }, [sellerLoginModal]);
   const onBuyer = useCallback(() => {
     registerModal.onOpen();
   }, [registerModal]);
@@ -126,6 +127,12 @@ const UserMenu: React.FC<UserMenuProps> = ({
         >
 
         </div>}
+        <div
+        onClick={() => router.push('/cart')} 
+        className="cursor-pointer p-2 border-[1px] border-neutral-200 rounded-full hover:shadow-md transition"
+        style={{ fontSize: '24px' }}>
+        <FaCartShopping style={{ width: '24px', height: '24px' }}/>
+          </div>
         <div
           onClick={toggleOpen}
           className="

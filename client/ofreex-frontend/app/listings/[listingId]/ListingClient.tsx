@@ -1,25 +1,23 @@
-'use client';
+"use client";
 
-import axios from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { toast } from "react-hot-toast";
+import { useMemo, useState } from "react";
 import { Range } from "react-date-range";
 import { useRouter } from "next/navigation";
-import { differenceInDays, eachDayOfInterval } from 'date-fns';
 
 import useLoginModal from "@/app/hooks/useLoginModal";
-import { SafeListing, SafeReservation, SafeUser } from "@/app/types";
+import { SafeListing, SafeUser } from "@/app/types";
 
 import Container from "@/app/components/Container";
 import { categories } from "@/app/components/navbar/Categories";
 import ListingHead from "@/app/components/listings/ListingHead";
 import ListingInfo from "@/app/components/listings/ListingInfo";
 import ListingReservation from "@/app/components/listings/ListingReservation";
+import { addItemToCart } from "@/app/actions/cart.operations";
 
 const initialDateRange = {
   startDate: new Date(),
   endDate: new Date(),
-  key: 'selection'
+  key: "selection",
 };
 
 interface ListingClientProps {
@@ -33,22 +31,25 @@ interface ListingClientProps {
 const ListingClient: React.FC<ListingClientProps> = ({
   listing,
   //reservations = [],
-  currentUser
+  currentUser,
 }) => {
   const loginModal = useLoginModal();
   const router = useRouter();
 
   const category = useMemo(() => {
-    return categories ? categories.find((items) =>
-      items.label === listing.category) : null;
+    return categories
+      ? categories.find((items) => items.label === listing.category)
+      : null;
   }, [listing.category]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(listing.price);
   const [dateRange, setDateRange] = useState<Range>(initialDateRange);
 
-
-
+  const addToCart = async () => {
+    await addItemToCart(listing, currentUser);
+    router.push("/cart");
+  };
 
   return (
     <Container>
@@ -64,7 +65,6 @@ const ListingClient: React.FC<ListingClientProps> = ({
             imageUrls={listing.imageUrls}
             locationValue={listing.locationValue}
             id={listing.id}
-
             currentUser={currentUser}
           />
           <div
@@ -95,11 +95,12 @@ const ListingClient: React.FC<ListingClientProps> = ({
                 totalPrice={totalPrice}
                 quantity={listing.quantity}
                 discount={listing.discount}
-              // onChangeDate={(value) => setDateRange(value)}
-              //dateRange={dateRange}
-              //onSubmit={onCreateReservation}
-              // disabled={isLoading}
-              //disabledDates={disabledDates}
+                onAddToCart={addToCart}
+                // onChangeDate={(value) => setDateRange(value)}
+                //dateRange={dateRange}
+                //onSubmit={onCreateReservation}
+                // disabled={isLoading}
+                //disabledDates={disabledDates}
               />
             </div>
           </div>
@@ -107,6 +108,6 @@ const ListingClient: React.FC<ListingClientProps> = ({
       </div>
     </Container>
   );
-}
+};
 
 export default ListingClient;
