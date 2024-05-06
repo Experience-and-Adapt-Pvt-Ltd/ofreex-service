@@ -1,7 +1,7 @@
 import { Args, Context, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { SellerService } from './seller.service';
-import { ActivationResponse, LoginResponse, LogoutResponse, RegisterResponse } from './types/seller.types';
-import { ActivationDto, RegisterDto } from './dto/seller.dto';
+import { ActivationResponse, ForgotPasswordResponse, LoginResponse, LogoutResponse, RegisterResponse, ResetPasswordResponse } from './types/seller.types';
+import { ActivationDto, ForgotPasswordDto, RegisterDto, ResetPasswordDto } from './dto/seller.dto';
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { Seller } from './entites/seller.entity';
@@ -9,7 +9,7 @@ import { AuthGuard } from './guards/auth.guard';
 
 @Resolver('Seller')
 export class SellerResolver {
-  constructor(private readonly sellerService: SellerService) {}
+  constructor(private readonly sellerService: SellerService) { }
 
   @Mutation(() => RegisterResponse)
   async register(
@@ -36,6 +36,20 @@ export class SellerResolver {
     );
     return { activation_token };
   }
+  @Mutation(() => ForgotPasswordResponse)
+  async forgotPassword(
+    @Args('forgotPasswordDto') forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<ForgotPasswordResponse> {
+    return await this.sellerService.ForgotPassword(forgotPasswordDto);
+  }
+
+  @Mutation(() => ResetPasswordResponse)
+  async resetPassword(
+    @Args('resetPasswordDto') resetPasswordDto: ResetPasswordDto,
+  ): Promise<ResetPasswordResponse> {
+    return await this.sellerService.resetPassword(resetPasswordDto);
+  }
+
 
   @Mutation(() => ActivationResponse)
   async activateUser(
@@ -76,7 +90,7 @@ export class SellerResolver {
   ): Promise<Seller | null> {
     return await this.sellerService.getSellerByEmail(email);
   }
- 
+
   @Query(() => [Seller])
   async getSeller() {
     return this.sellerService.getSellers();

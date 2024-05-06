@@ -9,7 +9,22 @@ export class ErrorType {
   @Field({ nullable: true })
   code?: string;
 }
+@ObjectType()
+export class ForgotPasswordResponse {
+  @Field()
+  message: string;
 
+  @Field(() => ErrorType, { nullable: true })
+  error?: ErrorType;
+}
+@ObjectType()
+export class ResetPasswordResponse {
+  @Field(() => Seller)
+  user: Seller | any;
+
+  @Field(() => ErrorType, { nullable: true })
+  error?: ErrorType;
+}
 @ObjectType()
 export class RegisterResponse {
   @Field()
