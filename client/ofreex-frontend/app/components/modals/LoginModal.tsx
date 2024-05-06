@@ -18,12 +18,19 @@ import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+} from "react-icons/ai";
+import useForgetModal from "@/app/hooks/useForgetModal";
 
 const LoginModal = () => {
   const router = useRouter();
+  const forgetModal = useForgetModal();
   const loginModal = useLoginModal();
   const registerModal = useRegisterModal();
   const [isLoading, setIsLoading] = useState(false);
+  const [show, setShow] = useState(false);
 
   const {
     register,
@@ -83,12 +90,25 @@ const LoginModal = () => {
       <Input
         id="password"
         label="Password"
-        type="password"
+        type={!show ? "password" : "text"}
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
+      {!show ? (
+            <AiOutlineEyeInvisible
+              className="absolute right-[5rem] top-[13rem]"
+              size={20}
+              onClick={() => setShow(true)}
+            />
+          ) : (
+            <AiOutlineEye
+              className="absolute right-[5rem] top-[13rem]"
+              size={20}
+              onClick={() => setShow(false)}
+            />
+          )}
     </div>
   )
 
@@ -100,6 +120,14 @@ const LoginModal = () => {
         label="Continue with Google"
         icon={FcGoogle}
         onClick={() => signIn('google')}
+      />
+      <Button
+        outline
+        label="Forget Password?"
+        onClick={() => {
+          loginModal.onClose();
+          forgetModal.onOpen();
+        }}
       />
       <div className="
       text-neutral-500 text-center mt-4 font-light">
