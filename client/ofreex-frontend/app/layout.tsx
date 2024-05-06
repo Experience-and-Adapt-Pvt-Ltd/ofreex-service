@@ -19,6 +19,8 @@ import SellerActivationModal from './components/modals/SellerActivationModal';
 import getCurrentSeller from './actions/getCurrentSeller';
 import getCategories from './actions/getCategories';
 import SellerLoginModal from './components/modals/SellerLoginModal';
+import ForgetModal from './components/modals/ForgetModal';
+import SellerForgetModal from './components/modals/SellerForgetModal';
 
 
 export const metadata = {
@@ -58,6 +60,8 @@ export default async function RootLayout({
           <SellerLoginModal />
           <BankDetailsModal />
           <SellerActivationModal />
+          <ForgetModal />
+          <SellerForgetModal />
           <Navbar currentUser={currentUser} currentSeller={currentSeller} categories={categories} />
         </ClientOnly>
         <div className="pb-20">
