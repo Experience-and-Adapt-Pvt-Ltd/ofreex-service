@@ -79,8 +79,6 @@ const UserMenu: React.FC<UserMenuProps> = ({
         </div> : <div
           onClick={() => { }}
           className="
-          hidden
-          md:block
           text-sm 
           font-semibold 
           py-3 
@@ -191,7 +189,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                 /> : ""}
                 {currentSeller ? <MenuItem label="All my Listings" onClick={() => router.push('/properties')} /> : ""}
 
-                {currentSeller ? <MenuItem label="Add new Listing" onClick={rentModal.onOpen} /> : ""}
+                {currentSeller ? <MenuItem label="Add new Listing" onClick={() => router.push('/sellerproductform')} /> : ""}
                 <hr />
                 <MenuItem
                   label="Logout"
@@ -201,9 +199,16 @@ const UserMenu: React.FC<UserMenuProps> = ({
                 />
               </>
             ) : (
-              <>
-                
-              </>
+              <div className="flex flex-col cursor-pointer md:hidden">
+                <MenuItem 
+                label="Become a Buyer"
+                onClick={onBuyer}
+                />
+                <MenuItem 
+                label="Become a Seller"
+                onClick={onBuyer}
+                />
+              </div>
             )}
           </div>
         </div>
