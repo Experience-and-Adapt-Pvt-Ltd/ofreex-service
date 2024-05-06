@@ -58,16 +58,15 @@ const SellerActivationModal = () => {
         ...data,
         activationToken: activationTokenHook.activationToken
       }
-      // console.log(data);
       axios.post('/api/activateSeller', data)
         .then((res) => {
           toast.success('Seller Registered!');
-          // console.log(res);
           sellerActivationModal.onClose();
           router.refresh();
         })
         .catch((error) => {
-          toast.error(error);
+          const errorMessage = error.response?.data?.error || 'An unexpected error occurred';
+          toast.error(errorMessage);
         })
         .finally(() => {
           setIsLoading(false);
@@ -100,37 +99,6 @@ const SellerActivationModal = () => {
     </div>
   )
 
-  const footerContent = (
-    <div className="flex flex-col gap-4 mt-3">
-      {/* <hr />
-      <Button
-        outline
-        label="Continue with Google"
-        icon={FcGoogle}
-        onClick={() => signIn('google')}
-      />
-      <Button
-        outline
-        label="Continue with Github"
-        icon={AiFillGithub}
-        onClick={() => signIn('github')}
-      />
-      <div className="
-      text-neutral-500 text-center mt-4 font-light">
-        <p>First time using OfreeX?
-          <span
-            onClick={onToggle}
-            className="
-              text-neutral-800
-              cursor-pointer 
-              hover:underline
-            "
-          > Create an account</span>
-        </p>
-      </div> */}
-    </div>
-  )
-
   return (
     <Modal
       disabled={isLoading}
@@ -140,7 +108,6 @@ const SellerActivationModal = () => {
       onClose={sellerActivationModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
-      footer={footerContent}
     />
   );
 }

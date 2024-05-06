@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
-import { ActivationDto, LoginDto, RegisterDto } from './dto/seller.dto';
+import { ActivationDto, ForgotPasswordDto, LoginDto, RegisterDto, ResetPasswordDto } from './dto/seller.dto';
 import { Response } from 'express';
 import { PrismaClient } from '../node_modules/.prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -33,7 +33,7 @@ export class SellerService {
     private readonly prisma: PrismaClient,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService
-  ) {}
+  ) { }
 
   //register seller
   async register(registerDto: RegisterDto, response: Response) {
@@ -244,7 +244,71 @@ export class SellerService {
       throw new BadRequestException(`Could not fetch user: ${error.message}`);
     }
   }
+  async generateForgotPasswordLink(user: Seller) {
+    const forgotPasswordToken = this.jwtService.sign(
+      {
+        user,
+      },
+      {
+        secret: this.configService.get<string>('FORGOT_PASSWORD_SECRET'),
+        expiresIn: '5m',
+      },
+    );
+    return forgotPasswordToken;
+  }
 
+  //Forgot Password
+  async ForgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    const { email } = forgotPasswordDto;
+    const user = await this.prisma.seller.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('User with Email id does not exist');
+    }
+
+    const forgotPasswordToken = await this.generateForgotPasswordLink(user);
+
+    const resetPasswordUrl =
+      this.configService.get<string>('CLIENT_SIDE_URI') +
+      `/reset-password?verify=${forgotPasswordToken}`;
+
+    await this.emailService.sendMail({
+      email,
+      subject: 'Reset your Password',
+      template: './forgot-password',
+      name: user.name,
+      activationCode: resetPasswordUrl,
+    });
+
+    return { message: 'Your Forgot password request successful' };
+  }
+
+  //Reset Password
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { password, activationToken } = resetPasswordDto;
+
+    const decode = await this.jwtService.decode(activationToken);
+
+    if (!decode || decode?.exp * 1000 < Date.now()) {
+      throw new BadRequestException('Invalid Token');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 15);
+
+    const user = this.prisma.seller.update({
+      where: {
+        id: decode.user.id,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+    return { user };
+  }
   //getAll seller service
   async getSellers() {
     return this.prisma.seller.findMany({});

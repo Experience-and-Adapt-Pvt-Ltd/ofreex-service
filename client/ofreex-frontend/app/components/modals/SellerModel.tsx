@@ -17,21 +17,24 @@ import useBankDetailsModal from "@/app/hooks/useBankDetailsModal";
 import { useActivationToken } from "@/app/hooks/useActivationToken";
 import { useData } from "@/app/hooks/useData";
 import useSellerLoginModal from "@/app/hooks/useSellerLoginModal";
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+} from "react-icons/ai";
 
 interface RegisterModalProps {
   onUpdate: (data: string) => void;
 }
 
 const SellerModal = ({ }) => {
-  const registerModal = useRegisterModal();
   const sellerModal = useSellerModal();
   const bankDetailsModal = useBankDetailsModal();
   const activationModal = useActivationModal();
   const activationTokenHook = useActivationToken();
   const dataHook = useData();
-  const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
   const sellerLoginModal = useSellerLoginModal();
+  const [show, setShow] = useState(false);
 
   const {
     register,
@@ -122,12 +125,25 @@ const SellerModal = ({ }) => {
       <Input
         id="password"
         label="Password"
-        type="password"
+        type={!show ? "password" : "text"}
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
+      {!show ? (
+            <AiOutlineEyeInvisible
+              className="absolute right-[5rem] top-[18.7rem]"
+              size={20}
+              onClick={() => setShow(true)}
+            />
+          ) : (
+            <AiOutlineEye
+              className="absolute right-[5rem] top-[18.7rem]"
+              size={20}
+              onClick={() => setShow(false)}
+            />
+          )}
 
       <Input
         id="phoneNumber"

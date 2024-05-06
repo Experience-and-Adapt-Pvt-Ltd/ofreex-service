@@ -45,14 +45,14 @@ export class RegisterDto {
 }
 
 @InputType()
-export class LoginDto{
-    @Field()
-    @IsNotEmpty({message: "Enter Email"})
-    email: string;
+export class LoginDto {
+  @Field()
+  @IsNotEmpty({ message: "Enter Email" })
+  email: string;
 
-    @Field()
-    @IsNotEmpty({message: "Enter Password"})
-    password: string;
+  @Field()
+  @IsNotEmpty({ message: "Enter Password" })
+  password: string;
 }
 
 @InputType()
@@ -64,4 +64,24 @@ export class ActivationDto {
   @Field()
   @IsNotEmpty({ message: 'Activation Code is required!' })
   activationCode: string;
+}
+
+@InputType()
+export class ResetPasswordDto {
+  @Field()
+  @IsNotEmpty({ message: 'New Password Required' })
+  @MinLength(8, { message: 'Password must be at least 8 characters' })
+  password: string;
+
+  @Field()
+  @IsNotEmpty({ message: "Activation Token is Required" })
+  activationToken: string
+}
+
+@InputType()
+export class ForgotPasswordDto {
+  @Field()
+  @IsNotEmpty({ message: 'Enter Email' })
+  @IsEmail({}, { message: 'Email is Invalid' })
+  email: string;
 }

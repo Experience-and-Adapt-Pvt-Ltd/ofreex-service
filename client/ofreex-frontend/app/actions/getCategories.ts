@@ -13,7 +13,6 @@ export default async function getCategories() {
 
     const safeCategories = categories.map((listing: any) => ({
       ...listing,
-      // createdAt: listing.postedAt.toISOString(),
     }));
 
     return safeCategories;

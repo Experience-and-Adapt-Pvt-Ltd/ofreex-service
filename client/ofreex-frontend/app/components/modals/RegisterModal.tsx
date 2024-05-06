@@ -16,6 +16,10 @@ import Heading from "../Heading";
 import Button from "../Button";
 import useActivationModal from "@/app/hooks/useActivationModal";
 import { useActivationToken } from "@/app/hooks/useActivationToken";
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+} from "react-icons/ai";
 
 interface RegisterModalProps {
   onUpdate: (data: string) => void;
@@ -27,6 +31,7 @@ const RegisterModal = ({ }) => {
   const activationTokenHook = useActivationToken();
   const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
+  const [show, setShow] = useState(false);
 
   const {
     register,
@@ -87,12 +92,25 @@ const RegisterModal = ({ }) => {
       <Input
         id="password"
         label="Password"
-        type="password"
+        type={!show ? "password" : "text"}
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
+       {!show ? (
+            <AiOutlineEyeInvisible
+              className="absolute right-[5rem] top-[18.7rem]"
+              size={20}
+              onClick={() => setShow(true)}
+            />
+          ) : (
+            <AiOutlineEye
+              className="absolute right-[5rem] top-[18.7rem]"
+              size={20}
+              onClick={() => setShow(false)}
+            />
+          )}
       <Input
         id="phoneNumber"
         label="phoneNumber"

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 
 export async function POST(request: Request) {
+  try {
   const body = await request.json();
   const { activationToken, activationCode } = body;
   //console.log("asdfasfasdfasdfasfasdfadfasfafa");
@@ -28,22 +29,19 @@ export async function POST(request: Request) {
 
 `,
   });
-
-  // const { id,
-  //     name,
-  //     email,
-  //     password,
-  //     address,
-  //     phoneNumber,
-  //     isPremium } = user.data.user;
-
-  //  const user = await prisma.user.create({
-  //   data: {
-  //     email,
-  //     name,
-  //     hashedPassword,
-  //   }
-  // });
-
+  if (data.errors) {
+    // Check if the activation failed due to an invalid code
+    throw new Error('Activation Code is Invalid');
+  }
   return NextResponse.json(data);
+} catch (error) {
+  return new Response(JSON.stringify({
+    error: error.message
+  }), {
+    status: 400, // Bad Request status code
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+}
 }

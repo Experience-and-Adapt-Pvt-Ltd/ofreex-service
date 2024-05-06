@@ -10,7 +10,7 @@ const Logo = () => {
     <Image
       onClick={() => router.push('/')}
       className="block cursor-pointer w-[7rem] h-[5rem]" 
-      src="/images/ofreex-logo.png" 
+      src="/images/ofreex-logo.jpg" 
       height="100" 
       width="100" 
       alt="Logo" 

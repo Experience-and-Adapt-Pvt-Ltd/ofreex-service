@@ -42,7 +42,9 @@ const Modal: React.FC<ModalProps> = ({
     if (disabled) {
       return;
     }
-
+    // useEffect(() => {
+    // }, []);
+    
     setShowModal(false);
     setTimeout(() => {
       onClose();

@@ -8,11 +8,8 @@ import {
   SubmitHandler,
   useForm
 } from "react-hook-form";
-import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 
-import useRegisterModal from "@/app/hooks/useRegisterModal";
-import useLoginModal from "@/app/hooks/useLoginModal";
 
 import Modal from "./Modal";
 import Input from "../inputs/Input";
@@ -20,14 +17,21 @@ import Heading from "../Heading";
 import Button from "../Button";
 import useSellerModal from "@/app/hooks/useSellerModal";
 import useSellerLoginModal from "@/app/hooks/useSellerLoginModal";
+import {
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+} from "react-icons/ai";
+import useSellerForgetModalModal from "@/app/hooks/useSellerForgetModal";
+
 
 const SellerLoginModal = () => {
   const router = useRouter();
-  const loginModal = useLoginModal();
-  const registerModal = useRegisterModal();
+  const sellerLogin = useSellerLoginModal();
   const [isLoading, setIsLoading] = useState(false);
   const registerSellerModal = useSellerModal();
   const sellerLoginModal = useSellerLoginModal()
+  const [show, setShow] = useState(false);
+  const forgetModal = useSellerForgetModalModal();
   
 
   const {
@@ -95,17 +99,38 @@ const SellerLoginModal = () => {
       <Input
         id="password"
         label="Password"
-        type="password"
+        type={!show ? "password" : "text"}
         disabled={isLoading}
         register={register}
         errors={errors}
         required
       />
+      {!show ? (
+            <AiOutlineEyeInvisible
+              className="absolute right-[5rem] top-[13rem]"
+              size={20}
+              onClick={() => setShow(true)}
+            />
+          ) : (
+            <AiOutlineEye
+              className="absolute right-[5rem] top-[13rem]"
+              size={20}
+              onClick={() => setShow(false)}
+            />
+          )}
     </div>
   )
 
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
+       <Button
+        outline
+        label="Forget Password?"
+        onClick={() => {
+          sellerLogin.onClose();
+          forgetModal.onOpen();
+        }}
+      />
       <hr />
       <div className="
       text-neutral-500 text-center mt-4 font-light">
