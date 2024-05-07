@@ -1,6 +1,23 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
+export class Wishlist {
+  @Field()
+  id: string;
+
+  @Field()
+  user: string;
+
+  @Field()
+  totalAmount?: number;
+
+  @Field()
+  totalItem?: number;
+
+  @Field(() => [Items]) // Define items as an array of Items
+  items?: Items[];
+}
+@ObjectType()
 export class Cart {
   @Field()
   id: string;
@@ -90,5 +107,5 @@ export class OrderResponse {
 @ObjectType()
 export class CartSettings {
   @Field()
-  value : Number;
+  value: Number;
 }

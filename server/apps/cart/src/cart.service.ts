@@ -3,13 +3,11 @@ import { PrismaClient } from '../node_modules/.prisma/client';
 import { ConfigService } from '@nestjs/config';
 import {
   AddItemToCartDto,
+  AddItemToWishlistDto,
   CreateCartDto,
   RemoveItemFromCartDto,
   UpdateItemQuantityDto,
-  WishlistItemDto,
 } from './dto/cart.dto';
-// import { Cart } from '.prisma/client';
-import { Cart } from '../node_modules/.prisma/client';
 
 @Injectable()
 export class CartService {
@@ -37,6 +35,18 @@ export class CartService {
       },
     });
     return cart;
+  }
+
+  async fetchMyWishlist(userId: string) {
+    const wishlist = await this.prisma.wishlist.findFirst({
+      where: {
+        user: userId,
+      },
+      include: {
+        items: true,
+      },
+    });
+    return wishlist;
   }
 
   async fetchMyCartDetails(userId: string) {
@@ -106,7 +116,7 @@ export class CartService {
   async removeItemFromCart(removeItemFromCartDto: RemoveItemFromCartDto) {
     let cart: any = await this.fetchMyCart(removeItemFromCartDto.user);
 
-    const existingItem = cart.items.find(
+    const existingItem = cart.items?.find(
       (item) => item.id === removeItemFromCartDto.item.toString()
     );
 
@@ -140,44 +150,10 @@ export class CartService {
     });
   }
 
-  async wishlistItem(wishlistItemDto: WishlistItemDto) {
-    let cart: any = await this.fetchMyCart(wishlistItemDto.user);
-
-    const existingItem = cart.items.find(
-      (item) => item.listingId === wishlistItemDto.listingId.toString()
-    );
-
-    if (!existingItem) {
-      throw new Error('Item not found in the cart');
-    }
-
-    await this.prisma.item.delete({
-      where: {
-        id: existingItem.id,
-      },
-    });
-    await this.prisma.wishlist.create({
-      data: {
-        listingId: existingItem.listingId,
-        user: cart.user,
-      },
-    });
-    cart = await this.prisma.cart.update({
-      where: {
-        id: cart.id,
-      },
-      data: {
-        totalAmount:
-          cart.totalAmount - existingItem.price * existingItem.quantity,
-        totalItem: cart.totalItem - 1,
-      },
-    });
-  }
-
   async updateItemQuantity(updateItemQuantityDto: UpdateItemQuantityDto) {
     let cart: any = await this.fetchMyCart(updateItemQuantityDto.user);
 
-    const existingItem = cart.items.find(
+    const existingItem = cart.items?.find(
       (item: any) => item.id === updateItemQuantityDto.itemId.toString()
     );
 
@@ -198,7 +174,6 @@ export class CartService {
       total = total + e.quantity * e.price;
       return total;
     }, 0);
-    console.log(totalAmount);
     cart = await this.prisma.cart.update({
       where: {
         id: cart.id,
@@ -208,7 +183,67 @@ export class CartService {
       },
     });
   }
-  // async placeOrderForCart() {}
 
-  // async fetchMyOrders() {}
+  async createWishlist(userId: string) {
+    return this.prisma.wishlist.create({
+      data: {
+        user: userId,
+      },
+    });
+  }
+
+  async addItemToWishlist(addToWishlistDto: AddItemToWishlistDto) {
+    // Check if the user already has a wishlist
+    let wishlist: any = await this.prisma.wishlist.findUnique({
+      where: {
+        user: addToWishlistDto.user,
+      },
+      include: {
+        items: true,
+      },
+    });
+    this.removeItemFromCart({
+      item: addToWishlistDto.item,
+      user: addToWishlistDto.user,
+    });
+    if (!wishlist) {
+      // If the user doesn't have a wishlist, create a new one
+      wishlist = await this.prisma.wishlist.create({
+        data: {
+          user: addToWishlistDto.user,
+          items: {
+            create: [
+              {
+                listingId: addToWishlistDto.listingId,
+                seller: addToWishlistDto.seller,
+                quantity: 1,
+                price: addToWishlistDto.price,
+              },
+            ],
+          },
+        },
+      });
+    } else {
+      // If the user already has a wishlist, update it with the new item
+      wishlist = await this.prisma.wishlist.update({
+        where: {
+          id: wishlist.id,
+        },
+        data: {
+          items: {
+            create: [
+              {
+                listingId: addToWishlistDto.listingId,
+                seller: addToWishlistDto.seller,
+                quantity: 1,
+                price: addToWishlistDto.price,
+              },
+            ],
+          },
+        },
+      });
+    }
+
+    return wishlist;
+  }
 }

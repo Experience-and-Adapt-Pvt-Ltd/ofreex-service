@@ -37,23 +37,43 @@ export class AddItemToCartDto {
 }
 
 @InputType()
-export class RemoveItemFromCartDto {
+export class AddItemToWishlistDto {
   @Field()
   @IsNotEmpty({ message: 'Please provide the Item' })
   @IsString({ message: 'ItemId is invalid' })
   item: string;
 
+  @Field()
+  @IsNotEmpty({ message: 'Please provide the listingId' })
+  @IsString({ message: 'listingId is invalid' })
+  listingId: string;
+
+  @Field()
+  @IsNotEmpty({ message: 'Please provide quantity' })
+  @IsNumber({}, { message: 'quantity is not valid' })
+  quantity: number;
+
+  @Field()
+  @IsNotEmpty({ message: 'Please provide price' })
+  @IsNumber({}, { message: 'price is not valid' })
+  price: number;
+
   @Field({ nullable: true }) // Add nullable: true to make user optional
   @IsOptional()
   user?: string;
+
+  @Field()
+  @IsNotEmpty({ message: 'Please provide seller' })
+  @IsString({ message: 'Seller is not valid' })
+  seller: string;
 }
 
 @InputType()
-export class WishlistItemDto {
+export class RemoveItemFromCartDto {
   @Field()
   @IsNotEmpty({ message: 'Please provide the Item' })
   @IsString({ message: 'ItemId is invalid' })
-  listingId: string;
+  item: string;
 
   @Field({ nullable: true }) // Add nullable: true to make user optional
   @IsOptional()
@@ -81,7 +101,13 @@ export class FetchCartDto {
   @Field()
   @IsString()
   user: string;
-  // Add any necessary fields for fetching the cart
+}
+
+@InputType()
+export class FetchWishlistDto {
+  @Field()
+  @IsString()
+  user: string;
 }
 
 @InputType()

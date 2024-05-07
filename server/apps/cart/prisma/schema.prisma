@@ -9,31 +9,33 @@ datasource db {
 }
 
 model Cart {
-  id        String     @id @default(uuid())
-  user      String     @unique
+  id          String   @id @default(uuid())
+  user        String   @unique
   totalAmount Float    @default(0)
-  totalItem Int        @default(0)
-  items     Item[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  totalItem   Int      @default(0)
+  items       Item[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Wishlist {
-  id        String     @id @default(uuid())
-  user      String     @unique
-  listingId String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id          String   @id @default(uuid())
+  user        String   @unique
+  items       Item[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Item {
-  id        String     @id @default(uuid())
+  id        String   @id @default(uuid())
   seller    String
   quantity  Int
   listingId String
-  price     Float      @default(0)
-  cart      Cart?      @relation(fields: [cartId], references: [id])
+  price     Float    @default(0)
+  cart      Cart?    @relation(fields: [cartId], references: [id])
   cartId    String?
+  wishlist  Wishlist? @relation(fields: [wishlistId], references: [id])
+  wishlistId String?
 }
 
 model Order {
