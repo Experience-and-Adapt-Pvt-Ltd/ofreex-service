@@ -56,6 +56,7 @@ export async function addItemToCart(listing: any, currentUser: any) {
         `,
     });
   } catch (error: any) {
+    console.log(error);
     throw new Error(error);
   }
 }
@@ -96,18 +97,29 @@ export async function removeItemFromCart(itemId: any, userId: any) {
     throw new Error(error);
   }
 }
-export async function wishlistFromCart(itemId: any, userId: any) {
+
+export async function wishlistFromCart(
+  itemId: any,
+  userId: any,
+  price: any,
+  seller: any,
+  listingId: any
+) {
   try {
     let { data: response } = await axios.post("http://localhost:4004/graphql", {
       query: `
       mutation{
         wishlistItem(wishlistItem:{
-          listingId:"${itemId}",
-          user:"${userId}"
+          item:"${itemId}",
+          listingId:"${listingId}",
+          quantity:1,
+          price:${price},
+          user:"${userId}",
+          seller:"${seller}"
         }){
           id,
-          user,
-          }
+          user
+        }
       }
         `,
     });
@@ -136,6 +148,34 @@ export async function updateItemQuantity(
       }
         `,
     });
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+export async function fetchWishlistItems() {
+  try {
+    let { data: response } = await axios.post("http://localhost:4004/graphql", {
+      query: `
+      query{
+        getWishlist(fetchWishlistDto:{
+          user:"9714a90a-bf28-462e-9ed0-41128f7399bc"
+        }){
+          id,
+          user,
+          items{
+            id,
+            seller,
+            quantity,
+            price,
+            listingId
+          },
+          
+        }
+      }
+        `,
+    });
+    console.log(response);
   } catch (error: any) {
     throw new Error(error);
   }

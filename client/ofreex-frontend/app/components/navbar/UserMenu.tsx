@@ -190,6 +190,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                 {currentSeller ? <MenuItem label="All my Listings" onClick={() => router.push('/properties')} /> : ""}
 
                 {currentSeller ? <MenuItem label="Add new Listing" onClick={() => router.push('/sellerproductform')} /> : ""}
+                {/* {currentSeller ? <MenuItem label="Add new Listing" onClick={rentModal.onOpen} /> : ""} */}
                 <hr />
                 <MenuItem
                   label="Logout"
