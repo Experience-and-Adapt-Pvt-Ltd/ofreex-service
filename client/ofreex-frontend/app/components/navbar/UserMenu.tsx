@@ -5,17 +5,14 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-import useLoginModal from "@/app/hooks/useLoginModal";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
-import useRentModal from "@/app/hooks/useRentModal";
 import { SafeSeller, SafeUser } from "@/app/types";
 
 import MenuItem from "./MenuItem";
 import Avatar from "../Avatar";
 import useSellerModal from "@/app/hooks/useSellerModal";
-import getCurrentSeller from "@/app/actions/getCurrentSeller";
-import useSellerLoginModal from "@/app/hooks/useSellerLoginModal";
 import { FaCartShopping } from "react-icons/fa6";
+import useLoginModal from "@/app/hooks/useLoginModal";
 
 interface UserMenuProps {
   currentUser?: SafeUser | null
@@ -27,12 +24,9 @@ const UserMenu: React.FC<UserMenuProps> = ({
   currentSeller
 }) => {
   const router = useRouter();
-
-  const loginModal = useLoginModal();
   const registerModal = useRegisterModal();
   const sellerModal = useSellerModal();
-  const rentModal = useRentModal();
-  const sellerLoginModal = useSellerLoginModal();
+  const loginModal = useLoginModal();
 
 
   const [isOpen, setIsOpen] = useState(false);
@@ -45,52 +39,12 @@ const UserMenu: React.FC<UserMenuProps> = ({
     sellerModal.onOpen();
   }, [sellerModal]);
   const onBuyer = useCallback(() => {
-    registerModal.onOpen();
-  }, [registerModal]);
-  const onRent = useCallback(() => {
-    if (!currentUser) {
-      return loginModal.onOpen();
-    }
-
-    rentModal.onOpen();
-  }, [loginModal, rentModal, currentUser]);
+    loginModal.onOpen();
+  }, [loginModal]);
 
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
-        {!currentUser && !currentSeller ? <div
-          onClick={onBuyer}
-          className="
-          hidden
-          md:block
-          text-sm 
-          font-semibold 
-          py-3 
-          px-4 
-          rounded-full 
-          border-4
-          border-[#37b668]
-          dark:hover:bg-gray-900
-          transition 
-          cursor-pointer
-          "
-        >
-          Become a Buyer!!
-        </div> : <div
-          onClick={() => { }}
-          className="
-          text-sm 
-          font-semibold 
-          py-3 
-          px-4 
-          rounded-full 
-          dark:hover:bg-gray-900
-          transition 
-          cursor-pointer
-          "
-        >
-
-        </div>}
         {!currentUser && !currentSeller ? <div
           onClick={onSeller}
           className="
@@ -181,34 +135,39 @@ const UserMenu: React.FC<UserMenuProps> = ({
               <>
                 {currentUser ? <MenuItem
                   label="My favorites"
-                  onClick={() => router.push('/favorites')}
+                  href={'/favorites'}
                 /> : ""}
                 {currentUser ? <MenuItem
                   label="Your Order"
-                  onClick={() => router.push('/reservations')}
+                  href={'/cart'}
                 /> : ""}
-                {currentSeller ? <MenuItem label="All my Listings" onClick={() => router.push('/properties')} /> : ""}
+                {currentSeller ? <MenuItem label="All my Listings" href={'/properties'} /> : ""}
 
-                {currentSeller ? <MenuItem label="Add new Listing" onClick={() => router.push('/sellerproductform')} /> : ""}
+                {currentSeller ? <MenuItem label="Add new Listing" href={'/sellerproductform'} /> : ""}
                 {/* {currentSeller ? <MenuItem label="Add new Listing" onClick={rentModal.onOpen} /> : ""} */}
                 <hr />
                 <MenuItem
                   label="Logout"
+                  href="/"
                   onClick={async () => {
                     console.log(await signOut({ callbackUrl: 'http://localhost:3000/' }));
                   }}
                 />
               </>
             ) : (
-              <div className="flex flex-col cursor-pointer md:hidden">
+              <div className="flex flex-col cursor-pointer">
                 <MenuItem 
-                label="Become a Buyer"
+                href="/"
+                label="Login"
                 onClick={onBuyer}
                 />
+                <div className="md:hidden">
                 <MenuItem 
+                href="/"
                 label="Become a Seller"
                 onClick={onBuyer}
                 />
+                </div>
               </div>
             )}
           </div>
