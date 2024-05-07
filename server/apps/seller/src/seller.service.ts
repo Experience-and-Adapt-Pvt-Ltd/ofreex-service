@@ -274,7 +274,7 @@ export class SellerService {
 
     const resetPasswordUrl =
       this.configService.get<string>('CLIENT_SIDE_URI') +
-      `/reset-password?verify=${forgotPasswordToken}`;
+      `/seller-reset-password?verify=${forgotPasswordToken}`;
 
     await this.emailService.sendMail({
       email,

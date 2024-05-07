@@ -44,8 +44,6 @@ export default async function RootLayout({
   //const { activationToken, onUpdate } = useActivationToken();
   //const activationToken = "";
   //const { activationToken, setActivationToken } = getActivationStates();
-  // console.log("In RootLayout ");
-  // console.log(currentUser);
   return (
     <html lang="en">
       <body>
