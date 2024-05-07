@@ -9,8 +9,6 @@ import {
 } from "react-hook-form";
 import { useRouter } from "next/navigation";
 
-import useRegisterModal from "@/app/hooks/useRegisterModal";
-
 import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
