@@ -4,10 +4,7 @@ import { useCallback, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
-import useRegisterModal from "@/app/hooks/useRegisterModal";
 import { SafeSeller, SafeUser } from "@/app/types";
-
 import MenuItem from "./MenuItem";
 import Avatar from "../Avatar";
 import useSellerModal from "@/app/hooks/useSellerModal";
@@ -24,7 +21,6 @@ const UserMenu: React.FC<UserMenuProps> = ({
   currentSeller
 }) => {
   const router = useRouter();
-  const registerModal = useRegisterModal();
   const sellerModal = useSellerModal();
   const loginModal = useLoginModal();
 
