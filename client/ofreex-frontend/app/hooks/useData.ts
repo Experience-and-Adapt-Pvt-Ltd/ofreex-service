@@ -1,5 +1,5 @@
 import { FieldValues } from 'react-hook-form';
-import create from 'zustand';
+import { create } from 'zustand';
 interface DataStore {
   obj: FieldValues;
   onUpdate: (data: FieldValues) => void;

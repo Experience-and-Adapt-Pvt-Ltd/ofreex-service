@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 interface ActivationTokenStore {
   activationToken: string;
   onUpdate: (data: string) => void;
