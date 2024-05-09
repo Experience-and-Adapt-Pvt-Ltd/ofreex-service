@@ -1,6 +1,4 @@
-import { Listing } from '@prisma/client';
-import { FieldValues } from 'react-hook-form';
-import create from 'zustand';
+import { create } from 'zustand';
 import { SafeListing } from '../types';
 
 interface EditProps {
