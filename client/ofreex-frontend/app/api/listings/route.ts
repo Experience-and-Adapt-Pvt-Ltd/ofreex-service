@@ -1,7 +1,4 @@
 import { NextResponse } from "next/server";
-
-import prisma from "@/app/libs/prismadb";
-import getCurrentUser from "@/app/actions/getCurrentUser";
 import axios from "axios";
 import getCurrentSeller from "@/app/actions/getCurrentSeller";
 
@@ -20,7 +17,6 @@ export async function POST(
     description,
     images,
     category,
-    location,
     price,
     discount,
     delivery,
@@ -28,11 +24,14 @@ export async function POST(
     subCategory,
   } = body;
 
-  Object.keys(body).forEach((value: any) => {
-    if (!body[value]) {
-      NextResponse.error();
-    }
-  });
+  // console.log(body);
+  
+
+  // Object.keys(body).forEach((value: any) => {
+  //   if (!body[value]) {
+  //     NextResponse.error();
+  //   }
+  // });
 
   if (!delivery || (delivery !== 'own' && delivery !== 'ofreex')) {
     return new Response(JSON.stringify({ error: "Invalid delivery option." }), { status: 400 });
@@ -47,7 +46,6 @@ export async function POST(
     description,
     imageUrls,
     category,
-    city: location.value,
     condition: "Excellent",
     price: parseInt(price, 10),
     userId: currentUser.id,
