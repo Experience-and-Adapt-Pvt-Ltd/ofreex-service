@@ -35,7 +35,6 @@ export async function PATCH(
   request: Request,
 ) {
   try {
-    console.log("hererer");
     const body = await request.json();
     const {
       id,
@@ -46,10 +45,8 @@ export async function PATCH(
       category,
       subCategory
     } = body;
-    //console log id, title, description, price and discount
     console.log(id, title, description, price, discount);
 
-    //const hashedPassword = await bcrypt.hash(password, 15);
     const { data: listing } = await axios.patch(
       `http://localhost:4002/listings/${id}`, {
       id,
@@ -61,8 +58,6 @@ export async function PATCH(
       subCategory
     }
     )
-    console.log(`Regitering`);
-    console.log(listing);
 
     return NextResponse.json(listing);
 
