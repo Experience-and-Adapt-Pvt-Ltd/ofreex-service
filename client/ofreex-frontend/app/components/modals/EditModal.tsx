@@ -1,14 +1,12 @@
 'use client';
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { signIn } from 'next-auth/react';
 import {
   FieldValues,
   SubmitHandler,
   useForm
 } from "react-hook-form";
-import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 
 import useRegisterModal from "@/app/hooks/useRegisterModal";
@@ -17,7 +15,6 @@ import useEditModal from "@/app/hooks/useEditModal";
 import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
-import Button from "../Button";
 import axios from "axios";
 import { SafeCategory, SafeListing } from "@/app/types";
 import { useEdit } from "@/app/hooks/useEdit";
@@ -160,7 +157,6 @@ const EditModal: React.FC<EditModalProps> = ({
           ))
 
           : null}
-        <option value="others">{"others"}</option>
       </select>
       {
         categoryStr === "others" ? <Input
@@ -173,7 +169,6 @@ const EditModal: React.FC<EditModalProps> = ({
           required
         /> : ""
       }
-      {/* </div> */}
     </div>
   )
 
