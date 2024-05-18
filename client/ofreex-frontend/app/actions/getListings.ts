@@ -51,7 +51,7 @@ export default async function getListings(
       // premiumListings.map((listing: { title: string; }) => {
       //   console.log(listing.title)
       // })
-      listings = [...premiumListings, ...listings];
+      listings = [ ...listings];
 
       const safeListings = listings.map((listing: any) => ({
         ...listing,

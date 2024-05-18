@@ -82,20 +82,11 @@ const SellerActivationModal = () => {
       <Input
         id="activationCode"
         label="activationCode"
-        disabled={isLoading}
+        // disabled={isLoading}
         register={register}
-        errors={errors}
+        // errors={errors}
         required
       />
-      {/* <Input
-        id="password"
-        label="Password"
-        type="password"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-      /> */}
     </div>
   )
 

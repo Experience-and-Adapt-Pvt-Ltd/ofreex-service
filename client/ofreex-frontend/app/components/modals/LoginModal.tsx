@@ -74,75 +74,63 @@ const LoginModal = () => {
   }, [loginModal, registerModal])
 
   const bodyContent = (
-    <div className="flex flex-col gap-4">
-      <Heading
-        title="Welcome back"
-        subtitle="Login to your account!"
-      />
-      <Input
-        id="email"
-        label="Email"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-      />
+    <>
+    <Input
+      id="email"
+      type="email"
+      placeholder="Email address"
+      label="Email"
+      register={register}
+      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+    />
+
+    <div className="mb-4">
       <Input
         id="password"
-        label="Password"
         type={!show ? "password" : "text"}
-        disabled={isLoading}
+        placeholder="Password"
+        label="Password"
         register={register}
-        errors={errors}
-        required
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       />
       {!show ? (
-            <AiOutlineEyeInvisible
-              className="absolute right-[5rem] top-[13rem]"
-              size={20}
-              onClick={() => setShow(true)}
-            />
-          ) : (
-            <AiOutlineEye
-              className="absolute right-[5rem] top-[13rem]"
-              size={20}
-              onClick={() => setShow(false)}
-            />
-          )}
+          <AiOutlineEyeInvisible
+            className="relative left-72 bottom-7 sm:left-80"
+            size={20}
+            onClick={() => setShow(true)}
+          />
+        ) : (
+          <AiOutlineEye
+            className="relative left-72 bottom-7 sm:left-80"
+            size={20}
+            onClick={() => setShow(false)}
+          />
+        )}
     </div>
+  </>
   )
 
   const footerContent = (
-    <div className="flex flex-col gap-4 mt-3">
-      <hr />
-      <Button
-        outline
-        label="Continue with Google"
-        icon={FcGoogle}
-        onClick={() => signIn('google')}
-      />
-      <Button
-        outline
-        label="Forget Password?"
-        onClick={() => {
-          loginModal.onClose();
-          forgetModal.onOpen();
-        }}
-      />
-      <div className="
-      text-neutral-500 text-center mt-4 font-light">
-        <p>First time using OfreeX?
-          <span
-            onClick={onToggle}
-            className="
-              text-neutral-800
-              cursor-pointer 
-              hover:underline
-            "
-          > Create an account</span>
-        </p>
-      </div>
+    <>
+    <div className="mb-6">
+      <button
+        className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        type="submit"
+        onClick={handleSubmit(onSubmit)}
+      >
+        Sign in
+      </button>
     </div>
+    <div className="text-center">
+      <p className="text-gray-500 text-sm">
+        Not a member?{" "}
+        <div className="text-blue-500 hover:text-blue-80 cursor-pointer"
+        onClick={onToggle}>
+          Click here to Register
+        </div>
+      </p>
+    </div>
+  </>
   )
 
   return (
