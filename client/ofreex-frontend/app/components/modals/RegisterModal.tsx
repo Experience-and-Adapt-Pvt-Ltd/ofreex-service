@@ -16,16 +16,13 @@ import Heading from "../Heading";
 import Button from "../Button";
 import useActivationModal from "@/app/hooks/useActivationModal";
 import { useActivationToken } from "@/app/hooks/useActivationToken";
-import {
-  AiOutlineEye,
-  AiOutlineEyeInvisible,
-} from "react-icons/ai";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 interface RegisterModalProps {
   onUpdate: (data: string) => void;
 }
 
-const RegisterModal = ({ }) => {
+const RegisterModal = ({}) => {
   const registerModal = useRegisterModal();
   const activationModal = useActivationModal();
   const activationTokenHook = useActivationToken();
@@ -50,14 +47,14 @@ const RegisterModal = ({ }) => {
     axios
       .post("/api/register", data)
       .then((res) => {
-        toast.success('Registered!');
+        toast.success("Registered!");
 
         activationTokenHook.activationToken = res.data;
         registerModal.onClose();
         activationModal.onOpen();
       })
       .catch((error) => {
-        const errorMessage =  'Email Already Exist Please login';
+        const errorMessage = "Email Already Exist Please login";
         toast.error(errorMessage);
       })
       .finally(() => {
@@ -71,8 +68,7 @@ const RegisterModal = ({ }) => {
   }, [registerModal, loginModal]);
 
   const bodyContent = (
-    <div className="flex flex-col gap-4">
-      <Heading title="Welcome to OfreeX" subtitle="Create an account!" />
+    <>
       <Input
         id="email"
         label="Email"
@@ -80,6 +76,7 @@ const RegisterModal = ({ }) => {
         register={register}
         errors={errors}
         required
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       />
       <Input
         id="name"
@@ -88,6 +85,7 @@ const RegisterModal = ({ }) => {
         register={register}
         errors={errors}
         required
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       />
       <Input
         id="password"
@@ -97,20 +95,21 @@ const RegisterModal = ({ }) => {
         register={register}
         errors={errors}
         required
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       />
-       {!show ? (
-            <AiOutlineEyeInvisible
-              className="absolute right-[5rem] top-[18.7rem]"
-              size={20}
-              onClick={() => setShow(true)}
-            />
-          ) : (
-            <AiOutlineEye
-              className="absolute right-[5rem] top-[18.7rem]"
-              size={20}
-              onClick={() => setShow(false)}
-            />
-          )}
+      {!show ? (
+        <AiOutlineEyeInvisible
+          className="relative left-72 bottom-7 sm:left-80"
+          size={20}
+          onClick={() => setShow(true)}
+        />
+      ) : (
+        <AiOutlineEye
+          className="relative left-72 bottom-7 sm:left-80"
+          size={20}
+          onClick={() => setShow(false)}
+        />
+      )}
       <Input
         id="phoneNumber"
         label="phoneNumber"
@@ -119,18 +118,27 @@ const RegisterModal = ({ }) => {
         register={register}
         errors={errors}
         required
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       />
-    </div>
+    </>
   );
 
   const footerContent = (
-    <div className="flex flex-col gap-4 mt-3">
+    <div>
       <hr />
+      <button
+        className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        type="submit"
+        onClick={handleSubmit(onSubmit)}
+      >
+        Sign in
+      </button>
       <Button
         outline
         label="Continue with Google"
         icon={FcGoogle}
         onClick={() => signIn("google")}
+        className="mt-6 w-full"
       />
       <div
         className="

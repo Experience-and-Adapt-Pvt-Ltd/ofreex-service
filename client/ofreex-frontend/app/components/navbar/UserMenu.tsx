@@ -10,6 +10,7 @@ import Avatar from "../Avatar";
 import useSellerModal from "@/app/hooks/useSellerModal";
 import { FaCartShopping } from "react-icons/fa6";
 import useLoginModal from "@/app/hooks/useLoginModal";
+import Link from "next/link";
 
 interface UserMenuProps {
   currentUser?: SafeUser | null;
@@ -36,10 +37,13 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
 
   return (
     <div className="relative">
+      {/* <div onClick={onSeller}>
+        log
+      </div> */}
       <div className="flex flex-row items-center gap-3">
         {!currentUser && !currentSeller ? (
-          <div
-            onClick={onSeller}
+          <Link
+          href={"/sellerregistration"}
             className="
           hidden
     md:block
@@ -58,7 +62,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
           "
           >
             Become a Seller!!
-          </div>
+          </Link>
         ) : (
           <div
             onClick={() => {}}

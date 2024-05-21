@@ -1,21 +1,17 @@
-'use client';
+"use client";
 
 import { useState } from "react";
-import {
-  FieldErrors,
-  FieldValues,
-  UseFormRegister
-} from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
-  label?: string;
+  label: string;
   disabled?: boolean;
   placeholderString?: string;
   formatPrice?: boolean;
   required?: boolean;
-  register: UseFormRegister<FieldValues>,
-  errors?: FieldErrors
+  register: UseFormRegister<FieldValues>;
+  errors?: FieldErrors;
   className?: string;
 }
 
@@ -36,18 +32,20 @@ const Input: React.FC<InputProps> = ({
     setValue(e.target.value);
   };
   return (
-    <div className="w-full relative">
+    <>
+      <label className="text-gray-900 font-medium block mb-2">
+        {label}
+      </label>
       <input
-        id={id}
-        disabled={disabled}
-        {...register(id, { required })}
-        value={value}
-        onChange={onChange}
-        className={className}
-        {...rest}
+      id={id}
+      {...register(id, {required})}
+      value={value}
+      onChange={onChange}
+      className={className}
+      {...rest}
       />
-    </div>
+    </>
   );
-}
+};
 
 export default Input;

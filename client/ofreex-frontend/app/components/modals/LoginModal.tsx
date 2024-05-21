@@ -1,13 +1,9 @@
-'use client';
+"use client";
 
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
-import { signIn } from 'next-auth/react';
-import {
-  FieldValues,
-  SubmitHandler,
-  useForm
-} from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 
@@ -18,10 +14,7 @@ import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
 import Button from "../Button";
-import {
-  AiOutlineEye,
-  AiOutlineEyeInvisible,
-} from "react-icons/ai";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import useForgetModal from "@/app/hooks/useForgetModal";
 
 const LoginModal = () => {
@@ -35,115 +28,118 @@ const LoginModal = () => {
   const {
     register,
     handleSubmit,
-    formState: {
-      errors,
-    },
+    formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      email: '',
-      password: ''
+      email: "",
+      password: "",
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> =
-    (data) => {
-      setIsLoading(true);
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    setIsLoading(true);
 
-      signIn('credentials', {
-        ...data,
-        redirect: false,
-      })
-        .then((callback) => {
-          setIsLoading(false);
+    signIn("credentials", {
+      ...data,
+      redirect: false,
+    }).then((callback) => {
+      setIsLoading(false);
 
-          if (callback?.ok) {
-            toast.success('Logged in');
-            router.refresh();
-            loginModal.onClose();
-          }
+      if (callback?.ok) {
+        toast.success("Logged in");
+        router.refresh();
+        loginModal.onClose();
+      }
 
-          if (callback?.error) {
-            toast.error(callback.error);
-          }
-        });
-    }
+      if (callback?.error) {
+        toast.error(callback.error);
+      }
+    });
+  };
 
   const onToggle = useCallback(() => {
     loginModal.onClose();
     registerModal.onOpen();
-  }, [loginModal, registerModal])
+  }, [loginModal, registerModal]);
 
   const bodyContent = (
-    <div className="flex flex-col gap-4">
-      <Heading
-        title="Welcome back"
-        subtitle="Login to your account!"
-      />
+    <>
       <Input
         id="email"
+        type="email"
+        placeholder="Email address"
         label="Email"
-        disabled={isLoading}
         register={register}
-        errors={errors}
-        required
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       />
-      <Input
-        id="password"
-        label="Password"
-        type={!show ? "password" : "text"}
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-      />
-      {!show ? (
-            <AiOutlineEyeInvisible
-              className="absolute right-[5rem] top-[13rem]"
-              size={20}
-              onClick={() => setShow(true)}
-            />
-          ) : (
-            <AiOutlineEye
-              className="absolute right-[5rem] top-[13rem]"
-              size={20}
-              onClick={() => setShow(false)}
-            />
-          )}
-    </div>
-  )
+
+      <div className="mb-4">
+        <Input
+          id="password"
+          type={!show ? "password" : "text"}
+          placeholder="Password"
+          label="Password"
+          register={register}
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+        {!show ? (
+          <AiOutlineEyeInvisible
+            className="relative left-72 bottom-7 sm:left-80"
+            size={20}
+            onClick={() => setShow(true)}
+          />
+        ) : (
+          <AiOutlineEye
+            className="relative left-72 bottom-7 sm:left-80"
+            size={20}
+            onClick={() => setShow(false)}
+          />
+        )}
+        <div className="flex justify-end">
+        <div 
+        className="text-sm text-blue-500 hover:text-blue-800 cursor-pointer"
+        onClick={()=>{
+          loginModal.onClose()
+          forgetModal.onOpen()
+        }}>
+          Forgot password?
+        </div>
+      </div>
+      </div>
+    </>
+  );
 
   const footerContent = (
-    <div className="flex flex-col gap-4 mt-3">
-      <hr />
-      <Button
-        outline
-        label="Continue with Google"
-        icon={FcGoogle}
-        onClick={() => signIn('google')}
-      />
-      <Button
-        outline
-        label="Forget Password?"
-        onClick={() => {
-          loginModal.onClose();
-          forgetModal.onOpen();
-        }}
-      />
-      <div className="
-      text-neutral-500 text-center mt-4 font-light">
-        <p>First time using OfreeX?
-          <span
+    <>
+      <div className="mb-6">
+        <button
+          className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          type="submit"
+          onClick={handleSubmit(onSubmit)}
+        >
+          Sign in
+        </button>
+        <Button
+          outline
+          label="Continue with Google"
+          icon={FcGoogle}
+          onClick={() => signIn("google")}
+          className="mt-6 w-full"
+        />
+      </div>
+      <div className="text-center">
+        <p className="text-gray-500 text-sm">
+          Not a member?{" "}
+          <div
+            className="text-blue-500 hover:text-blue-80 cursor-pointer"
             onClick={onToggle}
-            className="
-              text-neutral-800
-              cursor-pointer 
-              hover:underline
-            "
-          > Create an account</span>
+          >
+            Click here to Register
+          </div>
         </p>
       </div>
-    </div>
-  )
+    </>
+  );
 
   return (
     <Modal
@@ -157,6 +153,6 @@ const LoginModal = () => {
       footer={footerContent}
     />
   );
-}
+};
 
 export default LoginModal;
