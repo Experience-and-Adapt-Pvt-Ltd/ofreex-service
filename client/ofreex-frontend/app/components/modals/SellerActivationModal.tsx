@@ -90,6 +90,28 @@ const SellerActivationModal = () => {
     </div>
   )
 
+  const footerContent = (
+    <div className="flex flex-col gap-4 mt-3">
+      <button
+          className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          type="submit"
+          onClick={handleSubmit(onSubmit)}
+        >
+          Activate
+        </button>
+      <Button
+        outline
+        label="Go Back"
+        onClick={() => {
+          registerModal.onOpen()
+          activationModal.onClose()
+        }
+        }
+        className="w-full "
+      />
+    </div>
+  )
+
   return (
     <Modal
       disabled={isLoading}
@@ -99,6 +121,7 @@ const SellerActivationModal = () => {
       onClose={sellerActivationModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
+      footer={footerContent}
     />
   );
 }

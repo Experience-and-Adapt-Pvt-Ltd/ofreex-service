@@ -16,7 +16,7 @@ model Listing {
   subCategory String?
   condition   String
   price       Float
-  city        String
+  city        String?
   state       String?
   imageUrls   String[]
   userId      String   @default(uuid())

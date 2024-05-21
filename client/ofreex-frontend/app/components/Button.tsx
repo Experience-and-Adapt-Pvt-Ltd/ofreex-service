@@ -9,6 +9,7 @@ interface ButtonProps {
   outline?: boolean;
   small?: boolean;
   icon?: IconType;
+  className? : string;
 }
 
 const Button: React.FC<ButtonProps> = ({ 
@@ -18,12 +19,14 @@ const Button: React.FC<ButtonProps> = ({
   outline,
   small,
   icon: Icon,
+  className,
 }) => {
   return ( 
     <button
       disabled={disabled}
       onClick={onClick}
       className={`
+        ${className}
         relative
         disabled:opacity-70
         disabled:cursor-not-allowed

@@ -1,13 +1,9 @@
-'use client';
+"use client";
 
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
-import { signIn } from 'next-auth/react';
-import {
-  FieldValues,
-  SubmitHandler,
-  useForm
-} from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 
@@ -26,13 +22,10 @@ import useForgetModal from "@/app/hooks/useForgetModal";
 interface ForgetModalProps {
   id?: string | null;
   listing?: SafeListing | null;
-  categories?: SafeCategory[]
-
+  categories?: SafeCategory[];
 }
 
-const ForgetModal: React.FC<ForgetModalProps> = ({
-}
-) => {
+const ForgetModal: React.FC<ForgetModalProps> = ({}) => {
   const editHook = useEdit();
   const forgetModal = useForgetModal();
   const [isLoading, setIsLoading] = useState(false);
@@ -40,43 +33,39 @@ const ForgetModal: React.FC<ForgetModalProps> = ({
   const {
     register,
     handleSubmit,
-    formState: {
-      errors,
-    },
+    formState: { errors },
   } = useForm<FieldValues>({
-    defaultValues: {
-    },
+    defaultValues: {},
   });
 
-  const onSubmit: SubmitHandler<FieldValues> =
-    (data) => {
-      setIsLoading(true);
-      console.log(data);
-      axios.post(`/api/forgetPassword`, {
-        ...data
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    setIsLoading(true);
+    console.log(data);
+    axios
+      .post(`/api/forgetPassword`, {
+        ...data,
       })
-        .then((res) => {
-          setIsLoading(false);
-          toast.success('Email Sent');
-          forgetModal.onClose();
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          const errorMessage = error?.response?.data?.errors?.[0]?.message || 'Email id does not exist';
-          toast.error(errorMessage)
-        })
-        .finally(() => {
-          setIsLoading(false);
-          forgetModal.onClose();
-        });
-    }
+      .then((res) => {
+        setIsLoading(false);
+        toast.success("Email Sent");
+        forgetModal.onClose();
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        const errorMessage =
+          error?.response?.data?.errors?.[0]?.message ||
+          "Email id does not exist";
+        toast.error(errorMessage);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        forgetModal.onClose();
+      });
+  };
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading
-        title="Forget Password"
-        subtitle=""
-      />
+      <Heading title="Forget Password" subtitle="" />
       <Input
         id="email"
         label="Email"
@@ -84,9 +73,21 @@ const ForgetModal: React.FC<ForgetModalProps> = ({
         disabled={isLoading}
         register={register}
         errors={errors}
+        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       />
     </div>
-  )
+  );
+
+  const footerContent = (
+    <>
+      <button
+        className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        onClick={handleSubmit(onSubmit)}
+      >
+        Send Forget Link
+      </button>
+    </>
+  );
 
   return (
     <Modal
@@ -97,8 +98,9 @@ const ForgetModal: React.FC<ForgetModalProps> = ({
       onClose={forgetModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
+      footer={footerContent}
     />
   );
-}
+};
 
 export default ForgetModal;

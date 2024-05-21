@@ -17,6 +17,7 @@ export default async function getCategories() {
 
     return safeCategories;
   } catch (error: any) {
+    console.error("Error details:", error.response?.data || error.message);
     throw new Error(error);
   }
 }

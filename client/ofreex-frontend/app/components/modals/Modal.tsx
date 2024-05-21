@@ -83,11 +83,6 @@ const Modal: React.FC<ModalProps> = ({
         <form>
           <div className="mb-4">
             {body}
-            <div className="flex justify-end mt-2">
-              <a href="#" className="text-sm text-blue-500 hover:text-blue-800">
-                Forgot password?
-              </a>
-            </div>
           </div>
          {footer}
         </form>

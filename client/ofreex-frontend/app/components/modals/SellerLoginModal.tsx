@@ -15,11 +15,11 @@ import useSellerForgetModalModal from "@/app/hooks/useSellerForgetModal";
 
 const SellerLoginModal = () => {
   const router = useRouter();
-  const sellerLogin = useSellerLoginModal();
   const [isLoading, setIsLoading] = useState(false);
   const registerSellerModal = useSellerModal();
   const sellerLoginModal = useSellerLoginModal();
   const [show, setShow] = useState(false);
+  const forgotPasswordModal = useSellerForgetModalModal();
 
   const {
     register,
@@ -95,6 +95,14 @@ const SellerLoginModal = () => {
               onClick={() => setShow(false)}
             />
           )}
+          <div 
+        className="text-sm text-blue-500 hover:text-blue-800 cursor-pointer"
+        onClick={()=>{
+        sellerLoginModal.onClose()
+        forgotPasswordModal.onOpen()
+        }}>
+          Forgot password?
+        </div>
       </div>
     </>
   );
