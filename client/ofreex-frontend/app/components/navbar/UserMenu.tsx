@@ -41,43 +41,23 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
         log
       </div> */}
       <div className="flex flex-row items-center gap-3">
+        <Link
+          href="/ComingSoon"
+          className="hidden lg:block text-sm py-2 px-4 whitespace-nowrap"
+        >
+          Refer and earn
+        </Link>
         {!currentUser && !currentSeller ? (
           <Link
-          href={"/sellerregistration"}
-            className="
-          hidden
-    md:block
-    text-sm 
-    font-semibold 
-    py-2 
-    px-4 
-    rounded-full 
-    dark:hover:bg-gray-900
-    transition 
-    cursor-pointer
-    border-4
-    border-[#37b668]
-    w-auto
-    whitespace-nowrap
-          "
+            href={"/sellerregistration"}
+            className="hidden md:block text-sm font-semibold py-2 px-4 rounded-full dark:hover:bg-gray-900 transition cursor-pointer border-4 border-[#37b668] w-auto whitespace-nowrap"
           >
             Become a Seller!!
           </Link>
         ) : (
           <div
             onClick={() => {}}
-            className="
-          hidden
-          md:block
-          text-sm 
-          font-semibold 
-          py-3 
-          px-4 
-          rounded-full 
-          dark:hover:bg-gray-900
-          transition 
-          cursor-pointer
-          "
+            className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full dark:hover:bg-gray-900 transition"
           ></div>
         )}
         <div
@@ -89,23 +69,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
         </div>
         <div
           onClick={toggleOpen}
-          className="
-        ml-auto
-        p-2
-      md:p-4
-      md:py-1
-      md:px-2
-      border-[1px] 
-      border-neutral-200 
-      flex 
-      flex-row 
-      items-center 
-      gap-3 
-      rounded-full 
-      cursor-pointer 
-      hover:shadow-md 
-      transition
-          "
+          className="ml-auto p-2 md:p-4 md:py-1 md:px-2 border-[1px] border-neutral-200 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
         >
           <AiOutlineMenu style={{ width: "28px", height: "28px" }} />
           <div className="block md:block">
@@ -114,51 +78,32 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
         </div>
       </div>
       {isOpen && (
-        <div
-          className="
-            absolute 
-            rounded-xl
-            z-10
-            bg-white
-            dark:bg-black
-            shadow-md
-            w-[40vw]
-            md:w-3/4 
-            overflow-hidden 
-            right-0 
-            top-14
-            md:top-12 
-            text-sm
-          "
-        >
+        <div className="absolute rounded-xl z-10 bg-white dark:bg-black shadow-md w-[40vw] md:w-3/4 overflow-hidden right-0 top-14 md:top-12 text-sm">
           <div className="flex flex-col cursor-pointer">
             {currentUser || currentSeller ? (
               <>
                 {currentUser ? (
-                  <MenuItem label="My favorites" href={"/favorites"} />
+                  <>
+                    <MenuItem label="Wishlist" href={"/favorites"} />
+                    <MenuItem label="Orders" href={"/ComingSoon"} />
+                    <MenuItem href="/ComingSoon" label="Refer and Earn" />
+                    <MenuItem href="/ComingSoon" label="How it works" />
+                    <MenuItem href="/ComingSoon" label="Advertise" />
+                    <MenuItem href="/ComingSoon" label="About Us" />
+                    <MenuItem href="/ComingSoon" label="Help & Support" />
+                    <MenuItem href="/ComingSoon" label="Terms and Conditions" />
+                    <MenuItem href="/ComingSoon" label="Privacy Policies" />
+                    <MenuItem href="/ComingSoon" label="Platform Policies" />
+                  </>
                 ) : (
-                  ""
+                  <>
+                    <MenuItem label="My Dashboard" href={"/properties"} />
+                    <MenuItem
+                      label="Add new Listing"
+                      href={"/sellerproductform"}
+                    />
+                  </>
                 )}
-                {currentUser ? (
-                  <MenuItem label="Your Order" href={"/cart"} />
-                ) : (
-                  ""
-                )}
-                {currentSeller ? (
-                  <MenuItem label="All my Listings" href={"/properties"} />
-                ) : (
-                  ""
-                )}
-
-                {currentSeller ? (
-                  <MenuItem
-                    label="Add new Listing"
-                    href={"/sellerproductform"}
-                  />
-                ) : (
-                  ""
-                )}
-                {/* {currentSeller ? <MenuItem label="Add new Listing" onClick={rentModal.onOpen} /> : ""} */}
                 <hr />
                 <MenuItem
                   label="Logout"
@@ -173,6 +118,14 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
             ) : (
               <div className="flex flex-col cursor-pointer">
                 <MenuItem href="/" label="Login" onClick={onBuyer} />
+                <MenuItem href="/ComingSoon" label="Refer and Earn" />
+                <MenuItem href="/ComingSoon" label="How it works" />
+                <MenuItem href="/ComingSoon" label="Advertise" />
+                <MenuItem href="/ComingSoon" label="About Us" />
+                <MenuItem href="/ComingSoon" label="Help & Support" />
+                <MenuItem href="/ComingSoon" label="Terms and Conditions" />
+                <MenuItem href="/ComingSoon" label="Privacy Policies" />
+                <MenuItem href="/ComingSoon" label="Platform Policies" />
                 <div className="md:hidden">
                   <MenuItem
                     href="/"

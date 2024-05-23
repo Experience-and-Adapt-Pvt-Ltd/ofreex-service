@@ -25,32 +25,6 @@ const Navbar: React.FC<NavbarProps> = ({
             <div className="flex items-center">
               <Logo />
             </div>
-            {/* <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-              <a
-                href="#"
-                className="border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              >
-                Home
-              </a>
-              <a
-                href="#"
-                className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              >
-                Team
-              </a>
-              <a
-                href="#"
-                className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              >
-                Projects
-              </a>
-              <a
-                href="#"
-                className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              >
-                Calendar
-              </a>
-            </div> */}
           </div>
           <div className="flex items-center justify-center w-full">
             {/* Increase the size of search bar and center it */}
@@ -64,9 +38,9 @@ const Navbar: React.FC<NavbarProps> = ({
             <UserMenu currentUser={currentUser} currentSeller={currentSeller} />
           </div>
         </div>
-        {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Categories categoriesProps={categories} />
-        </div> */}
+        </div>
       </div>
     </nav>
   );

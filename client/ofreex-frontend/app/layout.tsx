@@ -20,6 +20,8 @@ import getCategories from './actions/getCategories';
 import SellerLoginModal from './components/modals/SellerLoginModal';
 import ForgetModal from './components/modals/ForgetModal';
 import SellerForgetModal from './components/modals/SellerForgetModal';
+import Footer from './components/Footer';
+
 
 
 export const metadata = {
@@ -64,6 +66,7 @@ export default async function RootLayout({
         <div className="pb-20">
           {children}
         </div>
+          <Footer />
       </body>
     </html>
   )
