@@ -1,11 +1,9 @@
 import { Injectable, NotFoundException, BadRequestException, HttpStatus, Logger } from '@nestjs/common';
 import { PrismaClient, Listing as PrismaListing, Category as PrismaCategory } from '../node_modules/.prisma/client';
-import { Category, GetBasicUsersResponse, GetFavIdsResponse, GetPremiumUsersResponse, Listing } from './interface/listings.interface';
-import { CreateCategoryDto, CreateListingDto } from './dto/create_listing.dto';
+import { Category, GetBasicUsersResponse, GetFavIdsResponse, GetPremiumUsersResponse, Listing, SubCategory } from './interface/listings.interface';
+import { CreateCategoryDto, CreateListingDto, CreateSubCategoryDto, UpdateCategoryDto } from './dto/create_listing.dto';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { LimitedUserData } from './types/listings.types';
-import { catchError, firstValueFrom, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ListingsService {
@@ -13,22 +11,32 @@ export class ListingsService {
   //////////////////////////////////Category//////////////////////////////////////////////////
   async getCategories(): Promise<Category[]> {
     try {
-      const categories: PrismaCategory[] = await this.prisma.category.findMany();
-      return categories.map(this.convertToCategoryDto);
+      const categories = await this.prisma.category.findMany({
+        include: {
+          subCategories: true
+        }
+      });
+      return categories.map(category => this.convertToCategoryDto(category));
     } catch (error) {
-      throw new BadRequestException(`Could not fetch Category: ${error.message}`);
+      throw new BadRequestException(`Could not fetch categories: ${error.message}`);
     }
   }
 
   // Creates a new category in the database using the provided CreateCategoryDto
   async createCategory(createCategoryDto: CreateCategoryDto): Promise<Category> {
     try {
-      const createdCategory: PrismaCategory = await this.prisma.category.create({
+      const createdCategory = await this.prisma.category.create({
         data: {
           label: createCategoryDto.label,
           description: createCategoryDto.description,
           icon: createCategoryDto.icon,
+          subCategories: {
+            create: createCategoryDto.subCategories // Assuming subCategories is part of CreateCategoryDto
+          }
         },
+        include: {
+          subCategories: true
+        }
       });
       return this.convertToCategoryDto(createdCategory);
     } catch (error) {
@@ -37,21 +45,34 @@ export class ListingsService {
   }
 
   // Updates an existing category identified by its label with the provided update data.
-  async updateCategory(label: string, updateCategoryDto: Partial<CreateCategoryDto>): Promise<Category> {
+  async updateCategory(label: string, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
     try {
-      const categoryToUpdate: PrismaCategory | null = await this.prisma.category.findUnique({ where: { label } });
+        const categoryToUpdate = await this.prisma.category.findUnique({ where: { label } });
+        if (!categoryToUpdate) {
+            throw new NotFoundException(`Category with label ${label} not found`);
+        }
 
-      if (!categoryToUpdate) {
-        throw new NotFoundException(`Category with label ${label} not found`);
-      }
+        const updatedCategory = await this.prisma.category.update({
+            where: { label },
+            data: {
+                ...updateCategoryDto,
+                subCategories: updateCategoryDto.subCategories ? {
+                    update: updateCategoryDto.subCategories.map(subCat => ({
+                        where: { id: subCat.id },
+                        data: subCat
+                    }))
+                } : undefined
+            },
+            include: {
+                subCategories: true
+            }
+        });
 
-      const updatedCategory: PrismaCategory = await this.prisma.category.update({ where: { label }, data: updateCategoryDto });
-
-      return this.convertToCategoryDto(updatedCategory);
+        return this.convertToCategoryDto(updatedCategory);
     } catch (error) {
-      throw new BadRequestException(`Could not update category: ${error.message}`);
+        throw new BadRequestException(`Could not update category: ${error.message}`);
     }
-  }
+}
 
   //for removing category
   async removeCategory(label: string): Promise<void> {
@@ -98,32 +119,44 @@ export class ListingsService {
   async create(createListingDto: CreateListingDto): Promise<Listing> {
     try {
       Logger.log('In create method');
+     // Ensure categoryLabel is defined before proceeding
+     if (!createListingDto.categoryLabel) {
+      throw new BadRequestException('Category label is undefined');
+  }
 
+       const category = await this.prisma.category.findUnique({
+        where: { label: createListingDto.categoryLabel }
+    });
+
+      console.log(`category ID: ${category?.id}`);
+      if (!category) {
+        throw new BadRequestException(`Category with ID ${createListingDto.categoryLabel} does not exist.`);
+      }
+  
       // const listingCount = await this.prisma.listing.count({
       //   where: {
       //     userId: createListingDto.userId,
       //   }
       // })
-
+  
       // // If the user has 3 or more listings, throw an exception
       // if (listingCount >= 3) {
-      //   throw new BadRequestException('you are limited to 3 listings.')
+      //   throw new BadRequestException('You are limited to 3 listings.')
       // }
-
+  
       // Creates a new listing in the database using the provided CreateListingDto.
-      const createdListing: PrismaListing = await this.prisma.listing.create({
+      console.log("Creating listing with data:", createListingDto);
+      const createdListing = await this.prisma.listing.create({
         data: {
           title: createListingDto.title,
           description: createListingDto.description,
-          category: createListingDto.category,
-          subCategory: createListingDto.subCategory,
+          categoryId: category.id,
+          subCategoryId: createListingDto.subCategoryId,
           condition: createListingDto.condition,
           price: createListingDto.price,
-          city: createListingDto.city,
-          state: createListingDto.state,
           imageUrls: createListingDto.imageUrls,
           userId: createListingDto.userId,
-          postedAt: new Date().toISOString(),
+          postedAt: new Date(),
           rating: createListingDto.rating,
           discount: createListingDto.discount,
           delivery: createListingDto.delivery,
@@ -132,6 +165,7 @@ export class ListingsService {
       });
       return this.convertToDto(createdListing);
     } catch (error) {
+      console.error("Failed to create listing:", error);
       throw new BadRequestException(`Could not create listing: ${error.message}`);
     }
   }
@@ -153,6 +187,47 @@ export class ListingsService {
     }
   }
 
+   // Creates a new subcategory within a category
+   async createSubCategory(createSubCategoryDto: CreateSubCategoryDto): Promise<SubCategory> {
+    try {
+      const createdSubCategory = await this.prisma.subCategory.create({
+        data: {
+          label: createSubCategoryDto.label,
+          description: createSubCategoryDto.description,
+          categoryId: createSubCategoryDto.categoryId,
+        },
+      });
+      return this.convertToSubCategoryDto(createdSubCategory);
+    } catch (error) {
+      throw new BadRequestException(`Could not create SubCategory: ${error.message}`);
+    }
+  }
+
+  private convertToSubCategoryDto(subCategory: SubCategory): SubCategory {
+    return {
+      id: subCategory.id,
+      label: subCategory.label,
+      description: subCategory.description || "", 
+      categoryId: subCategory.categoryId
+    };
+  }
+  //to get SubCategory
+  async getSubCategoriesByCategory(categoryLabel: string): Promise<SubCategory[]> {
+    try {
+      const subCategories = await this.prisma.category.findUnique({
+        where: { label: categoryLabel },
+        include: { subCategories: true }
+      });
+  
+      if (!subCategories) {
+        throw new BadRequestException(`Category with label ${categoryLabel} not found`);
+      }
+      return subCategories.subCategories;
+    } catch (error) {
+      throw new BadRequestException(`Failed to fetch subcategories: ${error.message}`);
+    }
+  }
+
   //to remove listing
   async remove(id: string): Promise<void> {
     try {
@@ -169,28 +244,17 @@ export class ListingsService {
   }
 
   //for flitering out category
-  async findListingsByCategory(category: string, subCategory?: string): Promise<Listing[]> {
+  async findListingsByCategory(categoryId: string, subCategoryId?: string): Promise<Listing[]> {
     try {
-      if (!category) {
-        throw new BadRequestException('Category is required');
+      if (!categoryId) {
+        throw new BadRequestException('Category ID is required');
       }
-
-      // if (isNaN(limit) || limit <= 0) {
-      //   throw new BadRequestException('Limit must be a positive number');
-      // }
-
-      const listingsQuery = {
+      const listings = await this.prisma.listing.findMany({
         where: {
-          category,
-        },
-        // take: limit,
-      };
-
-      if (subCategory) {
-        listingsQuery['where']['subCategory'] = subCategory;
-      }
-
-      const listings: PrismaListing[] = await this.prisma.listing.findMany(listingsQuery);
+          categoryId,
+          ...(subCategoryId && { subCategoryId }) // No need to reset the filter
+        }
+      });
       return listings.map(this.convertToDto);
     } catch (error) {
       throw new BadRequestException(`Could not fetch listings: ${error.message}`);
@@ -296,7 +360,7 @@ export class ListingsService {
       Logger.log(`Listings are: ${userListings}`);
       const filteredListings = category && subCategory
         ? userListings.filter(
-          (listing) => listing.category === category && listing.subCategory === subCategory
+          (listing) => listing.categoryId === category && listing.subCategoryId === subCategory
         )
         : userListings;
       // const filteredListings = userListings;
@@ -323,7 +387,7 @@ export class ListingsService {
       Logger.log(`Listings are: ${userListings}`);
       const filteredListings = category && subCategory
         ? userListings.filter(
-          (listing) => listing.category === category && listing.subCategory === subCategory
+          (listing) => listing.categoryId === category && listing.subCategoryId === subCategory
         )
         : userListings;
       // Sort and limit the listings as necessary
@@ -357,17 +421,15 @@ export class ListingsService {
     }
   }
 
-  private convertToDto(listing: PrismaListing): Listing {
+  private convertToDto(listing: { id: string; title: string; description: string; categoryId: string; subCategoryId?: string; condition: string; price: number; imageUrls: string[]; userId: string; postedAt: Date; rating?: number; discount?: number; delivery: string; quantity: number }): Listing {
     return {
       id: listing.id,
       title: listing.title,
       description: listing.description,
-      category: listing.category,
-      subCategory: listing.subCategory,
+      categoryId: listing.categoryId,
+      subCategoryId: listing.subCategoryId,
       condition: listing.condition,
       price: listing.price,
-      city: listing.city,
-      state: listing.state,
       imageUrls: listing.imageUrls,
       userId: listing.userId,
       postedAt: listing.postedAt,
@@ -377,11 +439,13 @@ export class ListingsService {
       quantity: listing.quantity,
     };
   }
-  private convertToCategoryDto(category: PrismaCategory): Category {
+  private convertToCategoryDto(category: PrismaCategory & { subCategories?: SubCategory[] }): Category {
     return {
+      id: category.id,
       label: category.label,
       description: category.description,
-      icon: category.icon
+      icon: category.icon,
+      subCategories: category.subCategories ? category.subCategories.map(subCategory => this.convertToSubCategoryDto(subCategory)) : []
     };
   }
 }
