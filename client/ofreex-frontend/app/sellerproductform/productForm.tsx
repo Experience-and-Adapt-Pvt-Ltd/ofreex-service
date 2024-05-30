@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Input from "../components/inputs/Input";
@@ -26,7 +26,7 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
     reset,
   } = useForm<FieldValues>({
     defaultValues: {
-      category: "",
+      categoryId: "",
       imageSrc: "",
       price: "",
       title: "",
@@ -35,6 +35,8 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
       delivery: "",
       quantity: "",
       customCategory: "",
+      // for subCategory
+      subCategoryId: "",
     },
   });
 
@@ -42,6 +44,8 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
   const category = watch("category");
   const editHook = useEdit();
   const showCustomCategory = category === "others";
+  const [subCategories, setSubCategories] = useState([]);
+  
 
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
@@ -56,8 +60,9 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
       ...data,
       discount: parseFloat(data.discount),
       images: images,
-      category: category === "others" ? "others" : data.category,
-      subCategory: category === "others" ? data.customCategory : undefined,
+      categoryId: category === "others" ? "others" : data.categoryId,
+      categoryLabel: data.categoryId,
+      subCategoryId: category === "others" ? data.customCategory : data.subCategoryId,
     };
 
     axios
@@ -86,6 +91,23 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
         }
       });
   };
+
+  // to get SubCategory
+  useEffect(() => {
+    if (category && category !== "others") {
+      axios.get(`http://localhost:4002/listings/category/${encodeURIComponent(category)}/subcategories`)
+        .then((response) => {
+          setSubCategories(response.data);
+        })
+        .catch((error) => {
+          console.error(`Error in fetching subcategory: ${error}`);
+          setSubCategories([]);
+        });
+    } else {
+      setSubCategories([]);
+    }
+  }, [category]);
+
   return (
     <div className="container mx-auto p-4">
       <div className="bg-white p-6 rounded shadow">
@@ -100,12 +122,12 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
                 Category
               </label>
               <select
-                id="category"
-                {...register("category")}
+                id="categoryId"
+                {...register("categoryId")}
                 onChange={(e) => setCustomValue("category", e.target.value)}
                 className="form-select w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
-                {categories.map((item, index) => (
+                {categories.map((item:any, index:any) => (
                   <option key={index} value={item.value}>
                     {item.label}
                   </option>
@@ -113,9 +135,6 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
               </select>
               {showCustomCategory && (
                 <>
-                  <label className="text-gray-900 font-medium block mt-4 mb-2">
-                    Enter Category
-                  </label>
                   <Input
                     label="Custom Category"
                     id="customCategory"
@@ -129,13 +148,26 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
               )}
             </div>
 
+            <div>
+              <label className="text-gray-900 font-medium block mt-4 mb-2">
+                Category
+              </label>
+              <select
+                id="subCategoryId"
+                {...register("subCategoryId")}
+                className="form-select w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                {subCategories.map((subCategory, index) => (
+                  <option key={index} value={subCategory.id}>{subCategory.label}</option>
+                ))}
+              </select>
+            </div>
+
             {/* <!-- Product Name --> */}
             <div>
-              <label className="text-gray-900 font-medium block mb-2">
-                Product Name
-              </label>
               <Input
                 id="title"
+                label="Product Name"
                 type="text"
                 placeholder="ex: Phone"
                 className="form-Input w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -146,9 +178,6 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
 
             {/* <!-- About --> */}
             <div>
-              <label className="text-gray-900 font-medium block mb-2">
-                Details of Product
-              </label>
               {/* <textarea
                 rows={3}
                 placeholder="Write a few sentences about yourself."
@@ -156,6 +185,7 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
               ></textarea> */}
               <Input
                 id="description"
+                label="Details of Product"
                 type="text"
                 register={register}
                 placeholder="Enter data of product"
@@ -166,11 +196,9 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
 
             {/* Price */}
             <div>
-              <label className="text-gray-900 font-medium block mt-4 mb-2">
-                Price
-              </label>
               <Input
                 id="price"
+                label="Price"
                 type="number"
                 placeholder="ex: ₹500"
                 className="form-Input w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -180,11 +208,9 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
 
             {/* Quantity */}
             <div>
-              <label className="text-gray-900 font-medium block mt-4 mb-2">
-                Quantity
-              </label>
               <Input
                 id="quantity"
+                label="Quantity"
                 type="number"
                 placeholder="ex: 10"
                 className="form-Input w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -194,11 +220,9 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
 
             {/* Discount */}
             <div>
-              <label className="text-gray-900 font-medium block mt-4 mb-2">
-                Discount
-              </label>
               <Input
                 id="discount"
+                label="Discount"
                 type="number"
                 placeholder="ex: 10%"
                 className="form-Input w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
