@@ -37,15 +37,16 @@ export default async function getListings(
       return safeListings;
     }
     else {
-      let { data: premiumListings } = await axios.post(
-        `http://localhost:4002/listings/premium`, {
-        limit: 20
-      }
-      )
-      let { data: listings } = await axios.post(
-        `http://localhost:4002/listings/getListings`, {
-        limit: 20
-      }
+      // let { data: premiumListings } = await axios.post(
+      //   `http://localhost:4002/listings/premium`, {
+      //   limit: 20
+      // }
+      // )
+      let { data: listings } = await axios.get(
+        `http://localhost:4002/listings/getListings`
+      //   , {
+      //   limit: 20
+      // }
       )
       //append 2 arrays into one
       // premiumListings.map((listing: { title: string; }) => {
@@ -61,6 +62,7 @@ export default async function getListings(
       return safeListings;
     }
   } catch (error: any) {
+    console.error("Error details:", error.response?.data || error.message);
     throw new Error(error);
   }
 }
