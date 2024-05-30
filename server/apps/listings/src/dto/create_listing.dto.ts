@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString, IsNumber, IsArray, IsOptional, Min, Max } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsArray, IsOptional, Min, Max, IsUUID, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer'; 
 
 export class CreateListingDto {
   @IsNotEmpty()
@@ -10,17 +11,22 @@ export class CreateListingDto {
   description: string;
 
   @IsNotEmpty()
+  @IsUUID()
+  categoryId: string;  // Change from category name to category ID
+  
+  @IsOptional()  // Also optional, will be defined only if categoryLabel is used
   @IsString()
-  category: string;
+  categoryLabel?: string;
 
-  @IsString()
-  subCategory?: string;
+  @IsOptional()
+  @IsUUID()
+  subCategoryId?: string;  // Change from subCategory name to subCategory ID
 
   @IsNotEmpty()
   @IsString()
   condition: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(5)
@@ -30,18 +36,12 @@ export class CreateListingDto {
   @IsNumber()
   price: number;
 
-  @IsNotEmpty()
-  @IsString()
-  city: string;
-
-  @IsString()
-  state?: string;
-
   @IsArray()
+  @IsString({ each: true })
   imageUrls: string[];
   
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   userId: string;
 
   @IsOptional()
@@ -56,6 +56,7 @@ export class CreateListingDto {
   @IsNumber()
   quantity: number;
 }
+
 export class CreateCategoryDto {
   @IsNotEmpty()
   @IsString()
@@ -67,6 +68,56 @@ export class CreateCategoryDto {
 
   @IsOptional()
   @IsString()
-  icon: string;
+  icon?: string;
 
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateSubCategoryDto)
+  subCategories?: CreateSubCategoryDto[];  // Optional array of subcategories
+}
+export class CreateSubCategoryDto {
+  @IsNotEmpty()
+  @IsString()
+  label: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsNotEmpty()
+  @IsUUID()
+  categoryId: string;  // This field might not be necessary when creating subcategories directly within a category creation DTO
+
+}
+
+export class UpdateCategoryDto {
+  @IsOptional()
+  @IsString()
+  label?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  icon?: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateSubCategoryDto)
+  subCategories?: UpdateSubCategoryDto[];
+}
+
+export class UpdateSubCategoryDto {
+  @IsString()
+  id: string;  // Needed for identifying subcategories for updates
+
+  @IsOptional()
+  @IsString()
+  label?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 }

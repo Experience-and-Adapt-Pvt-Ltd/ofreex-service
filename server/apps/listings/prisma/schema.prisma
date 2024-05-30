@@ -9,26 +9,40 @@ datasource db {
 }
 
 model Listing {
-  id          String  @id @default(uuid())
-  title       String
-  description String
-  category    String
-  subCategory String?
-  condition   String
-  price       Float
-  city        String?
-  state       String?
-  imageUrls   String[]
-  userId      String   @default(uuid())
-  postedAt    DateTime
-  rating      Float?
-  discount    Float 
-  delivery    String
-  quantity    Float
+  id            String       @id @default(uuid())
+  title         String
+  description   String
+  category      Category     @relation(fields: [categoryId], references: [id])
+  categoryId    String       
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  subCategoryId String?      
+  condition     String
+  price         Float
+  city          String?
+  state         String?
+  imageUrls     String[]
+  userId        String       @default(uuid())
+  postedAt      DateTime
+  rating        Float?
+  discount      Float
+  delivery      String
+  quantity      Float
 }
 
-model Category{
-  label       String  @id
-  description String
-  icon        String?
+model Category {
+  id            String        @id @default(uuid())
+  label         String        @unique
+  description   String
+  icon          String?
+  subCategories SubCategory[]
+  listings      Listing[]
+}
+
+model SubCategory {
+  id          String    @id @default(uuid())
+  label       String
+  description String?
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  listings    Listing[]
 }

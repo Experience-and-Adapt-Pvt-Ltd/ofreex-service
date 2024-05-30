@@ -16,12 +16,13 @@ export async function POST(
     title,
     description,
     images,
-    category,
+    categoryId,
     price,
     discount,
     delivery,
     quantity,
-    subCategory,
+    subCategoryId,
+    categoryLabel,
   } = body;
 
   // console.log(body);
@@ -45,7 +46,8 @@ export async function POST(
     title,
     description,
     imageUrls,
-    category,
+    categoryId,
+    categoryLabel,
     condition: "Excellent",
     price: parseInt(price, 10),
     userId: currentUser.id,
@@ -54,7 +56,7 @@ export async function POST(
     discount: parsedDiscount,
     delivery,
     quantity: parsedQuantity,
-    subCategory,
+    subCategoryId,
   }
   )
 
