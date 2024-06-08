@@ -94,7 +94,7 @@ export class ListingsController {
     return this.listingService.createSubCategory(createSubCategoryDto);
   }
 
-  @Get('category/:categoryLabel')
+  @Get('category/:categoryLabel/subcategories')
   async getSubCategoriesByCategory(
     @Param('categoryLabel') categoryLable: string
   ): Promise<SubCategory[]> {
