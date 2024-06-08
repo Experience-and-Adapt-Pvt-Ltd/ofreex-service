@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, IsNumber, IsArray, IsOptional, Min, Max, IsUUID, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer'; 
+import { Type } from 'class-transformer';
 
 export class CreateListingDto {
   @IsNotEmpty()
