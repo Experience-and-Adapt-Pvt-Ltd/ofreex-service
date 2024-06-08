@@ -85,6 +85,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
                 {currentUser ? (
                   <>
                     <MenuItem label="Wishlist" href={"/favorites"} />
+                    <MenuItem label="Address" href={"/new-address"} />
                     <MenuItem label="Orders" href={"/ComingSoon"} />
                     <MenuItem href="/ComingSoon" label="Refer and Earn" />
                     <MenuItem href="/ComingSoon" label="How it works" />
