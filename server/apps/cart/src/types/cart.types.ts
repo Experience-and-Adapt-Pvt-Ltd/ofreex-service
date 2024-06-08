@@ -56,10 +56,13 @@ export class Items {
 @ObjectType()
 export class Address {
   @Field()
-  lane1: string;
+  id: string;
+
+  // @Field()
+  // lane1: string;
 
   @Field()
-  lane2: string;
+  street: string;
 
   @Field()
   city: string;
@@ -69,6 +72,12 @@ export class Address {
 
   @Field()
   pincode: string;
+
+  @Field({defaultValue: false})
+  defaultAddress?: boolean;
+
+  @Field()
+  saveAs: string;
 }
 
 @ObjectType()
