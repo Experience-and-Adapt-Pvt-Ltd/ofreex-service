@@ -21,7 +21,6 @@ model User {
   email       String   @unique
   password    String
   phoneNumber Float    @unique
-  address     String?
   role        Role     @default(User)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
