@@ -174,6 +174,15 @@ export class ListingsController {
     }
   }
 
+  @Get('search')
+  async searchListings(
+    @Query('query') query: string,
+    @Query('category') category?: string
+  ): Promise<Listing[]> {
+    console.log("Search endpoint hit");
+    return await this.listingService.searchListings(query, category);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Listing> {
     try {
@@ -250,4 +259,6 @@ export class ListingsController {
       }
     }
   }
+
+  
 }
