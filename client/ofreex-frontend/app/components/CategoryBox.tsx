@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 
 interface CategoryBoxProps {
-  icon: string | null;
+  categoryIcon: string;
   label: string;
   selected?: boolean;
   id: string;
@@ -17,7 +17,7 @@ interface CategoryBoxProps {
 
 const CategoryBox: React.FC<CategoryBoxProps> = ({
   id,
-  icon: Icon,
+  categoryIcon,
   label,
   selected,
   subCategories,
@@ -67,9 +67,9 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
 
   //   router.push(url);
   // }, [label, router, params]);
-
   return (
-    <div onClick={toggleDropdown} className="relative cursor-pointer py-2 px-4">
+    <div onClick={toggleDropdown} className="relative cursor-pointer flex flex-col items-center py-2 px-4">
+      <img src={categoryIcon} alt="category icon" className="h-5 mb-2"/>
       <div className="font-medium text-sm">{label}</div>
       {isOpen && (
         <div
@@ -79,9 +79,7 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
           {subCategories.map((subCategory) => (
             <div
               key={subCategory.id}
-              onClick={(event) =>
-                handleSubCategorySelect(event, subCategory.id)
-              }
+              onClick={(event) => handleSubCategorySelect(event, subCategory.id)}
               className="flex flex-col cursor-pointer my-4 px-3 pt-1"
             >
               {subCategory.label}
