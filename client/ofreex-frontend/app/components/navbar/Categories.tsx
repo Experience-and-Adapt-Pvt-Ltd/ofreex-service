@@ -44,7 +44,7 @@ const Categories: React.FC<CategoryProps> = ({ categoriesProps }) => {
                 id={item.id}
                 key={item.label}
                 label={item.label}
-                icon={item.icon || null}
+                categoryIcon={item.icon}
                 selected={category === item.label}
                 subCategories={item.subCategories}
               />

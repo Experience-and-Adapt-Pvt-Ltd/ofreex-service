@@ -43,6 +43,7 @@ const Input: React.FC<InputProps> = ({
       onChange={onChange}
       className={className}
       {...rest}
+      placeholder={placeholderString}
       />
     </>
   );

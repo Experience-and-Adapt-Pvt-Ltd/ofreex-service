@@ -19,7 +19,6 @@ export async function POST(request: Request) {
               name
               email
               password
-              address
               phoneNumber
               isPremium
             }
@@ -35,7 +34,7 @@ export async function POST(request: Request) {
 
     console.log(data);
     return NextResponse.json(data);
-  } catch (error) {
+  } catch (error:any) {
     console.error('Error during activation:', error.message);
     return new Response(JSON.stringify({
       error: error.message

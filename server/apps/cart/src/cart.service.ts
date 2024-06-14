@@ -4,10 +4,12 @@ import { ConfigService } from '@nestjs/config';
 import {
   AddItemToCartDto,
   AddItemToWishlistDto,
+  AddressDto,
   CreateCartDto,
   RemoveItemFromCartDto,
   UpdateItemQuantityDto,
 } from './dto/cart.dto';
+import { Address } from './types/cart.types';
 
 @Injectable()
 export class CartService {
@@ -246,4 +248,150 @@ export class CartService {
 
     return wishlist;
   }
+
+  async addAddress(userId: string, addressDto: AddressDto) {
+    // Check if the user already has addresses
+    try{
+      console.log(`Adding address for user ${userId}`, addressDto);
+      const address = await this.prisma.address.findMany({
+        where: {
+          user: userId,
+        },
+      });
+  
+      let isDefaultSet = false;
+  
+      if (address.length === 0) {
+        addressDto.defaultAddress = true;
+        isDefaultSet = true;
+      } else {
+        if (addressDto.defaultAddress) {
+          await this.prisma.address.updateMany({
+            where: {
+              user: userId,
+              defaultAddress: true,
+            },
+            data: {
+              defaultAddress: false,
+            },
+          });
+          isDefaultSet = true;
+        }
+      }
+  
+      //create new Address
+      const newAddress = await this.prisma.address.create({
+        data: {
+          user: userId,
+          street: addressDto.street,
+          city: addressDto.city,
+          state: addressDto.state,
+          pincode: addressDto.pincode,
+          defaultAddress: isDefaultSet ? true : false,
+          saveAs: addressDto.saveAs,
+        },
+      });
+  
+      return newAddress;
+    } catch (error) {
+      console.error('Failed to add address:', error);
+      throw new Error('Failed to add address');
+    }
+
+    // if(addressDto.default){
+    //   await this.prisma.address.updateMany({
+    //     where: {
+    //       user: userId,
+    //       default: true
+    //     },
+    //     data:{
+    //       default: false,
+    //     }
+    //   })
+    // }
+
+    // return await this.prisma.address.create({
+    //   data: {
+    //     user: userId,
+    //     ...addressDto
+    //   }
+    // });
+  }
+
+  async updateAddress(
+    addressId: string,
+    addressDto: AddressDto
+  ): Promise<Address> {
+    if (addressDto.defaultAddress) {
+      await this.prisma.address.updateMany({
+        where: {
+          id: addressId,
+          NOT: { id: addressId },
+          defaultAddress: true,
+        },
+        data: { defaultAddress: false },
+      });
+    }
+
+    return await this.prisma.address.update({
+      where: {
+        id: addressId,
+      },
+      data: addressDto,
+    });
+  }
+
+  async deleteAddress(userId: string, addressId: string): Promise<Address> {
+    const address = await this.prisma.address.findUnique({
+      where: {
+        id: addressId,
+        user: userId,
+      },
+    });
+
+    if (!address) {
+      throw new Error('Address not found');
+    }
+
+    const deltedAddress = { ...address };
+
+    await this.prisma.address.delete({
+      where: {
+        id: addressId,
+      },
+    });
+
+    if (address.defaultAddress) {
+      const nextAddress = await this.prisma.address.findFirst({
+        where: {
+          user: userId,
+        },
+        orderBy: {
+          createdAt: 'desc', 
+        },
+      });
+
+      if (nextAddress) {
+        await this.prisma.address.update({
+          where: {
+            id: nextAddress.id,
+          },
+          data: {
+            defaultAddress: true,
+          },
+        });
+      }
+    }
+
+    return deltedAddress;
+  }
+
+  async listAddresses(userId: string) {
+  console.log("Fetching addresses for user:", userId);
+  const addresses = await this.prisma.address.findMany({
+    where: { user: userId },
+  });
+  console.log("Retrieved addresses:", addresses);
+  return addresses;
+}
 }

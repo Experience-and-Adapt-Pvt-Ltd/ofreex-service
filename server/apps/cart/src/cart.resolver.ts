@@ -4,12 +4,14 @@ import { BadRequestException } from '@nestjs/common';
 import {
   AddItemToCartDto,
   AddItemToWishlistDto,
+  AddressDto,
+  AddressUpdateDto,
   FetchCartDto,
   FetchWishlistDto,
   RemoveItemFromCartDto,
   UpdateItemQuantityDto,
 } from './dto/cart.dto';
-import { Cart, CartSettings, Wishlist } from './types/cart.types';
+import { Address, Cart, CartSettings, Wishlist } from './types/cart.types';
 @Resolver('Cart')
 export class CartResolver {
   constructor(private readonly cartService: CartService) {}
@@ -77,8 +79,13 @@ export class CartResolver {
     @Args('fetchMyCart') fetchMycart: FetchCartDto,
     @Context() context: { req: any }
   ) {
-    const cart = await this.cartService.fetchMyCartDetails(fetchMycart.user);
-    return cart;
+    try{
+      const cart = await this.cartService.fetchMyCartDetails(fetchMycart.user);
+      return cart;
+    } catch(error){
+      console.error("Failed to fetch cart:", error);
+      throw new BadRequestException("Failed to fetch cart", error.message);
+    }
   }
 
   @Query(() => CartSettings)
@@ -91,5 +98,48 @@ export class CartResolver {
   async getWishlist(@Args('fetchWishlistDto') fetchMycart: FetchWishlistDto) {
     const data = await this.cartService.fetchMyWishlist(fetchMycart.user);
     return data;
+  }
+
+
+  // Address CRUD
+
+  @Mutation(() => Address)
+  async addAddress(@Args('userId') userId: string,
+  @Args('address') addressDto: AddressDto) 
+  {
+    try {
+      return this.cartService.addAddress(userId,addressDto)
+    } catch (error) {
+      throw new BadRequestException(error.response?.message)
+    }
+  }
+
+  @Mutation(() => Address)
+  async updateAddress(
+    @Args('addressUpdateDto') addressUpdateDto: AddressUpdateDto,
+    // @Args('userId') userId: string
+  ){
+    try {
+      return await this.cartService.updateAddress(
+        // userId,
+        addressUpdateDto.id,
+        addressUpdateDto
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Mutation(() => Address)
+  async deleteAddress(
+    @Args('userId') userId: string,
+    @Args('addressId') addressId: string,
+  ) {
+    return this.cartService.deleteAddress(userId,addressId);
+  }
+
+  @Query(() => [Address])
+  async listAddresses(@Args('userId') userId: string) {
+    return this.cartService.listAddresses(userId);
   }
 }

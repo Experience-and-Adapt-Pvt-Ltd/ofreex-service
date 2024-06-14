@@ -9,14 +9,14 @@ export async function getCartByUserId(userId: string) {
         query: `
           query {
             fetchMyCart(fetchMyCart:{user:"${userId}"}) {
-              id
-              user
-              totalAmount
-              totalItem
+              id,
+              user,
+              totalAmount,
+              totalItem,
               items {
-                id
-                listingId
-                quantity
+                id,
+                listingId,
+                quantity,
               }
             }
           }
@@ -32,7 +32,6 @@ export async function getCartByUserId(userId: string) {
     }
     return { cart: fetchMyCart.data.fetchMyCart, listings };
   } catch (error: any) {
-    console.log(error);
     throw new Error(error);
   }
 }

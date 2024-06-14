@@ -115,3 +115,47 @@ export class CreateCartDto {
   @Field()
   user: string;
 }
+
+@InputType()
+export class AddressDto {
+  @Field({ nullable: true }) // Optional for creation
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  // @Field()
+  // @IsString()
+  // lane1: string;
+
+  @Field()
+  @IsString()
+  street: string;
+
+  @Field()
+  @IsString()
+  city: string;
+
+  @Field()
+  @IsString()
+  state: string;
+
+  @Field()
+  @IsString()
+  pincode: string;
+
+  @Field({defaultValue: false})
+  @IsString()
+  @IsOptional()
+  defaultAddress?: boolean;
+
+  @Field()
+  @IsString()
+  saveAs: string;
+}
+
+@InputType()
+export class AddressUpdateDto extends AddressDto {
+  @Field()
+  @IsString()
+  id: string;  // Needed for updating specific address
+}

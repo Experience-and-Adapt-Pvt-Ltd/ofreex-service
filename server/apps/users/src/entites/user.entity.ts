@@ -35,9 +35,6 @@ export class User {
   avatars?: Avatars | null;
 
   @Field({ nullable: true })
-  address: string;
-
-  @Field({ nullable: true })
   phoneNumber: number;
 
   @Field()

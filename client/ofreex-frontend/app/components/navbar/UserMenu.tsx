@@ -35,6 +35,9 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
     loginModal.onOpen();
   }, [loginModal]);
 
+  const getName = currentUser?.email.split('@')[0];
+  // getName = getName.s
+
   return (
     <div className="relative">
       {/* <div onClick={onSeller}>
@@ -43,37 +46,32 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
       <div className="flex flex-row items-center gap-3">
         <Link
           href="/ComingSoon"
-          className="hidden lg:block text-sm py-2 px-4 whitespace-nowrap"
+          className="hidden lg:block text-sm py-2 px-4 whitespace-nowrap rounded-full w-auto transition font-semibold"
         >
           Refer and earn
         </Link>
-        {!currentUser && !currentSeller ? (
+        { !currentSeller && (
           <Link
             href={"/sellerregistration"}
-            className="hidden md:block text-sm font-semibold py-2 px-4 rounded-full dark:hover:bg-gray-900 transition cursor-pointer border-4 border-[#37b668] w-auto whitespace-nowrap"
+            className="hidden md:block text-sm font-semibold py-2 px-4 ml-2 rounded-full dark:hover:bg-gray-900 transition cursor-pointer  w-auto whitespace-nowrap"
           >
             Become a Seller!!
           </Link>
-        ) : (
-          <div
-            onClick={() => {}}
-            className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full dark:hover:bg-gray-900 transition"
-          ></div>
         )}
         <div
           onClick={() => router.push("/cart")}
-          className="cursor-pointer p-2 border-[1px] border-neutral-200 rounded-full hover:shadow-md transition"
+          className="cursor-pointer p-2 border-[1px] ml-2 rounded-full border-red-500 hover:shadow-md transition"
           style={{ fontSize: "24px" }}
         >
-          <FaCartShopping style={{ width: "24px", height: "24px" }} />
+          <FaCartShopping style={{ width: "24px", height: "24px", color:"black" }}/>
         </div>
         <div
           onClick={toggleOpen}
-          className="ml-auto p-2 md:p-4 md:py-1 md:px-2 border-[1px] border-neutral-200 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
+          className="ml-auto p-2 md:p-4 md:py-1 md:px-2 border border-zinc-600 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
         >
-          <AiOutlineMenu style={{ width: "28px", height: "28px" }} />
-          <div className="block md:block">
-            <Avatar src={currentUser?.image} />
+          <AiOutlineMenu  />
+          <div className="block h-6 w-6">
+            <Avatar src={currentUser?.image}/>
           </div>
         </div>
       </div>
@@ -84,7 +82,9 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
               <>
                 {currentUser ? (
                   <>
+                  <MenuItem label={getName} href="/"/>
                     <MenuItem label="Wishlist" href={"/favorites"} />
+                    <MenuItem label="Address" href={"/new-address"} />
                     <MenuItem label="Orders" href={"/ComingSoon"} />
                     <MenuItem href="/ComingSoon" label="Refer and Earn" />
                     <MenuItem href="/ComingSoon" label="How it works" />

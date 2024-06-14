@@ -9,8 +9,9 @@ const Logo = () => {
   return (
     <Image
       onClick={() => router.push("/")}
-      className="relative mt-4 left-0 cursor-pointer w-[150px] sm:w-[180px] md:w-[240px] h-[150px] sm:h-[120px] md:h-[240px]"
-      src="/images/logo.png"
+      // className="cursor-pointer w-[150px] sm:w-[180px] md:w-[150px] h-[150px] sm:h-[120px] md:h-[150px]"
+      className="cursor-pointer md:w-[120px] w-[60px] h-[40px] mr-2"
+      src="/images/logo-version-two.png"
       height="100"
       width="100"
       alt="Logo"
