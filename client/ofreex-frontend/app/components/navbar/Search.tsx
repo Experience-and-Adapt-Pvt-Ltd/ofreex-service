@@ -1,128 +1,55 @@
-'use client';
-
-import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
-import { BiSearch } from 'react-icons/bi';
-import { differenceInDays } from 'date-fns';
-
-// import useSearchModal from '@/app/hooks/useSearchModal';
-import useCountries from '@/app/hooks/useCountries';
+"use client";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { IoSearch } from "react-icons/io5";
 
 const Search = () => {
-  // const searchModal = useSearchModal();
-  const params = useSearchParams();
-  const { getByValue } = useCountries();
-
-  const  locationValue = params?.get('locationValue'); 
-  const  startDate = params?.get('startDate');
-  const  endDate = params?.get('endDate');
-  const  guestCount = params?.get('guestCount');
-
-  const locationLabel = useMemo(() => {
-    if (locationValue) {
-      return getByValue(locationValue as string)?.label;
-    }
-
-    return 'Anywhere';
-  }, [locationValue, getByValue]);
-
-  const durationLabel = useMemo(() => {
-    if (startDate && endDate) {
-      const start = new Date(startDate as string);
-      const end = new Date(endDate as string);
-      let diff = differenceInDays(end, start);
-
-      if (diff === 0) {
-        diff = 1;
-      }
-
-      return `${diff} Days`;
-    }
-
-    return 'Any Week'
-  }, [startDate, endDate]);
-
-  const guestLabel = useMemo(() => {
-    if (guestCount) {
-      return `${guestCount} Guests`;
-    }
-
-    return 'Add Guests';
-  }, [guestCount]);
-
-  return ( 
-    <div
-      // onClick={searchModal.onOpen}
-      className="
-        border-[1px] 
-        w-full 
-        md:w-auto 
-        py-2 
-        rounded-full 
-        shadow-sm 
-        hover:shadow-md 
-        transition 
-        cursor-pointer
-      "
-    >
-      <div 
-        className="
-          flex 
-          flex-row 
-          items-center 
-          justify-between
-        "
-      >
-        <div 
-          className="
-            text-sm 
-            font-semibold 
-            px-6
-          "
-        >
-          {locationLabel}
-        </div>
-        <div 
-          className="
-            hidden 
-            sm:block 
-            text-sm 
-            font-semibold 
-            px-6 
-            border-x-[1px] 
-            flex-1 
-            text-center
-          "
-        >
-          {durationLabel}
-        </div>
-        <div 
-          className="
-            text-sm 
-            pl-6 
-            pr-2 
-            text-gray-600 
-            flex 
-            flex-row 
-            items-center 
-            gap-3
-          "
-        >
-          <div className="hidden sm:block">{guestLabel}</div>
-          <div 
-            className="
-              p-2 
-              bg-rose-500 
-              rounded-full 
-              text-white
-            "
-          >
-            <BiSearch size={18} />
-          </div>
-        </div>
-      </div>
-    </div>
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+  const [placeholderText, setPlaceholderText] = useState(
+    "What are you looking for?"
   );
-}
- 
+
+  useEffect(() => {
+    const handleResize = () => {
+      // breakpoint for mobile devices
+      if (window.innerWidth < 768) {
+        setPlaceholderText("Search Ofreex.in");
+      } else {
+        setPlaceholderText("What are you looking for?");
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const onSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const encodedSearchQuery = encodeURI(searchQuery);
+    router.push(`/search?q=${searchQuery}`);
+
+    console.log(encodedSearchQuery);
+  };
+
+  return (
+    <form className="flex justify-center sm:w-2/3" onSubmit={onSearch}>
+      <input
+        type="text"
+        placeholder={placeholderText}
+        value={searchQuery}
+        onChange={(event) => setSearchQuery(event.target.value)}
+        className="px-1 py-1 sm:w-full sm:block hidden w-full sm:px-5 sm:py-2 md:flex text-black border border-zinc-800 rounded-xl"
+      />
+      <div className="relative md:top-1 md:right-9 right-6">
+        <IoSearch className="h-8" />
+      </div>
+    </form>
+  );
+};
+
 export default Search;
