@@ -448,6 +448,26 @@ export class ListingsService {
       subCategories: category.subCategories ? category.subCategories.map(subCategory => this.convertToSubCategoryDto(subCategory)) : []
     };
   }
+
+  //To Search Item 
+  async searchListings(query: string, category?: string): Promise<Listing[]> {
+    console.log(`in search function`);
+    try {
+      
+      const searchResults = await this.prisma.listing.findMany({
+        where: {
+          OR: [
+            { title: { contains: query, mode: 'insensitive' }},
+            { description: { contains: query, mode: 'insensitive' }}
+          ],
+          ...(category && { categoryId: category })
+        }
+      });
+      return searchResults.map(this.convertToDto);
+    } catch (error) {
+      throw new BadRequestException(`Search failed: ${error.message}`);
+    }
+  }  
 }
 
 interface UserPartial {
