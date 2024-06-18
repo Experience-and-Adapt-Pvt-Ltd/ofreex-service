@@ -396,7 +396,7 @@ export class ListingsService {
       const limitedListings = filteredListings.slice(0, limit);
       Logger.log(`filtered listings = ${filteredListings.length}`);
       // Convert each item to match the Listing type
-      return limitedListings.map(this.convertToDto);
+      return filteredListings.map(this.convertToDto);
     } catch (error) {
       throw new BadRequestException(`Could not fetch basic listings: ${error.message}`);
     }
@@ -451,7 +451,6 @@ export class ListingsService {
 
   //To Search Item 
   async searchListings(query: string, category?: string): Promise<Listing[]> {
-    console.log(`in search function`);
     try {
       
       const searchResults = await this.prisma.listing.findMany({
