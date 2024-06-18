@@ -43,7 +43,7 @@ const Search = () => {
         placeholder={placeholderText}
         value={searchQuery}
         onChange={(event) => setSearchQuery(event.target.value)}
-        className="px-1 py-1 sm:w-full sm:block hidden w-full sm:px-5 sm:py-2 md:flex text-black border border-zinc-800 rounded-xl"
+        className="px-1 py-1 sm:w-full  w-full sm:px-5 sm:py-2 md:flex text-black border border-zinc-800 rounded-xl"
       />
       <div className="relative md:top-1 md:right-9 right-6">
         <IoSearch className="h-8" />

@@ -12,7 +12,6 @@ import useRegisterModal from "@/app/hooks/useRegisterModal";
 
 import Modal from "./Modal";
 import Input from "../inputs/Input";
-import Heading from "../Heading";
 import Button from "../Button";
 import useActivationModal from "@/app/hooks/useActivationModal";
 import { useActivationToken } from "@/app/hooks/useActivationToken";
@@ -171,9 +170,7 @@ const RegisterModal = ({}) => {
       disabled={isLoading}
       isOpen={registerModal.isOpen}
       title="Register"
-      actionLabel="Continue"
       onClose={registerModal.onClose}
-      onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
     />
