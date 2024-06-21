@@ -1,14 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo } from "react";
-import { format } from "date-fns";
 
 import useCountries from "@/app/hooks/useCountries";
 import { SafeListing, SafeReservation, SafeUser } from "@/app/types";
 
 import HeartButton from "../HeartButton";
-import Button from "../Button";
+import Image from "next/image";
 
 type ListingProps = {
   id: string;
@@ -52,55 +50,24 @@ const ListingCard: React.FC<ListingCardProps> = ({
   const router = useRouter();
   const { getByValue } = useCountries();
 
-  const handleCancel = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-
-      if (disabled) {
-        return;
-      }
-
-      onAction?.(actionId);
-    },
-    [disabled, onAction, actionId]
-  );
-
-  const price = useMemo(() => {
-    if (reservation) {
-      return reservation.totalPrice;
-    }
-
-    return data.price;
-  }, [reservation, data.price]);
-
-  const reservationDate = useMemo(() => {
-    if (!reservation) {
-      return null;
-    }
-
-    const start = new Date(reservation.startDate);
-    const end = new Date(reservation.endDate);
-
-    return `${format(start, "PP")} - ${format(end, "PP")}`;
-  }, [reservation]);
-
-  console.log(`data is: ${data}`);
-
   let finalPrice = data.price - data.price * (discount / 100);
 
   let finalDescription = data.description.substring(0, 20) + "...";
 
   return (
     <div
-      className="max-w-sm mx-auto bg-white cursor-pointer border border-zinc-600 dark:bg-zinc-800 rounded-xl shadow-md overflow-hidden"
+      className="w-full  bg-white cursor-pointer border border-zinc-600 dark:bg-zinc-800 rounded-xl shadow-md overflow-hidden"
       onClick={() => router.push(`/listings/${data.id}`)}
     >
-      <img
-        className="object-cover"
-        style={{ width: "500px", height: "200px" }}
+      <div className="flex items-center justify-center w-full h-[15rem]">
+      <Image
+        height={10}
+        width={100}
+        className="object-cover w-full h-full " 
         src={data.imageUrls[0]}
         alt="Product Image"
       />
+      </div>
       {/* <div className="absolute top-0 right-0 m-2">
         <button className="p-2 bg-white dark:bg-zinc-800 rounded-full shadow-md">
           <img className="w-6 h-6" src="/icons/heart.svg" alt="Heart Icon" />
@@ -128,7 +95,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
           {data.discount !== 0 ? (
             <p className="text-sm text-red-500 line-through">₹{data.price}</p>
           ) : (
-            <p className="text-sm">&nbsp;</p> // This maintains the layout
+            <p className="text-sm">&nbsp;</p> 
           )}
           <p className="text-lg text-zinc-900 dark:text-white">₹{finalPrice}</p>
         </div>
