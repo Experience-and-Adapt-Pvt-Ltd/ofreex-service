@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -19,27 +19,39 @@ interface UserMenuProps {
 
 const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
   const router = useRouter();
-  const sellerModal = useSellerModal();
   const loginModal = useLoginModal();
-
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef();
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value);
-  }, [currentUser]);
+  }, []);
 
-  const onSeller = useCallback(() => {
-    sellerModal.onOpen();
-  }, [sellerModal]);
+  useEffect(() => {
+    const closeMenu = (event:any) => {
+      if(!menuRef.current.contains(event.target)){
+        setIsOpen(false)
+      }   
+    }
+
+    if (isOpen) {
+      document.addEventListener('click', closeMenu);
+    }
+
+    return () => {
+      document.removeEventListener('click', closeMenu);
+    };
+  },[isOpen])
+
   const onBuyer = useCallback(() => {
     loginModal.onOpen();
   }, [loginModal]);
 
+  
   const getName = currentUser?.email.split('@')[0];
-  // getName = getName.s
 
   return (
-    <div className="relative">
+    <div className="relative" ref={menuRef}>
       {/* <div onClick={onSeller}>
         log
       </div> */}
@@ -60,7 +72,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
         )}
         <div
           onClick={() => router.push("/cart")}
-          className="cursor-pointer p-2 border-[1px] ml-2 rounded-full border-red-500 hover:shadow-md transition"
+          className="cursor-pointer p-2 border-[1px] ml-2 rounded-full  hover:shadow-md transition"
           style={{ fontSize: "24px" }}
         >
           <FaCartShopping style={{ width: "24px", height: "24px", color:"black" }}/>

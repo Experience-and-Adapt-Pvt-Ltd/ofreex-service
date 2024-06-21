@@ -21,7 +21,7 @@ const Input: React.FC<InputProps> = ({
   disabled,
   formatPrice,
   register,
-  placeholderString = " ",
+  placeholderString = "",
   required,
   errors,
   className,

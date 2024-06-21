@@ -45,7 +45,6 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
   const editHook = useEdit();
   const showCustomCategory = category === "others";
   const [subCategories, setSubCategories] = useState([]);
-  
 
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
@@ -62,16 +61,28 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
       images: images,
       categoryId: category === "others" ? "others" : data.categoryId,
       categoryLabel: data.categoryId,
-      subCategoryId: category === "others" ? data.customCategory : data.subCategoryId,
+      subCategoryId:
+        category === "others" ? data.customCategory : data.subCategoryId,
     };
 
     axios
       .post("/api/listings", formData)
       .then(() => {
         toast.success("Product Listed!");
-        reset();
+        reset({
+          categoryId: "",
+          imageSrc: "",
+          price: "",
+          title: "",
+          description: "",
+          discount: "",
+          delivery: "",
+          quantity: "",
+          customCategory: "",
+          subCategoryId: "",
+        });
         setImages([]);
-        // router.push("/properties");
+        router.push("/properties");
       })
       .catch((error) => {
         if (error.response) {
@@ -95,7 +106,12 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
   // to get SubCategory
   useEffect(() => {
     if (category && category !== "others") {
-      axios.get(`http://localhost:4002/listings/category/${encodeURIComponent(category)}/subcategories`)
+      axios
+        .get(
+          `http://localhost:4002/listings/category/${encodeURIComponent(
+            category
+          )}/subcategories`
+        )
         .then((response) => {
           setSubCategories(response.data);
         })
@@ -107,6 +123,15 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
       setSubCategories([]);
     }
   }, [category]);
+
+  const removeImage = (
+    index: number,
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setImages((currentImages) => currentImages.filter((_, i) => i !== index));
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -127,7 +152,7 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
                 onChange={(e) => setCustomValue("category", e.target.value)}
                 className="form-select w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
-                {categories.map((item:any, index:any) => (
+                {categories.map((item: any, index: any) => (
                   <option key={index} value={item.value}>
                     {item.label}
                   </option>
@@ -158,7 +183,9 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
                 className="form-select w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
                 {subCategories.map((subCategory, index) => (
-                  <option key={index} value={subCategory.id}>{subCategory.label}</option>
+                  <option key={index} value={subCategory.id}>
+                    {subCategory.label}
+                  </option>
                 ))}
               </select>
             </div>
@@ -169,7 +196,6 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
                 id="title"
                 label="Product Name"
                 type="text"
-                placeholder="ex: Phone"
                 className="form-Input w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 register={register}
                 required
@@ -265,15 +291,26 @@ const ProductForm: React.FC<ProductListModal> = ({ categories }) => {
                 Uploaded Images
               </label>
               {images.length > 0 && (
-                <div className="grid grid-cols-3 gap-4 mt-4">
+                <div className="mt-4 flex overflow-x-auto">
                   {images.map((image, index) => (
-                    <div key={index} className="w-full h-32 relative">
+                    <div
+                      key={index}
+                      className="flex-none items-center justify-center w-40 h-40 m-2 relative"
+                    >
                       <Image
                         src={image}
                         alt={`Uploaded Image ${index}`}
-                        layout="fill"
-                        objectFit="cover"
+                        height={10}
+                        width={100}
+                        className="object-cover w-full h-full"
                       />
+                      <button
+                        onClick={(e) => removeImage(index, e)}
+                        className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
+                        style={{ zIndex: 10 }}
+                      >
+                        &#10005;
+                      </button>
                     </div>
                   ))}
                 </div>

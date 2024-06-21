@@ -12,7 +12,6 @@ import useLoginModal from "@/app/hooks/useLoginModal";
 
 import Modal from "./Modal";
 import Input from "../inputs/Input";
-import Heading from "../Heading";
 import Button from "../Button";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import useForgetModal from "@/app/hooks/useForgetModal";
@@ -73,7 +72,7 @@ const LoginModal = () => {
         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       />
 
-      <div className="mb-4">
+      <div className="mb-4 mt-3">
         <Input
           id="password"
           type={!show ? "password" : "text"}
@@ -146,9 +145,7 @@ const LoginModal = () => {
       disabled={isLoading}
       isOpen={loginModal.isOpen}
       title="Login"
-      actionLabel="Continue"
       onClose={loginModal.onClose}
-      onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
     />

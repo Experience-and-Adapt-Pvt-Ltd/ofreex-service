@@ -4,6 +4,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { SafeCategory } from "@/app/types";
 import CategoryBox from "../CategoryBox";
 import Container from "../Container";
+import { useState } from "react";
 
 export let categories: SafeCategory[] | null = [];
 interface CategoryProps {
@@ -26,6 +27,15 @@ const Categories: React.FC<CategoryProps> = ({ categoriesProps }) => {
   const category = params?.get("category");
   const pathname = usePathname();
   const isMainPage = pathname === "/";
+  const [openCategoryId, setOpenCategoryId] = useState(null);
+
+  const handleMouseEnterCategory = (categoryId: any) => {
+    setOpenCategoryId(categoryId);
+  };
+
+  const handleMouseLeaveCategory = () => {
+    setOpenCategoryId(null);
+  };
 
   if (!isMainPage) {
     return null;
@@ -45,8 +55,10 @@ const Categories: React.FC<CategoryProps> = ({ categoriesProps }) => {
                 key={item.label}
                 label={item.label}
                 categoryIcon={item.icon}
-                selected={category === item.label}
+                selected={openCategoryId === item.id}
                 subCategories={item.subCategories}
+                onMouseEnter={() => handleMouseEnterCategory(item.id)}
+                onMouseLeave={handleMouseLeaveCategory}
               />
             ))
           : null}

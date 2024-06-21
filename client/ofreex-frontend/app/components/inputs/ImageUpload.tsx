@@ -5,10 +5,10 @@ declare global {
   var cloudinary: any;
 }
 
-const uploadPreset = "rkb0drs3";
+const uploadPreset = "ce5bccsg";
 
 interface ImageUploadProps {
-  onChange: (value: string[]) => void; 
+  onChange: (value: string[]) => void;
   value: string[];
 }
 
@@ -26,11 +26,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onChange, value }) => {
         multiple: true,
       }}
     >
-      {({ open }) => {
-        return (
-          <div
-            onClick={() => open?.()}
-            className="
+      {({ open }) => (
+        <div
+          onClick={() => open?.()}
+          className="
             relative
             cursor-pointer
             transition
@@ -45,38 +44,25 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onChange, value }) => {
             gap-4
             text-gray-600
             mt-[-2rem]
-            "
+          "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-12 h-12 text-gray-400 group-hover:text-gray-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-12 h-12 text-gray-400 group-hover:text-gray-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3 7v4a1 1 0 001 1h3m10 0h3a1 1 0 001-1V7m-7 12V10m0 12v-5m0 5H9m3 0h3"
-              />
-            </svg>
-            <div className="font-semibold text-lg">Click to upload</div>
-            {value?.map((imageUrl, index) => (
-              <div key={index} className="absolute inset-0 w-full h-full">
-                {imageUrl !== "" && (
-                  <Image
-                    fill
-                    style={{ objectFit: "cover" }}
-                    src={imageUrl}
-                    alt={`Uploaded image ${index + 1}`}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        );
-      }}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M3 7v4a1 1 0 001 1h3m10 0h3a1 1 0 001-1V7m-7 12V10m0 12v-5m0 5H9m3 0h3"
+            />
+          </svg>
+          <div className="font-semibold text-lg">Click to upload</div>
+        </div>
+      )}
     </CldUploadWidget>
   );
 };

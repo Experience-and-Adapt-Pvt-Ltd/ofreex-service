@@ -16,7 +16,6 @@ import useSellerForgetModalModal from "@/app/hooks/useSellerForgetModal";
 const SellerLoginModal = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const registerSellerModal = useSellerModal();
   const sellerLoginModal = useSellerLoginModal();
   const [show, setShow] = useState(false);
   const forgotPasswordModal = useSellerForgetModalModal();
@@ -135,9 +134,7 @@ const SellerLoginModal = () => {
       disabled={isLoading}
       isOpen={sellerLoginModal.isOpen}
       title="Login"
-      actionLabel="Login"
       onClose={sellerLoginModal.onClose}
-      onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
     />
