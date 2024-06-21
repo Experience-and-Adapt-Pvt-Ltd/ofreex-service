@@ -58,16 +58,16 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
       <div className="flex flex-row items-center gap-3">
         <Link
           href="/ComingSoon"
-          className="hidden lg:block text-sm whitespace-nowrap font-semibold"
+          className="hidden lg:block text-md whitespace-nowrap font-semibold text-black shadow-lg px-5 py-2"
         >
-          Refer and earn
+          Refer & Earn
         </Link>
         { !currentSeller && (
           <Link
             href={"/sellerregistration"}
-            className="hidden md:block text-sm font-semibold  rounded-full dark:hover:bg-gray-900 transition cursor-pointer whitespace-nowrap"
+            className="hidden md:block text-md font-semibold text-black px-5 py-2 shadow-lg dark:hover:bg-gray-900 transition cursor-pointer whitespace-nowrap"
           >
-            Become a Seller!!
+            Become a Seller
           </Link>
         )}
         <div
@@ -79,7 +79,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
         </div>
         <div
           onClick={toggleOpen}
-          className="ml-auto p-2 md:p-4 md:py-1 md:px-2 border border-zinc-600 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
+          className="ml-auto p-2 md:p-4 md:py-1 md:px-2 border border-zinc-600 rounded-md flex flex-row items-center gap-3  cursor-pointer hover:shadow-md transition"
         >
           <AiOutlineMenu  />
           <div className="block h-6 w-6">

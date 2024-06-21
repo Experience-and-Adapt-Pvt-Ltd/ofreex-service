@@ -27,6 +27,7 @@ const Home = async ({ searchParams }: HomeProps) => {
   return (
     <ClientOnly>
       <Container>
+      <div className="my-2 mx-4">
         <div
           className="
             pt-8
@@ -48,6 +49,7 @@ const Home = async ({ searchParams }: HomeProps) => {
               discount={listing.discount}
             />
           ))}
+        </div>
         </div>
       </Container>
     </ClientOnly>
