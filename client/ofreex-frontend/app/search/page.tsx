@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import ListingCard from "../components/listings/ListingCard";
+import Loading from "../loading";
 
 type ListingProps = {
   id: string;
@@ -52,7 +53,7 @@ const SearchPage = () => {
     fetchListings();
   }, [searchParams]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
 
   return (
     <div className="my-2 mx-4">
