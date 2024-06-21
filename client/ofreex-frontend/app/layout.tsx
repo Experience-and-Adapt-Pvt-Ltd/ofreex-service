@@ -1,42 +1,39 @@
+import { Nunito } from "next/font/google";
+import Navbar from "@/app/components/navbar/Navbar";
+import LoginModal from "@/app/components/modals/LoginModal";
+import RegisterModal from "@/app/components/modals/RegisterModal";
+import SearchModal from "@/app/components/modals/SearchModal";
+import RentModal from "@/app/components/modals/RentModal";
 
-import { Nunito } from 'next/font/google'
-import Navbar from '@/app/components/navbar/Navbar';
-import LoginModal from '@/app/components/modals/LoginModal';
-import RegisterModal from '@/app/components/modals/RegisterModal';
-import SearchModal from '@/app/components/modals/SearchModal';
-import RentModal from '@/app/components/modals/RentModal';
+import ToasterProvider from "@/app/providers/ToasterProvider";
 
-import ToasterProvider from '@/app/providers/ToasterProvider';
-
-import './globals.css'
-import ClientOnly from './components/ClientOnly';
-import getCurrentUser from './actions/getCurrentUser';
-import ActivationModal from './components/modals/ActivationModal';
-import SellerModal from './components/modals/SellerModel';
-import BankDetailsModal from './components/modals/BankDetailsModal';
-import SellerActivationModal from './components/modals/SellerActivationModal';
-import getCurrentSeller from './actions/getCurrentSeller';
-import getCategories from './actions/getCategories';
-import SellerLoginModal from './components/modals/SellerLoginModal';
-import ForgetModal from './components/modals/ForgetModal';
-import SellerForgetModal from './components/modals/SellerForgetModal';
-import Footer from './components/Footer';
-
-
+import "./globals.css";
+import ClientOnly from "./components/ClientOnly";
+import getCurrentUser from "./actions/getCurrentUser";
+import ActivationModal from "./components/modals/ActivationModal";
+import SellerModal from "./components/modals/SellerModel";
+import BankDetailsModal from "./components/modals/BankDetailsModal";
+import SellerActivationModal from "./components/modals/SellerActivationModal";
+import getCurrentSeller from "./actions/getCurrentSeller";
+import getCategories from "./actions/getCategories";
+import SellerLoginModal from "./components/modals/SellerLoginModal";
+import ForgetModal from "./components/modals/ForgetModal";
+import SellerForgetModal from "./components/modals/SellerForgetModal";
+import Footer from "./components/Footer";
 
 export const metadata = {
-  title: 'OfreeX',
-  description: '',
-}
+  title: "OfreeX",
+  description: "",
+};
 
 const font = Nunito({
-  subsets: ['latin'],
+  subsets: ["latin"],
 });
 
 export default async function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   const currentUser = await getCurrentUser();
   //const currentSeller = await getCurrentSeller();
@@ -61,13 +58,15 @@ export default async function RootLayout({
           <SellerActivationModal />
           <ForgetModal />
           <SellerForgetModal />
-          <Navbar currentUser={currentUser} currentSeller={currentSeller} categories={categories} />
-        </ClientOnly>
-        <div className="pb-20">
-          {children}
-        </div>
+          <Navbar
+            currentUser={currentUser}
+            currentSeller={currentSeller}
+            categories={categories}
+          />
+          <div className="pb-20">{children}</div>
           <Footer />
+        </ClientOnly>
       </body>
     </html>
-  )
+  );
 }
