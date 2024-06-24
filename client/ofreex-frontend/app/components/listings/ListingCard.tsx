@@ -59,9 +59,9 @@ const ListingCard: React.FC<ListingCardProps> = ({
       className="w-full  bg-white cursor-pointer border border-zinc-600 dark:bg-zinc-800 rounded-xl shadow-md overflow-hidden"
       onClick={() => router.push(`/listings/${data.id}`)}
     >
-      <div className="flex items-center justify-center w-full h-[15rem]">
+      <div className="flex items-center justify-center w-full h-[10rem] md:h-[13rem]">
       <Image
-        height={10}
+        height={100}
         width={100}
         className="object-cover w-full h-full " 
         src={data.imageUrls[0]}
