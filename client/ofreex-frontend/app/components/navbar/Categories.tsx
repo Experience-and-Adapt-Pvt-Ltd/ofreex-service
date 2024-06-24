@@ -4,7 +4,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { SafeCategory } from "@/app/types";
 import CategoryBox from "../CategoryBox";
 import Container from "../Container";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export let categories: SafeCategory[] | null = [];
 interface CategoryProps {
@@ -28,13 +28,30 @@ const Categories: React.FC<CategoryProps> = ({ categoriesProps }) => {
   const pathname = usePathname();
   const isMainPage = pathname === "/";
   const [openCategoryId, setOpenCategoryId] = useState(null);
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  useEffect(() => {
+    function handleRezise() {
+      setIsMobileView(window.innerWidth < 768);
+    }
+    window.addEventListener("resize", handleRezise);
+    handleRezise();
+
+    return () => {
+      window.removeEventListener("resize", handleRezise);
+    };
+  }, []);
 
   const handleMouseEnterCategory = (categoryId: any) => {
-    setOpenCategoryId(categoryId);
+    if (!isMobileView) {
+      setOpenCategoryId(categoryId);
+    }
   };
 
   const handleMouseLeaveCategory = () => {
-    setOpenCategoryId(null);
+    if (!isMobileView) {
+      setOpenCategoryId(null);
+    }
   };
 
   if (!isMainPage) {
@@ -45,23 +62,24 @@ const Categories: React.FC<CategoryProps> = ({ categoriesProps }) => {
     <Container>
       <div
         className="
-          flex flex-row space-x-4 py-4
+          flex flex-row space-x-4 py-4 overflow-auto sm:overflow-visible scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-100
         "
       >
-        {categories
-          ? categories.map((item) => (
-              <CategoryBox
-                id={item.id}
-                key={item.label}
-                label={item.label}
-                categoryIcon={item.icon}
-                selected={openCategoryId === item.id}
-                subCategories={item.subCategories}
-                onMouseEnter={() => handleMouseEnterCategory(item.id)}
-                onMouseLeave={handleMouseLeaveCategory}
-              />
-            ))
-          : null}
+        {categories &&
+          categories.map((item) => (
+            <CategoryBox
+              id={item.id}
+              key={item.label}
+              label={item.label}
+              categoryIcon={item.icon}
+              selected={openCategoryId === item.id}
+              subCategories={item.subCategories}
+              {...(!isMobileView && {
+                onMouseEnter: () => handleMouseEnterCategory(item.id),
+                onMouseLeave: () => handleMouseLeaveCategory(),
+              })}
+            />
+          ))}
       </div>
     </Container>
   );
