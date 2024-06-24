@@ -21,53 +21,85 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
   const router = useRouter();
   const loginModal = useLoginModal();
   const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef();
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const [isMobileView, setIsMobileView] = useState(false);
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value);
   }, []);
 
   useEffect(() => {
-    const closeMenu = (event:any) => {
-      if(!menuRef.current.contains(event.target)){
-        setIsOpen(false)
-      }   
+    function handleRezise() {
+      setIsMobileView(window.innerWidth < 768);
     }
+    window.addEventListener("resize", handleRezise);
+    handleRezise();
+
+    return () => {
+      window.removeEventListener("resize", handleRezise);
+    };
+  }, []);
+
+  useEffect(() => {
+    const closeMenu = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
 
     if (isOpen) {
-      document.addEventListener('click', closeMenu);
+      document.addEventListener("click", closeMenu);
     }
 
     return () => {
-      document.removeEventListener('click', closeMenu);
+      document.removeEventListener("click", closeMenu);
     };
-  },[isOpen])
+  }, [isOpen]);
 
   const onBuyer = useCallback(() => {
     loginModal.onOpen();
   }, [loginModal]);
 
-  
-  const getName = currentUser?.email.split('@')[0];
+  const getName = currentUser?.email
+    ? currentUser.email.split("@")[0]
+    : "Guest";
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div ref={menuRef} className="relative">
       {/* <div onClick={onSeller}>
         log
       </div> */}
       <div className="flex flex-row items-center gap-3">
-        <Link
+        {/* <Link
           href="/ComingSoon"
           className="hidden lg:block text-md whitespace-nowrap font-semibold text-black shadow-lg px-5 py-2"
         >
           Refer & Earn
-        </Link>
-        { !currentSeller && (
+        </Link> */}
+        {!isMobileView && (
           <Link
-            href={"/sellerregistration"}
-            className="hidden md:block text-md font-semibold text-black px-5 py-2 shadow-lg dark:hover:bg-gray-900 transition cursor-pointer whitespace-nowrap"
+            href="/ComingSoon"
+            className="flex items-center justify-center shadow-lg py-2 px-7 whitespace-nowrap"
           >
-            Become a Seller
+            <img
+              src="/images/promotion.png"
+              alt="store icon"
+              className="w-6 h-6"
+            />
+            <span className="text-lg font-medium ml-1">Refer & Earn</span>
+          </Link>
+        )}
+        {!currentSeller && !isMobileView && (
+          <Link
+            href="/sellerregistration"
+            className="flex items-center justify-center shadow-lg py-2 px-7 whitespace-nowrap"
+          >
+            <img
+              src="/images/seller.png"
+              alt="store icon"
+              className="w-6 h-6"
+            />
+            <span className="text-lg font-medium ml-1">Become a Seller</span>
           </Link>
         )}
         <div
@@ -75,15 +107,17 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
           className="cursor-pointer p-2 border-[1px] ml-2 rounded-full  hover:shadow-md transition"
           style={{ fontSize: "24px" }}
         >
-          <FaCartShopping style={{ width: "24px", height: "24px", color:"black" }}/>
+          <FaCartShopping
+            style={{ width: "24px", height: "24px", color: "black" }}
+          />
         </div>
         <div
           onClick={toggleOpen}
           className="ml-auto p-2 md:p-4 md:py-1 md:px-2 border border-zinc-600 rounded-md flex flex-row items-center gap-3  cursor-pointer hover:shadow-md transition"
         >
-          <AiOutlineMenu  />
+          <AiOutlineMenu />
           <div className="block h-6 w-6">
-            <Avatar src={currentUser?.image}/>
+            <Avatar src={currentUser?.image} />
           </div>
         </div>
       </div>
@@ -94,11 +128,11 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
               <>
                 {currentUser ? (
                   <>
-                  <MenuItem label={getName} href="/"/>
+                    <MenuItem label={getName} href="/" />
                     <MenuItem label="Wishlist" href={"/favorites"} />
                     <MenuItem label="Address" href={"/new-address"} />
                     <MenuItem label="Orders" href={"/ComingSoon"} />
-                    <MenuItem href="/ComingSoon" label="Refer and Earn" />
+                    <MenuItem href="/ComingSoon" label="Refer and Earn" className="md:hidden"/>
                     <MenuItem href="/ComingSoon" label="How it works" />
                     <MenuItem href="/ComingSoon" label="Advertise" />
                     <MenuItem href="/ComingSoon" label="About Us" />
@@ -129,8 +163,9 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
               </>
             ) : (
               <div className="flex flex-col cursor-pointer">
+                <MenuItem href="/" label="Become a Seller" onClick={onBuyer} className="md:hidden"/>
                 <MenuItem href="/" label="Login" onClick={onBuyer} />
-                <MenuItem href="/ComingSoon" label="Refer and Earn" />
+                <MenuItem href="/ComingSoon" label="Refer and Earn" className="md:hidden"/>
                 <MenuItem href="/ComingSoon" label="How it works" />
                 <MenuItem href="/ComingSoon" label="Advertise" />
                 <MenuItem href="/ComingSoon" label="About Us" />
@@ -138,13 +173,6 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, currentSeller }) => {
                 <MenuItem href="/ComingSoon" label="Terms and Conditions" />
                 <MenuItem href="/ComingSoon" label="Privacy Policies" />
                 <MenuItem href="/ComingSoon" label="Platform Policies" />
-                <div className="md:hidden">
-                  <MenuItem
-                    href="/"
-                    label="Become a Seller"
-                    onClick={onBuyer}
-                  />
-                </div>
               </div>
             )}
           </div>
