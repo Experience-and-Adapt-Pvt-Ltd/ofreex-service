@@ -5,20 +5,14 @@ import { Range } from "react-date-range";
 import { useRouter } from "next/navigation";
 
 import useLoginModal from "@/app/hooks/useLoginModal";
-import { SafeListing, SafeUser } from "@/app/types";
+import { SafeCategory, SafeListing, SafeUser } from "@/app/types";
 
 import Container from "@/app/components/Container";
-import { categories } from "@/app/components/navbar/Categories";
+import Categories from "@/app/components/navbar/Categories";
 import ListingHead from "@/app/components/listings/ListingHead";
 import ListingInfo from "@/app/components/listings/ListingInfo";
 import ListingReservation from "@/app/components/listings/ListingReservation";
 import { addItemToCart } from "@/app/actions/cart.operations";
-
-const initialDateRange = {
-  startDate: new Date(),
-  endDate: new Date(),
-  key: "selection",
-};
 
 interface ListingClientProps {
   //reservations?: SafeReservation[];
@@ -26,25 +20,26 @@ interface ListingClientProps {
     user: SafeUser;
   };
   currentUser?: SafeUser | null;
+  categoriesProps: SafeCategory[];
 }
 
 const ListingClient: React.FC<ListingClientProps> = ({
   listing,
   //reservations = [],
   currentUser,
+  categoriesProps,
 }) => {
   const loginModal = useLoginModal();
   const router = useRouter();
 
   const category = useMemo(() => {
-    return categories
-      ? categories.find((items) => items.label === listing.category)
+    return categoriesProps
+      ? categoriesProps.find((items) => items.label === listing.category)
       : null;
-  }, [listing.category]);
+  }, [listing.category, categoriesProps]);
 
-  const [isLoading, setIsLoading] = useState(false);
+
   const [totalPrice, setTotalPrice] = useState(listing.price);
-  const [dateRange, setDateRange] = useState<Range>(initialDateRange);
 
   const addToCart = async () => {
     await addItemToCart(listing, currentUser);
