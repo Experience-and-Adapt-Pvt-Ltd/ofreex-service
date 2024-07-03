@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 
-import useCountries from "@/app/hooks/useCountries";
 import { SafeListing, SafeReservation, SafeUser } from "@/app/types";
 
 import HeartButton from "../HeartButton";
@@ -48,7 +47,6 @@ const ListingCard: React.FC<ListingCardProps> = ({
   discount = 0,
 }) => {
   const router = useRouter();
-  const { getByValue } = useCountries();
 
   let finalPrice = data.price - data.price * (discount / 100);
 
@@ -66,6 +64,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
         className="object-cover w-full h-full " 
         src={data.imageUrls[0]}
         alt="Product Image"
+        loading="lazy"
       />
       </div>
       {/* <div className="absolute top-0 right-0 m-2">
