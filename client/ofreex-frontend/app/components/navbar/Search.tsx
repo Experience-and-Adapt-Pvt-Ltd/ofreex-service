@@ -9,21 +9,27 @@ const Search = () => {
 
   const onSearch = (event: React.FormEvent) => {
     event.preventDefault();
+    //prevent from blank search
+    if(searchQuery.trim() === ""){
+      return ;
+    }
     const encodedSearchQuery = encodeURI(searchQuery);
     router.push(`/search?q=${encodedSearchQuery}`);
     console.log(encodedSearchQuery);
   };
 
   return (
-    <form className="flex justify-center sm:w-2/3" onSubmit={onSearch}>
+    <form
+    className="flex items-center bg-white mt-4 dark:bg-zinc-800 rounded-full p-2"
+    onSubmit={onSearch}>
       <input
         type="text"
         placeholder="What are you looking for?"
+        className="focus:outline-none w-full px-6 text-black"
         value={searchQuery}
         onChange={(event) => setSearchQuery(event.target.value)}
-        className="px-1 py-1 sm:w-full w-full sm:px-5 sm:py-2 md:flex text-black border border-zinc-800 rounded-xl"
       />
-      <button type="submit" className="relative md:top-0 md:right-9 right-6 bg-transparent border-none p-0">
+      <button type="submit" className="mr-5">
         <IoSearch className="h-8" />
       </button>
     </form>
