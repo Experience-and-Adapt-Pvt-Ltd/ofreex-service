@@ -242,23 +242,11 @@ export class ListingsController {
   }
 
   @Get('category/:categoryId')
-  async findListingsByCategory(
-    @Param('categoryId') categoryId: string,
-    @Query('subCategoryId') subCategoryId?: string
-  ): Promise<Listing[]> {
-    try {
-      return this.listingService.findListingsByCategory(
-        categoryId,
-        subCategoryId
-      );
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      } else {
-        throw new InternalServerErrorException(error.message);
-      }
+  async getListingByCategory(@Param('categoryId') categoryId: string): Promise<Listing[]> {
+    try{
+      return await this.listingService.getListingsByCategory(categoryId);
+    } catch(error){
+      throw new BadRequestException(`Could not fetch listings: ${error.message}`)
     }
   }
-
-  
 }

@@ -466,7 +466,27 @@ export class ListingsService {
     } catch (error) {
       throw new BadRequestException(`Search failed: ${error.message}`);
     }
-  }  
+  }
+
+  //Get listing of that category
+  async getListingsByCategory(categoryId: string): Promise<Listing[]>{
+    try{
+      const category  = await this.prisma.listing.findFirst({
+        where: { categoryId }
+      })
+      //Check wether category exist or not
+     if(!category){
+      throw new BadRequestException(`No Listing Found for this category`)
+     }
+
+     const listings = await this.prisma.listing.findMany({
+       where: { categoryId },
+     })
+     return listings.map(this.convertToDto);
+    } catch(error) {
+     throw new BadRequestException(`Could not fetch listings for category ${categoryId}: ${error.message}`);
+    }
+ }
 }
 
 interface UserPartial {
