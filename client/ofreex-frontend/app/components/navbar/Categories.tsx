@@ -2,11 +2,10 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { SafeCategory } from "@/app/types";
-import CategoryBox from "../CategoryBox";
-import Container from "../Container";
 import { useEffect, useState } from "react";
+import Container from "../Container";
+import CategoryBox from "../CategoryBox";
 
-export let categories: SafeCategory[] | null = [];
 interface CategoryProps {
   categoriesProps: SafeCategory[] | null;
 }
@@ -27,7 +26,7 @@ const Categories: React.FC<CategoryProps> = ({ categoriesProps }) => {
   const category = params?.get("category");
   const pathname = usePathname();
   const isMainPage = pathname === "/";
-  const [openCategoryId, setOpenCategoryId] = useState(null);
+  const [openCategoryId, setOpenCategoryId] = useState<string | null>(null);
   const [isMobileView, setIsMobileView] = useState(false);
 
   useEffect(() => {
@@ -42,7 +41,7 @@ const Categories: React.FC<CategoryProps> = ({ categoriesProps }) => {
     };
   }, []);
 
-  const handleMouseEnterCategory = (categoryId: any) => {
+  const handleMouseEnterCategory = (categoryId: string) => {
     if (!isMobileView) {
       setOpenCategoryId(categoryId);
     }
@@ -62,7 +61,7 @@ const Categories: React.FC<CategoryProps> = ({ categoriesProps }) => {
     <Container>
       <div
         className="
-          flex flex-row space-x-4 py-4 overflow-auto sm:overflow-visible scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-100
+          flex flex-row space-x-20 py-4 overflow-auto sm:overflow-visible scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-100
         "
       >
         {categories &&
