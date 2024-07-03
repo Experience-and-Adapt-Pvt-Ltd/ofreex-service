@@ -1,0 +1,21 @@
+{
+  "run": {
+    "command": "nx run listings:build:development",
+    "startTime": "2024-07-03T21:04:22.669Z",
+    "endTime": "2024-07-03T21:04:24.258Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "listings:build",
+      "target": "build",
+      "projectName": "listings",
+      "hash": "7292116170293651064",
+      "startTime": "2024-07-03T21:04:22.674Z",
+      "endTime": "2024-07-03T21:04:24.258Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    }
+  ]
+}

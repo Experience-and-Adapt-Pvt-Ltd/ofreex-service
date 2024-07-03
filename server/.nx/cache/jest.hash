@@ -1,0 +1,107 @@
+{
+  "142319186658862264": {
+    "test": {
+      "command": "jest",
+      "options": {
+        "cwd": "apps/cart"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": [
+            "jest"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/cart"
+      ]
+    }
+  },
+  "1067491397405184307": {
+    "test": {
+      "command": "jest",
+      "options": {
+        "cwd": "apps/gateway"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": [
+            "jest"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/gateway"
+      ]
+    }
+  },
+  "4524485374357169364": {
+    "test": {
+      "command": "jest",
+      "options": {
+        "cwd": "apps/listings"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": [
+            "jest"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/listings"
+      ]
+    }
+  },
+  "9469182277911593702": {
+    "test": {
+      "command": "jest",
+      "options": {
+        "cwd": "apps/seller"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": [
+            "jest"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/seller"
+      ]
+    }
+  },
+  "10272304303186088538": {
+    "test": {
+      "command": "jest",
+      "options": {
+        "cwd": "apps/users"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": [
+            "jest"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/users"
+      ]
+    }
+  }
+}
