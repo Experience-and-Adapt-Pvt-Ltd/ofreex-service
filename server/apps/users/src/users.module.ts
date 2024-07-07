@@ -7,10 +7,9 @@ import {
 } from '@nestjs/apollo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../prisma/Prisma.service';
 import { UsersResolver } from './users.resolver';
 import { EmailModule } from './email/email.module';
-import { EmailService } from './email/email.service';
+import { PrismaClient } from '../node_modules/.prisma/client';
 
 @Module({
   imports: [
@@ -30,7 +29,7 @@ import { EmailService } from './email/email.service';
     UsersService,
     ConfigService,
     JwtService,
-    PrismaService,
+    PrismaClient,
     UsersResolver,
   ],
 })

@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../../prisma/Prisma.service';
+import { PrismaClient } from '../../node_modules/.prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
@@ -13,7 +13,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaClient,
     private readonly config: ConfigService,
   ) {}
 

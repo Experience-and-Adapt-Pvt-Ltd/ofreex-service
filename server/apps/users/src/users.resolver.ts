@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { LimitedUserData, FavIDs, UpdateResponse, SellerResponse, SellerActivationResponse } from './types/user.types';
+import {  FavIDs, UpdateResponse } from './types/user.types';
 import { Logger } from '@nestjs/common';
 import {
   ActivationResponse,
@@ -11,8 +11,8 @@ import {
   RegisterResponse,
   ResetPasswordResponse,
 } from './types/user.types';
-import { ActivationDto, ForgotPasswordDto, RegisterDto, ResetPasswordDto, SellerDto, UpdateDto } from './dto/user.dto';
-import { Seller, User } from './entites/user.entity';
+import { ActivationDto, ForgotPasswordDto, RegisterDto, ResetPasswordDto, UpdateDto } from './dto/user.dto';
+import { User } from './entites/user.entity';
 import { Response } from 'express';
 import { AuthGuard } from './guards/auth.guard';
 
@@ -48,34 +48,7 @@ export class UsersResolver {
   ): Promise<ActivationResponse> {
     return await this.userService.activateUser(activationDto, context.res);
   }
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // @Mutation(() => SellerResponse)
-  // async registerSeller(
-  //   @Args('sellerDto') sellerDto: SellerDto,
-  //   @Context() context: { res: Response },
-  // ): Promise<SellerResponse> {
-  //   if (!sellerDto.name || !sellerDto.email || !sellerDto.password) {
-  //     throw new BadRequestException('Please fill the all fields');
-  //   }
-
-  //   const { activation_token } = await this.userService.sellerRegister(
-  //     sellerDto,
-  //     context.res,
-  //   );
-
-  //   return { activation_token };
-  // }
-
-  // @Mutation(() => SellerActivationResponse)
-  // async activateSeller(
-  //   @Args('activationDto') activationDto: ActivationDto,
-  //   @Context() context: { res: Response },
-  // ): Promise<SellerActivationResponse> {
-  //   return await this.userService.activateSeller(activationDto, context.res);
-  // }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+  
   @Mutation(() => UpdateResponse)
   async updateUser(
     @Args('id') id: string,
@@ -153,32 +126,6 @@ export class UsersResolver {
   // ): Promise<Seller | null> {
   //   return await this.userService.getSellerByEmail(email);
   // }
-
-
-  @Query(() => [LimitedUserData])
-  async getPremiumUsers(): Promise<LimitedUserData[]> {
-    try {
-      Logger.log('fetching premium users:');
-      const premiumUsers = await this.userService.getPremiumUsers();
-      return premiumUsers;
-    } catch (error) {
-      // Handle errors appropriately, e.g., log the error and throw a specific exception
-      console.error('Error fetching premium users:', error);
-      throw new Error('An error occurred while retrieving premium users');
-    }
-  }
-  @Query(() => [LimitedUserData])
-  async getBasicUsers(): Promise<LimitedUserData[]> {
-    try {
-      Logger.log('fetching BasicUsers users:');
-      const BasicUsers = await this.userService.getBasicUsers();
-      return BasicUsers;
-    } catch (error) {
-      // Handle errors appropriately, e.g., log the error and throw a specific exception
-      console.error('Error fetching BasicUsers users:', error);
-      throw new Error('An error occurred while retrieving BasicUsers users');
-    }
-  }
 
   @Query(() => [String])
   async getFavoriteIds(

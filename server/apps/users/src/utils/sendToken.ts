@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { User } from '../../node_modules/.prisma/client';
 import { LoginResponse } from '../types/user.types';
 
 export class TokenSender {

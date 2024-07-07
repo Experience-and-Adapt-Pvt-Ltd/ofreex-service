@@ -1,4 +1,4 @@
-import { Field, InputType, PartialType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { IsArray, IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 @InputType()
@@ -22,56 +22,9 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'Enter Phone Number' })
   phoneNumber: number;
 
-  @Field()
-  @IsNotEmpty({ message: 'Enter Premium status pls' })
-  isPremium: boolean;
-
   @Field(() => [String])
   @IsNotEmpty({ message: 'Enter favIds pls' })
   favoriteIds: string[];
-}
-
-@InputType()
-export class SellerDto {
-  @Field()
-  @IsNotEmpty({ message: 'Name is Required' })
-  @IsString({ message: 'Name just need to be one string' })
-  name: string;
-
-  @Field()
-  @IsNotEmpty({ message: 'Enter Email Please' })
-  @IsEmail({}, { message: 'Email is invalid' })
-  email: string;
-
-  @Field()
-  @IsNotEmpty({ message: 'Enter Password' })
-  @MinLength(8, { message: 'Password must be at least 8 characters' })
-  password: string;
-
-  @Field()
-  @IsNotEmpty({ message: 'Enter Phone Number' })
-  phoneNumber: number;
-
-  @Field()
-  @IsNotEmpty({ message: 'Enter GST Number' })
-  GST: string;
-
-  @Field()
-  @IsNotEmpty({ message: 'Enter Account Number' })
-  accountNumber: string;
-
-  @Field()
-  @IsNotEmpty({ message: 'Enter Bank Name' })
-  bankName: string;
-
-  @Field()
-  @IsNotEmpty({ message: 'Enter IFSC Code' })
-  IFSC: string;
-
-  @Field()
-  @IsNotEmpty({ message: 'Enter Premium Status' })
-  isPremium: boolean;
-
 }
 
 @InputType()

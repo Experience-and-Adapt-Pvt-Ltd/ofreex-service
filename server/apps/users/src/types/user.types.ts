@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Seller, User } from '../entites/user.entity';
+import { User } from '../entites/user.entity';
 
 @ObjectType()
 export class ErrorType {
@@ -19,28 +19,10 @@ export class RegisterResponse {
   error?: ErrorType;
 }
 
-
-@ObjectType()
-export class SellerResponse {
-  @Field()
-  activation_token: string;
-
-  @Field(() => ErrorType, { nullable: true })
-  error?: ErrorType;
-}
-
 @ObjectType()
 export class ActivationResponse {
   @Field(() => User)
   user: User | any;
-
-  @Field(() => ErrorType, { nullable: true })
-  error?: ErrorType;
-}
-@ObjectType()
-export class SellerActivationResponse {
-  @Field(() => Seller)
-  user: Seller | any;
 
   @Field(() => ErrorType, { nullable: true })
   error?: ErrorType;
@@ -94,15 +76,7 @@ export class ResetPasswordResponse {
   error?: ErrorType;
 }
 @ObjectType()
-export class LimitedUserData {
-  @Field()
-  id: string; // Assuming user ID is a string
-
-  @Field()
-  isPremium: boolean;
-}
-@ObjectType()
 export class FavIDs {
   @Field({ nullable: true })
-  favoriteIds: string; // Assuming user ID is a string
+  favoriteIds: string; 
 }

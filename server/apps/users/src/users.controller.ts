@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Res, HttpStatus, NotFoundException, UseGuards, Req, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, HttpStatus} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { RegisterDto, LoginDto, ActivationDto, ForgotPasswordDto, ResetPasswordDto } from './dto/user.dto';
 // import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -75,17 +75,6 @@ export class UsersController {
     try {
       const users = await this.usersService.getUsers();
       res.status(HttpStatus.OK).json(users);
-    } catch (error) {
-      res.status(error.status || HttpStatus.BAD_REQUEST).json({ error: error.message });
-    }
-  }
-
-  // Get all premium users (requires authentication with JWT)
-  @Get('premium')
-  async getPremiumUsers(@Res() res) {
-    try {
-      const premiumUsers = await this.usersService.getPremiumUsers();
-      res.status(HttpStatus.OK).json(premiumUsers);
     } catch (error) {
       res.status(error.status || HttpStatus.BAD_REQUEST).json({ error: error.message });
     }
