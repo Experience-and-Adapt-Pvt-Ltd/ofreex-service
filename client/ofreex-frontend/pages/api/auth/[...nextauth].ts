@@ -53,13 +53,10 @@ export const authOptions: AuthOptions = {
             throw new Error('Invalid credentials');
           }
           //credentials.password = await bcrypt.hash(credentials.password, 15);
-          console.log(credentials.password + "  " + user.password);
           const isCorrectPassword = await bcrypt.compare(
             credentials.password,
             user.password
           );
-          console.log("isCorrected");
-          console.log(isCorrectPassword);
           if (!isCorrectPassword) {
             throw new Error('Invalid credentials');
           }
@@ -75,25 +72,18 @@ export const authOptions: AuthOptions = {
               password
               createdAt
               updatedAt
-              isPremium
             }
           }`
           }
           )
           const user = getUserByEmail.data.getUserByEmail;
-          console.log("user")
-          //console.log(user)
           if (!user || !user?.password) {
             throw new Error('Invalid credentials');
           }
-          //credentials.password = await bcrypt.hash(credentials.password, 15);
-          console.log(credentials.password + "  " + user.password);
           const isCorrectPassword = await bcrypt.compare(
             credentials.password,
             user.password
           );
-          console.log("isCorrected");
-          console.log(isCorrectPassword);
           if (!isCorrectPassword) {
             throw new Error('Invalid credentials');
           }
