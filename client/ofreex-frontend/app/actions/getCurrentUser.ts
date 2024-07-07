@@ -25,7 +25,6 @@ export default async function getCurrentUser() {
           password
           createdAt
           updatedAt
-          isPremium
           favoriteIds
         }
       }`
