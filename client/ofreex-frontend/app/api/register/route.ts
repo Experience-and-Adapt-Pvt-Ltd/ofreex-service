@@ -23,7 +23,6 @@ export async function POST(
     email: "${email}",
     password: "${password}",
     phoneNumber: ${phoneNumber},
-    isPremium: false,
     favoriteIds: []
   }
   ) {
