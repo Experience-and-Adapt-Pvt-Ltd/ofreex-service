@@ -79,179 +79,77 @@
     }
   ],
   "fileMap": {
+    "nonProjectFiles": [
+      {
+        "file": ".prettierignore",
+        "hash": "16448050467312557263"
+      },
+      {
+        "file": ".eslintignore",
+        "hash": "7663861978715868291"
+      },
+      {
+        "file": ".prettierrc",
+        "hash": "16267754514737964994"
+      },
+      {
+        "file": "README.md",
+        "hash": "463012257901938766"
+      },
+      {
+        "file": "email-template/forgot-password.ejs",
+        "hash": "1302495846864252925"
+      },
+      {
+        "file": "nx.json",
+        "hash": "9611113771578258298"
+      },
+      {
+        "file": "jest.preset.js",
+        "hash": "4185368808439573122"
+      },
+      {
+        "file": "email-template/activation-mail.ejs",
+        "hash": "16853037292660090663"
+      },
+      {
+        "file": "jest.config.ts",
+        "hash": "8396129915586850214"
+      },
+      {
+        "file": "email-template/seller-activation-mail.ejs",
+        "hash": "17587189360335031865"
+      },
+      {
+        "file": ".eslintrc.json",
+        "hash": "18315524891129148814"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "3805708325026946387"
+      },
+      {
+        "file": "readme.txt",
+        "hash": "11640016563420189034"
+      },
+      {
+        "file": "package.json",
+        "hash": "8600893967752941900"
+      },
+      {
+        "file": "tsconfig.base.json",
+        "hash": "16936441711144470533"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "8517225385043581062"
+      },
+      {
+        "file": "yarn.lock",
+        "hash": "6938846879004156500"
+      }
+    ],
     "projectFileMap": {
-      "cart": [
-        {
-          "file": "apps/cart/.eslintrc.json",
-          "hash": "13800677001662881425"
-        },
-        {
-          "file": "apps/cart/.gitignore",
-          "hash": "12975187279384539528"
-        },
-        {
-          "file": "apps/cart/jest.config.ts",
-          "hash": "17366271891747566132"
-        },
-        {
-          "file": "apps/cart/package-lock.json",
-          "hash": "1183022470469243080"
-        },
-        {
-          "file": "apps/cart/prisma/Prisma.service.ts",
-          "hash": "5616420607508162204",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@prisma/client"
-          ]
-        },
-        {
-          "file": "apps/cart/prisma/migrations/20240426191357_/migration.sql",
-          "hash": "12787171842991784517"
-        },
-        {
-          "file": "apps/cart/prisma/migrations/20240426191508_/migration.sql",
-          "hash": "7420072935939817065"
-        },
-        {
-          "file": "apps/cart/prisma/migrations/20240427115721_/migration.sql",
-          "hash": "8307928672852803966"
-        },
-        {
-          "file": "apps/cart/prisma/migrations/20240427133456_/migration.sql",
-          "hash": "13982142356393782269"
-        },
-        {
-          "file": "apps/cart/prisma/migrations/migration_lock.toml",
-          "hash": "11493296588214560035"
-        },
-        {
-          "file": "apps/cart/prisma/schema.prisma",
-          "hash": "9129519981598945546"
-        },
-        {
-          "file": "apps/cart/project.json",
-          "hash": "7931563126523392671"
-        },
-        {
-          "file": "apps/cart/src/app/app.controller.spec.ts",
-          "hash": "9499997688052526633",
-          "deps": [
-            "npm:@nestjs/testing"
-          ]
-        },
-        {
-          "file": "apps/cart/src/app/app.controller.ts",
-          "hash": "9005150069945785676",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "apps/cart/src/app/app.module.ts",
-          "hash": "3163250445227373966",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "apps/cart/src/app/app.service.spec.ts",
-          "hash": "8587461140686713758",
-          "deps": [
-            "npm:@nestjs/testing"
-          ]
-        },
-        {
-          "file": "apps/cart/src/app/app.service.ts",
-          "hash": "9967902337593410053",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "apps/cart/src/cart.module.ts",
-          "hash": "4785357414780714317",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/graphql",
-            "npm:@nestjs/apollo",
-            "npm:@nestjs/config",
-            "npm:../node_modules/.prisma/client"
-          ]
-        },
-        {
-          "file": "apps/cart/src/cart.resolver.ts",
-          "hash": "9729051185073676676",
-          "deps": [
-            "npm:@nestjs/graphql",
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "apps/cart/src/cart.service.ts",
-          "hash": "4986893235912144433",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:../node_modules/.prisma/client",
-            "npm:@nestjs/config"
-          ]
-        },
-        {
-          "file": "apps/cart/src/dto/cart.dto.ts",
-          "hash": "6958576807659594619",
-          "deps": [
-            "npm:@nestjs/graphql",
-            "npm:class-validator"
-          ]
-        },
-        {
-          "file": "apps/cart/src/guards/auth.guard.ts",
-          "hash": "18390556005458107652",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/jwt",
-            "npm:../../node_modules/.prisma/client",
-            "npm:@nestjs/config",
-            "npm:@nestjs/graphql"
-          ]
-        },
-        {
-          "file": "apps/cart/src/main.ts",
-          "hash": "1825632813485098397",
-          "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/core",
-            "npm:http2"
-          ]
-        },
-        {
-          "file": "apps/cart/src/types/cart.types.ts",
-          "hash": "3357509089572812035",
-          "deps": [
-            "npm:@nestjs/graphql"
-          ]
-        },
-        {
-          "file": "apps/cart/tsconfig.app.json",
-          "hash": "3171572500325445971"
-        },
-        {
-          "file": "apps/cart/tsconfig.json",
-          "hash": "3490524966360018312"
-        },
-        {
-          "file": "apps/cart/tsconfig.spec.json",
-          "hash": "11550347367511341917"
-        },
-        {
-          "file": "apps/cart/webpack.config.js",
-          "hash": "18311478888893425641",
-          "deps": [
-            "npm:@nx/webpack",
-            "npm:path"
-          ]
-        }
-      ],
       "users": [
         {
           "file": "apps/users/.eslintrc.json",
@@ -291,7 +189,7 @@
         },
         {
           "file": "apps/users/prisma/schema.prisma",
-          "hash": "13143244090240488337"
+          "hash": "8189166275944576127"
         },
         {
           "file": "apps/users/project.json",
@@ -299,7 +197,7 @@
         },
         {
           "file": "apps/users/src/dto/user.dto.ts",
-          "hash": "9314484298675104259",
+          "hash": "13913244028348788927",
           "deps": [
             "npm:@nestjs/graphql",
             "npm:class-validator"
@@ -332,18 +230,18 @@
         },
         {
           "file": "apps/users/src/entites/user.entity.ts",
-          "hash": "16366344842556798697",
+          "hash": "1416382102088984946",
           "deps": [
-            "npm:@nestjs/graphql",
-            "npm:class-validator"
+            "npm:@nestjs/graphql"
           ]
         },
         {
           "file": "apps/users/src/guards/auth.guard.ts",
-          "hash": "5301187599650332378",
+          "hash": "5958905180408469388",
           "deps": [
             "npm:@nestjs/common",
             "npm:@nestjs/jwt",
+            "npm:../../node_modules/.prisma/client",
             "npm:@nestjs/config",
             "npm:@nestjs/graphql"
           ]
@@ -361,32 +259,33 @@
         },
         {
           "file": "apps/users/src/types/user.types.ts",
-          "hash": "1811774137186363053",
+          "hash": "6886559724509740990",
           "deps": [
             "npm:@nestjs/graphql"
           ]
         },
         {
           "file": "apps/users/src/users.controller.ts",
-          "hash": "342000688891270146",
+          "hash": "17572774909939335577",
           "deps": [
             "npm:@nestjs/common"
           ]
         },
         {
           "file": "apps/users/src/users.module.ts",
-          "hash": "917554167527359230",
+          "hash": "6529247583040973611",
           "deps": [
             "npm:@nestjs/common",
             "npm:@nestjs/graphql",
             "npm:@nestjs/apollo",
             "npm:@nestjs/config",
-            "npm:@nestjs/jwt"
+            "npm:@nestjs/jwt",
+            "npm:../node_modules/.prisma/client"
           ]
         },
         {
           "file": "apps/users/src/users.resolver.ts",
-          "hash": "197353090816731439",
+          "hash": "14405388334897401901",
           "deps": [
             "npm:@nestjs/common",
             "npm:@nestjs/graphql",
@@ -395,23 +294,23 @@
         },
         {
           "file": "apps/users/src/users.service.ts",
-          "hash": "18314961801776322675",
+          "hash": "1406766462117433646",
           "deps": [
             "npm:@nestjs/common",
             "npm:@nestjs/config",
             "npm:@nestjs/jwt",
+            "npm:../node_modules/.prisma/client",
             "npm:express",
-            "npm:bcrypt",
-            "npm:@prisma/client"
+            "npm:bcrypt"
           ]
         },
         {
           "file": "apps/users/src/utils/sendToken.ts",
-          "hash": "11640564005245358794",
+          "hash": "13223288631031430669",
           "deps": [
             "npm:@nestjs/config",
             "npm:@nestjs/jwt",
-            "npm:@prisma/client"
+            "npm:../../node_modules/.prisma/client"
           ]
         },
         {
@@ -429,6 +328,207 @@
         {
           "file": "apps/users/webpack.config.js",
           "hash": "2052201407118949885",
+          "deps": [
+            "npm:@nx/webpack",
+            "npm:path"
+          ]
+        }
+      ],
+      "listings": [
+        {
+          "file": "apps/listings/.eslintrc.json",
+          "hash": "13800677001662881425"
+        },
+        {
+          "file": "apps/listings/.gitignore",
+          "hash": "12975187279384539528"
+        },
+        {
+          "file": "apps/listings/jest.config.ts",
+          "hash": "15872291455763468828"
+        },
+        {
+          "file": "apps/listings/package-lock.json",
+          "hash": "2297823311197567950"
+        },
+        {
+          "file": "apps/listings/package.json",
+          "hash": "4618312430681538764",
+          "deps": [
+            "npm:@apollo/gateway"
+          ]
+        },
+        {
+          "file": "apps/listings/prisma/migrations/20240414211857_new_db/migration.sql",
+          "hash": "11294570404719558207"
+        },
+        {
+          "file": "apps/listings/prisma/migrations/20240415113557_removed_defalut_value_of_discount/migration.sql",
+          "hash": "7906670057911741529"
+        },
+        {
+          "file": "apps/listings/prisma/migrations/20240520194206_city_exceptional/migration.sql",
+          "hash": "13001015189718277631"
+        },
+        {
+          "file": "apps/listings/prisma/migrations/20240529000635_cat_with_subcat/migration.sql",
+          "hash": "13140610061557766334"
+        },
+        {
+          "file": "apps/listings/prisma/migrations/migration_lock.toml",
+          "hash": "11493296588214560035"
+        },
+        {
+          "file": "apps/listings/prisma/schema.prisma",
+          "hash": "6740259484759005061"
+        },
+        {
+          "file": "apps/listings/project.json",
+          "hash": "12765023867487104694"
+        },
+        {
+          "file": "apps/listings/src/dto/create_listing.dto.ts",
+          "hash": "10666669544443182993",
+          "deps": [
+            "npm:class-validator",
+            "npm:class-transformer"
+          ]
+        },
+        {
+          "file": "apps/listings/src/interface/listings.interface.ts",
+          "hash": "15714160688775784649"
+        },
+        {
+          "file": "apps/listings/src/listings.controller.ts",
+          "hash": "2464869788983227764",
+          "deps": [
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "apps/listings/src/listings.module.ts",
+          "hash": "6110037228257507428",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/axios",
+            "npm:../node_modules/.prisma/client"
+          ]
+        },
+        {
+          "file": "apps/listings/src/listings.service.ts",
+          "hash": "16854436046254191093",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:../node_modules/.prisma/client",
+            "npm:@nestjs/axios"
+          ]
+        },
+        {
+          "file": "apps/listings/src/main.ts",
+          "hash": "3188897842375311328",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/core"
+          ]
+        },
+        {
+          "file": "apps/listings/src/types/listings.types.ts",
+          "hash": "14580306021359070279"
+        },
+        {
+          "file": "apps/listings/tsconfig.app.json",
+          "hash": "3171572500325445971"
+        },
+        {
+          "file": "apps/listings/tsconfig.json",
+          "hash": "3490524966360018312"
+        },
+        {
+          "file": "apps/listings/tsconfig.spec.json",
+          "hash": "11550347367511341917"
+        },
+        {
+          "file": "apps/listings/webpack.config.js",
+          "hash": "17884641817540837992",
+          "deps": [
+            "npm:@nx/webpack",
+            "npm:path"
+          ]
+        }
+      ],
+      "gateway": [
+        {
+          "file": "apps/gateway/.eslintrc.json",
+          "hash": "13800677001662881425"
+        },
+        {
+          "file": "apps/gateway/jest.config.ts",
+          "hash": "18363523736032177269"
+        },
+        {
+          "file": "apps/gateway/project.json",
+          "hash": "17008525611457109628"
+        },
+        {
+          "file": "apps/gateway/src/app.controller.spec.ts",
+          "hash": "9499997688052526633",
+          "deps": [
+            "npm:@nestjs/testing"
+          ]
+        },
+        {
+          "file": "apps/gateway/src/app.controller.ts",
+          "hash": "9486632244818026387",
+          "deps": [
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "apps/gateway/src/app.module.ts",
+          "hash": "9000954746712697553",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/graphql",
+            "npm:@apollo/gateway",
+            "npm:@nestjs/apollo"
+          ]
+        },
+        {
+          "file": "apps/gateway/src/app.service.spec.ts",
+          "hash": "3469250748705063824",
+          "deps": [
+            "npm:@nestjs/testing"
+          ]
+        },
+        {
+          "file": "apps/gateway/src/app.service.ts",
+          "hash": "16892833931858030153",
+          "deps": [
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "apps/gateway/src/main.ts",
+          "hash": "14682126277543669680",
+          "deps": [
+            "npm:@nestjs/core"
+          ]
+        },
+        {
+          "file": "apps/gateway/tsconfig.app.json",
+          "hash": "3171572500325445971"
+        },
+        {
+          "file": "apps/gateway/tsconfig.json",
+          "hash": "3490524966360018312"
+        },
+        {
+          "file": "apps/gateway/tsconfig.spec.json",
+          "hash": "11550347367511341917"
+        },
+        {
+          "file": "apps/gateway/webpack.config.js",
+          "hash": "15549305014050070686",
           "deps": [
             "npm:@nx/webpack",
             "npm:path"
@@ -612,273 +712,178 @@
           ]
         }
       ],
-      "gateway": [
+      "cart": [
         {
-          "file": "apps/gateway/.eslintrc.json",
+          "file": "apps/cart/.eslintrc.json",
           "hash": "13800677001662881425"
         },
         {
-          "file": "apps/gateway/jest.config.ts",
-          "hash": "18363523736032177269"
+          "file": "apps/cart/.gitignore",
+          "hash": "12975187279384539528"
         },
         {
-          "file": "apps/gateway/project.json",
-          "hash": "17008525611457109628"
+          "file": "apps/cart/jest.config.ts",
+          "hash": "17366271891747566132"
         },
         {
-          "file": "apps/gateway/src/app.controller.spec.ts",
+          "file": "apps/cart/package-lock.json",
+          "hash": "1183022470469243080"
+        },
+        {
+          "file": "apps/cart/prisma/Prisma.service.ts",
+          "hash": "5616420607508162204",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@prisma/client"
+          ]
+        },
+        {
+          "file": "apps/cart/prisma/migrations/20240426191357_/migration.sql",
+          "hash": "12787171842991784517"
+        },
+        {
+          "file": "apps/cart/prisma/migrations/20240426191508_/migration.sql",
+          "hash": "7420072935939817065"
+        },
+        {
+          "file": "apps/cart/prisma/migrations/20240427115721_/migration.sql",
+          "hash": "8307928672852803966"
+        },
+        {
+          "file": "apps/cart/prisma/migrations/20240427133456_/migration.sql",
+          "hash": "13982142356393782269"
+        },
+        {
+          "file": "apps/cart/prisma/migrations/migration_lock.toml",
+          "hash": "11493296588214560035"
+        },
+        {
+          "file": "apps/cart/prisma/schema.prisma",
+          "hash": "9129519981598945546"
+        },
+        {
+          "file": "apps/cart/project.json",
+          "hash": "7931563126523392671"
+        },
+        {
+          "file": "apps/cart/src/app/app.controller.spec.ts",
           "hash": "9499997688052526633",
           "deps": [
             "npm:@nestjs/testing"
           ]
         },
         {
-          "file": "apps/gateway/src/app.controller.ts",
-          "hash": "9486632244818026387",
+          "file": "apps/cart/src/app/app.controller.ts",
+          "hash": "9005150069945785676",
           "deps": [
             "npm:@nestjs/common"
           ]
         },
         {
-          "file": "apps/gateway/src/app.module.ts",
-          "hash": "9000954746712697553",
+          "file": "apps/cart/src/app/app.module.ts",
+          "hash": "3163250445227373966",
           "deps": [
-            "npm:@nestjs/common",
-            "npm:@nestjs/graphql",
-            "npm:@apollo/gateway",
-            "npm:@nestjs/apollo"
+            "npm:@nestjs/common"
           ]
         },
         {
-          "file": "apps/gateway/src/app.service.spec.ts",
-          "hash": "3469250748705063824",
+          "file": "apps/cart/src/app/app.service.spec.ts",
+          "hash": "8587461140686713758",
           "deps": [
             "npm:@nestjs/testing"
           ]
         },
         {
-          "file": "apps/gateway/src/app.service.ts",
-          "hash": "16892833931858030153",
+          "file": "apps/cart/src/app/app.service.ts",
+          "hash": "9967902337593410053",
           "deps": [
             "npm:@nestjs/common"
           ]
         },
         {
-          "file": "apps/gateway/src/main.ts",
-          "hash": "14682126277543669680",
-          "deps": [
-            "npm:@nestjs/core"
-          ]
-        },
-        {
-          "file": "apps/gateway/tsconfig.app.json",
-          "hash": "3171572500325445971"
-        },
-        {
-          "file": "apps/gateway/tsconfig.json",
-          "hash": "3490524966360018312"
-        },
-        {
-          "file": "apps/gateway/tsconfig.spec.json",
-          "hash": "11550347367511341917"
-        },
-        {
-          "file": "apps/gateway/webpack.config.js",
-          "hash": "15549305014050070686",
-          "deps": [
-            "npm:@nx/webpack",
-            "npm:path"
-          ]
-        }
-      ],
-      "listings": [
-        {
-          "file": "apps/listings/.eslintrc.json",
-          "hash": "13800677001662881425"
-        },
-        {
-          "file": "apps/listings/.gitignore",
-          "hash": "12975187279384539528"
-        },
-        {
-          "file": "apps/listings/jest.config.ts",
-          "hash": "15872291455763468828"
-        },
-        {
-          "file": "apps/listings/package-lock.json",
-          "hash": "2297823311197567950"
-        },
-        {
-          "file": "apps/listings/package.json",
-          "hash": "4618312430681538764",
-          "deps": [
-            "npm:@apollo/gateway"
-          ]
-        },
-        {
-          "file": "apps/listings/prisma/migrations/20240414211857_new_db/migration.sql",
-          "hash": "11294570404719558207"
-        },
-        {
-          "file": "apps/listings/prisma/migrations/20240415113557_removed_defalut_value_of_discount/migration.sql",
-          "hash": "7906670057911741529"
-        },
-        {
-          "file": "apps/listings/prisma/migrations/20240520194206_city_exceptional/migration.sql",
-          "hash": "13001015189718277631"
-        },
-        {
-          "file": "apps/listings/prisma/migrations/20240529000635_cat_with_subcat/migration.sql",
-          "hash": "13140610061557766334"
-        },
-        {
-          "file": "apps/listings/prisma/migrations/migration_lock.toml",
-          "hash": "11493296588214560035"
-        },
-        {
-          "file": "apps/listings/prisma/schema.prisma",
-          "hash": "6740259484759005061"
-        },
-        {
-          "file": "apps/listings/project.json",
-          "hash": "12765023867487104694"
-        },
-        {
-          "file": "apps/listings/src/dto/create_listing.dto.ts",
-          "hash": "10666669544443182993",
-          "deps": [
-            "npm:class-validator",
-            "npm:class-transformer"
-          ]
-        },
-        {
-          "file": "apps/listings/src/interface/listings.interface.ts",
-          "hash": "15714160688775784649"
-        },
-        {
-          "file": "apps/listings/src/listings.controller.ts",
-          "hash": "2464869788983227764",
-          "deps": [
-            "npm:@nestjs/common"
-          ]
-        },
-        {
-          "file": "apps/listings/src/listings.module.ts",
-          "hash": "6110037228257507428",
+          "file": "apps/cart/src/cart.module.ts",
+          "hash": "4785357414780714317",
           "deps": [
             "npm:@nestjs/common",
-            "npm:@nestjs/axios",
+            "npm:@nestjs/graphql",
+            "npm:@nestjs/apollo",
+            "npm:@nestjs/config",
             "npm:../node_modules/.prisma/client"
           ]
         },
         {
-          "file": "apps/listings/src/listings.service.ts",
-          "hash": "16854436046254191093",
+          "file": "apps/cart/src/cart.resolver.ts",
+          "hash": "9729051185073676676",
+          "deps": [
+            "npm:@nestjs/graphql",
+            "npm:@nestjs/common"
+          ]
+        },
+        {
+          "file": "apps/cart/src/cart.service.ts",
+          "hash": "4986893235912144433",
           "deps": [
             "npm:@nestjs/common",
             "npm:../node_modules/.prisma/client",
-            "npm:@nestjs/axios"
+            "npm:@nestjs/config"
           ]
         },
         {
-          "file": "apps/listings/src/main.ts",
-          "hash": "3188897842375311328",
+          "file": "apps/cart/src/dto/cart.dto.ts",
+          "hash": "6958576807659594619",
+          "deps": [
+            "npm:@nestjs/graphql",
+            "npm:class-validator"
+          ]
+        },
+        {
+          "file": "apps/cart/src/guards/auth.guard.ts",
+          "hash": "18390556005458107652",
           "deps": [
             "npm:@nestjs/common",
-            "npm:@nestjs/core"
+            "npm:@nestjs/jwt",
+            "npm:../../node_modules/.prisma/client",
+            "npm:@nestjs/config",
+            "npm:@nestjs/graphql"
           ]
         },
         {
-          "file": "apps/listings/src/types/listings.types.ts",
-          "hash": "14580306021359070279"
+          "file": "apps/cart/src/main.ts",
+          "hash": "1825632813485098397",
+          "deps": [
+            "npm:@nestjs/common",
+            "npm:@nestjs/core",
+            "npm:http2"
+          ]
         },
         {
-          "file": "apps/listings/tsconfig.app.json",
+          "file": "apps/cart/src/types/cart.types.ts",
+          "hash": "3357509089572812035",
+          "deps": [
+            "npm:@nestjs/graphql"
+          ]
+        },
+        {
+          "file": "apps/cart/tsconfig.app.json",
           "hash": "3171572500325445971"
         },
         {
-          "file": "apps/listings/tsconfig.json",
+          "file": "apps/cart/tsconfig.json",
           "hash": "3490524966360018312"
         },
         {
-          "file": "apps/listings/tsconfig.spec.json",
+          "file": "apps/cart/tsconfig.spec.json",
           "hash": "11550347367511341917"
         },
         {
-          "file": "apps/listings/webpack.config.js",
-          "hash": "17884641817540837992",
+          "file": "apps/cart/webpack.config.js",
+          "hash": "18311478888893425641",
           "deps": [
             "npm:@nx/webpack",
             "npm:path"
           ]
         }
       ]
-    },
-    "nonProjectFiles": [
-      {
-        "file": ".eslintignore",
-        "hash": "7663861978715868291"
-      },
-      {
-        "file": ".eslintrc.json",
-        "hash": "18315524891129148814"
-      },
-      {
-        "file": ".gitignore",
-        "hash": "4855371414948905569"
-      },
-      {
-        "file": ".prettierignore",
-        "hash": "16448050467312557263"
-      },
-      {
-        "file": ".prettierrc",
-        "hash": "16267754514737964994"
-      },
-      {
-        "file": "README.md",
-        "hash": "463012257901938766"
-      },
-      {
-        "file": "email-template/activation-mail.ejs",
-        "hash": "16853037292660090663"
-      },
-      {
-        "file": "email-template/forgot-password.ejs",
-        "hash": "1302495846864252925"
-      },
-      {
-        "file": "email-template/seller-activation-mail.ejs",
-        "hash": "17587189360335031865"
-      },
-      {
-        "file": "jest.config.ts",
-        "hash": "8396129915586850214"
-      },
-      {
-        "file": "jest.preset.js",
-        "hash": "4185368808439573122"
-      },
-      {
-        "file": "nx.json",
-        "hash": "9611113771578258298"
-      },
-      {
-        "file": "package-lock.json",
-        "hash": "8517225385043581062"
-      },
-      {
-        "file": "package.json",
-        "hash": "8600893967752941900"
-      },
-      {
-        "file": "readme.txt",
-        "hash": "11640016563420189034"
-      },
-      {
-        "file": "tsconfig.base.json",
-        "hash": "16936441711144470533"
-      }
-    ]
+    }
   }
 }
