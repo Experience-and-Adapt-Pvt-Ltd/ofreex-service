@@ -65,20 +65,22 @@ const Categories: React.FC<CategoryProps> = ({ categoriesProps }) => {
         "
       >
         {categories &&
-          categories.map((item) => (
-            <CategoryBox
+          categories.map((item) => 
+              <CategoryBox
               id={item.id}
               key={item.label}
               label={item.label}
               categoryIcon={item.icon}
               selected={openCategoryId === item.id}
               subCategories={item.subCategories}
-              {...(!isMobileView && {
+              {...(!isMobileView && item.visible && {
                 onMouseEnter: () => handleMouseEnterCategory(item.id),
                 onMouseLeave: () => handleMouseLeaveCategory(),
               })}
+              visible = {item.visible}
+              mobileView = {isMobileView}
             />
-          ))}
+          )}
       </div>
     </Container>
   );
