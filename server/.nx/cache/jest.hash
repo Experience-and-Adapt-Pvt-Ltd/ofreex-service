@@ -41,7 +41,7 @@
       ]
     }
   },
-  "4524485374357169364": {
+  "13362995970872080859": {
     "test": {
       "command": "jest",
       "options": {
@@ -80,6 +80,132 @@
       ],
       "outputs": [
         "{workspaceRoot}/coverage/apps/seller"
+      ]
+    }
+  },
+  "2844005880431813404": {
+    "test": {
+      "command": "jest",
+      "options": {
+        "cwd": "apps/users"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": [
+            "jest"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/users"
+      ]
+    }
+  },
+  "11450131612486283235": {
+    "test": {
+      "command": "jest",
+      "options": {
+        "cwd": "apps/users"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": [
+            "jest"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/users"
+      ]
+    }
+  },
+  "1810687218382614305": {
+    "test": {
+      "command": "jest",
+      "options": {
+        "cwd": "apps/users"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": [
+            "jest"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/users"
+      ]
+    }
+  },
+  "14984101687196391479": {
+    "test": {
+      "command": "jest",
+      "options": {
+        "cwd": "apps/users"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": [
+            "jest"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/users"
+      ]
+    }
+  },
+  "10242273546696434900": {
+    "test": {
+      "command": "jest",
+      "options": {
+        "cwd": "apps/users"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": [
+            "jest"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/users"
+      ]
+    }
+  },
+  "5182445314800363907": {
+    "test": {
+      "command": "jest",
+      "options": {
+        "cwd": "apps/users"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": [
+            "jest"
+          ]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/users"
       ]
     }
   },
