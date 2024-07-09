@@ -14,7 +14,17 @@ interface CategoryBoxProps {
   onMouseEnter?: any;
   onMouseLeave?: any;
   onClick?: any;
+  visible: boolean;
+  mobileView: boolean;
 }
+
+//To Prevent From Selecting Text
+const noselect: React.CSSProperties = {
+  WebkitUserSelect: 'none', 
+  MozUserSelect: 'none', 
+  msUserSelect: 'none', 
+  userSelect: 'none' 
+};
 
 const CategoryBox: React.FC<CategoryBoxProps> = ({
   id,
@@ -24,6 +34,8 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
   subCategories,
   onMouseEnter, 
   onMouseLeave,
+  visible,
+  mobileView
 }) => {
   const router = useRouter();
 
@@ -41,16 +53,18 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
     <div
     onMouseEnter={onMouseEnter}
     onMouseLeave={onMouseLeave}
-    className="relative inline-block left-5 border border-gray-300 rounded-lg shadow-sm bg-white py-2 px-4 cursor-pointer"
+    className={`relative inline-block left-5 border border-gray-300 rounded-lg shadow-sm ${visible === true ? 'bg-white' : 'bg-gray-300'} py-2 px-4 cursor-pointer`}
+    style={noselect}
+    onClick={mobileView === true && visible === true ? handleCategoryClick : () => {}}
     >
       <div className="flex justify-center items-center">
 
       <img src={categoryIcon} alt={`${label} icon`} className="h-[50px] w-[60px]" />
       </div>
     <div
-      className="inline-flex cursor-pointer justify-center w-full rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      className={`inline-flex cursor-pointer justify-center w-full rounded-md text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
       aria-haspopup="true"
-      onClick={handleCategoryClick}
+      style={noselect}
     >
       {label}
     </div>
@@ -62,6 +76,7 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 whitespace-nowrap"
             role="menuitem"
             onClick={() => handleSubCategoryClick(subCategory.id)}
+            style={noselect}
           >
             {subCategory.label}
           </div>
