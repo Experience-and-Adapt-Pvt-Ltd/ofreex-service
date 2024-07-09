@@ -133,19 +133,8 @@ export class ListingsService {
         throw new BadRequestException(`Category with ID ${createListingDto.categoryLabel} does not exist.`);
       }
   
-      // const listingCount = await this.prisma.listing.count({
-      //   where: {
-      //     userId: createListingDto.userId,
-      //   }
-      // })
-  
-      // // If the user has 3 or more listings, throw an exception
-      // if (listingCount >= 3) {
-      //   throw new BadRequestException('You are limited to 3 listings.')
-      // }
-  
-      // Creates a new listing in the database using the provided CreateListingDto.
       console.log("Creating listing with data:", createListingDto);
+  
       const createdListing = await this.prisma.listing.create({
         data: {
           title: createListingDto.title,
@@ -445,6 +434,7 @@ export class ListingsService {
       label: category.label,
       description: category.description,
       icon: category.icon,
+      visible: category.visible,
       subCategories: category.subCategories ? category.subCategories.map(subCategory => this.convertToSubCategoryDto(subCategory)) : []
     };
   }

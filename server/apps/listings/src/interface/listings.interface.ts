@@ -21,6 +21,7 @@ export interface Category {
   label: string;
   description: string;
   icon?: string; // Optional icon field
+  visible: boolean;
   subCategories: SubCategory[]; // Array of SubCategory, enforcing structural consistency
 }
 

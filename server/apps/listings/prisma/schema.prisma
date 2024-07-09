@@ -34,6 +34,7 @@ model Category {
   label         String        @unique
   description   String
   icon          String?
+  visible       Boolean @default(true)
   subCategories SubCategory[]
   listings      Listing[]
 }

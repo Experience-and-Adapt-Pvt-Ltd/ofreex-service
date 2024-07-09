@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsNumber, IsArray, IsOptional, Min, Max, IsUUID, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsArray, IsOptional, Min, Max, IsUUID, ValidateNested, IsBoolean } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateListingDto {
@@ -12,15 +12,15 @@ export class CreateListingDto {
 
   @IsNotEmpty()
   @IsUUID()
-  categoryId: string;  // Change from category name to category ID
+  categoryId: string;  
   
-  @IsOptional()  // Also optional, will be defined only if categoryLabel is used
+  @IsOptional()  
   @IsString()
   categoryLabel?: string;
 
   @IsOptional()
   @IsUUID()
-  subCategoryId?: string;  // Change from subCategory name to subCategory ID
+  subCategoryId?: string; 
 
   @IsNotEmpty()
   @IsString()
@@ -70,10 +70,13 @@ export class CreateCategoryDto {
   @IsString()
   icon?: string;
 
+  @IsBoolean()
+  visible: Boolean;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateSubCategoryDto)
-  subCategories?: CreateSubCategoryDto[];  // Optional array of subcategories
+  subCategories?: CreateSubCategoryDto[];  
 }
 export class CreateSubCategoryDto {
   @IsNotEmpty()
@@ -93,7 +96,7 @@ export class CreateSubCategoryDto {
 export class UpdateCategoryDto {
   @IsOptional()
   @IsString()
-  label?: string;
+  label: string;
 
   @IsOptional()
   @IsString()
@@ -101,7 +104,11 @@ export class UpdateCategoryDto {
 
   @IsOptional()
   @IsString()
-  icon?: string;
+  icon: string;
+
+  @IsOptional()
+  @IsBoolean()
+  visible: boolean;
 
   @IsArray()
   @ValidateNested({ each: true })
