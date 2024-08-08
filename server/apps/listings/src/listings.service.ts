@@ -77,11 +77,16 @@ export class ListingsService {
   //for removing category
   async removeCategory(label: string): Promise<void> {
     try {
-      const categoryToDelete: PrismaCategory | null = await this.prisma.category.findUnique({ where: { label } });
+      const category = await this.prisma.category.findUnique({ where: { label } });
 
-      if (!categoryToDelete) {
+      if (!category) {
         throw new NotFoundException(`Category with label ${label} not found`);
       }
+
+      await this.prisma.subCategory.deleteMany({
+        where: { categoryId: category.id }
+      });
+    
 
       await this.prisma.category.delete({ where: { label } });
     } catch (error) {

@@ -1,21 +1,21 @@
 {
   "run": {
-    "command": "nx run users:build:development",
-    "startTime": "2024-07-07T16:11:35.971Z",
-    "endTime": "2024-07-07T16:11:37.950Z",
+    "command": "nx serve seller",
+    "startTime": "2024-07-09T21:31:58.564Z",
+    "endTime": "2024-07-09T21:41:13.747Z",
     "inner": false
   },
   "tasks": [
     {
-      "taskId": "users:build",
-      "target": "build",
-      "projectName": "users",
-      "hash": "4500977554747552649",
-      "startTime": "2024-07-07T16:11:35.975Z",
-      "endTime": "2024-07-07T16:11:37.950Z",
+      "taskId": "seller:serve:development",
+      "target": "serve",
+      "projectName": "seller",
+      "hash": "11644861959747786352",
+      "startTime": "2024-07-09T21:31:58.571Z",
+      "endTime": "2024-07-09T21:41:13.747Z",
       "params": "",
       "cacheStatus": "cache-miss",
-      "status": 0
+      "status": 1
     }
   ]
 }

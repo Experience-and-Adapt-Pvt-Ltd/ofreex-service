@@ -161,10 +161,7 @@ export class ListingsController {
       Logger.log(`Could not fetch premium users: ${error.message}`);
     }
   }
-  @Get('/')
-  greet() {
-    return 'Hello! Welcome to the Listings API.';
-  }
+ 
   @Get()
   async findAll(): Promise<Listing[]> {
     try {
